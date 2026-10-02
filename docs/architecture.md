@@ -98,7 +98,9 @@ Invalid input stays on the input step with a field message. An application rende
 
 ## Privacy
 
-No account, no broker credentials, no payment, no `.env`, no third-party analytics, no persistent storage of amounts. The optional restart month is kept in memory for the recap only.
+No account, no broker credentials, and no payment. A saved assessment recap stays in this browser only after consent, and the person can delete it. Unsaved amounts clear on refresh. Analytics events stay in memory and do not include amounts or chat text.
+
+SIP Check Bot calls Grok from the Vite server at `POST /api/sip-check`. `XAI_API_KEY` is read on the server. It is not prefixed with `VITE_` and is not sent to the browser. If the key is missing or the call fails, the assessment still runs. The model is not the source of the rupee arithmetic.
 
 ## Testing
 

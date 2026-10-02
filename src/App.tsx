@@ -1,10 +1,10 @@
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
-import { FlowApp } from './features/flow/FlowApp.tsx'
+import { AssessmentApp } from './features/assessment/AssessmentApp.tsx'
 
 export function App() {
   return (
     <ErrorBoundary>
-      <FlowApp />
+      <AssessmentApp />
     </ErrorBoundary>
   )
 }
