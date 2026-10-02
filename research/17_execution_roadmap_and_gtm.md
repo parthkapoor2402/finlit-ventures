@@ -25,14 +25,15 @@ RICE reach of 200 is the conservative monthly arrival assumption, not a fact.
 
 ## Roadmap
 
-1. **Discovery close.** This memo. Approval to prototype.
-2. **Copy and counsel.** Banned phrases. Decision table. Fresh help-center citations.
-3. **Prototype.** Clickable Skip Check with sample and user-entered numbers. Deterministic only.
-4. **Usability.** 8–10 sessions, two scenarios each. Protocol below.
-5. **Revise or stop** against the kill criteria in `04`.
-6. **Limited public article** with the tool, if the test passes. No paid ads assumed.
-7. **Evaluate** informed-choice rate and the cash-need guardrail for a month.
-8. **Expansion candidates,** only after that: redemption card with verified scheme fields; a conversation with one platform. Not scheduled as commitments.
+Gates and role-owners are in `22_scorecard_revision.md`. Short form:
+
+1. **Spec.** Entry point, calculator, and evidence chain. Written. User evidence is not done.
+2. **Counsel before any public pilot.** A written review. This folder is not that review.
+3. **Prototype.** Six screens and calculator tests, including ₹12,000 to ₹6,000 over 6 months = ₹36,000 of contributions not invested, and the rejected inputs in `13`. Not built.
+4. **Usability.** 8–10 sessions. Pass only if at least 7 of 10 restate the rupee line and the units line, and cash-need users can pause without hunting. Not run.
+5. **Distribution.** The single FinLit page. Fail if fewer than 10 of the first 50 non-staff sessions are "about to change a SIP." Not run.
+6. **Pilot decision.** Only if usability, distribution, and counsel all pass. Continuation rate is not the gate.
+7. **Not scheduled:** redemption math, a broker embed.
 
 ## Experiments
 

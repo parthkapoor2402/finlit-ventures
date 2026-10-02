@@ -13,13 +13,13 @@ Prototype only after approval. This is the specification Phase B would build.
 
 ## Future state
 
-1. She reaches FinLit from an article or a review, with the intent to change a SIP, before she confirms in the app.
+1. She opens one FinLit page herself, before she confirms in her app. She chooses "I am about to change a SIP" or "I am only reading." Only the first door starts Skip Check.
 2. She says what she is trying to do.
 3. She enters amount, months or new amount, reason, optional horizon, optional app. Or she explores a labeled sample.
 4. The calculator returns a verified card.
 5. She reads rupees, the non-redemption line, and the unknown-NAV line.
 6. She can edit inputs or dismiss.
-7. She chooses keep, reduce, or pause with a restart month.
+7. She chooses keep, reduce, or pause. The buttons match in weight. A restart month is optional and is worded as her own note, not as an automatic restart.
 8. She passes or fails a one-line restatement. Failure re-shows the line; it does not block the choice after one retry.
 9. The session ends with a plain recap she can use in her own app. Nothing is sent to the AMC.
 10. If she opted in, a restart reminder is the only follow-up.
@@ -28,7 +28,8 @@ Prototype only after approval. This is the specification Phase B would build.
 
 - **Sample explore:** pre-filled ₹12,000, 3 months, market-worry, 8-year horizon, banner "Sample."
 - **Own numbers:** empty fields, no banner, no storage unless she saves a reminder.
-- **Cash branch:** Pause visually equal to the other choices, restart month required to finish that choice, skip still allowed with an explicit "no date."
+- **Cash branch:** the same three buttons. Copy states that the contributions stay in the bank. Restart month is optional and does not claim the app will resume the SIP.
+- **Unsure:** contribution line and units line only. No crash paragraph.
 - **Goal-near branch:** no language about missing a rally.
 - **Fund-fit branch:** no replacement fund. Link to a human conversation labeled as not a product recommendation.
 - **Dismiss:** no guilt modal.

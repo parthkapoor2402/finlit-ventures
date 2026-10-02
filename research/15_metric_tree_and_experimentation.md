@@ -18,6 +18,8 @@ Baselines are **not yet measured** unless noted. Targets are set from the usabil
 
 "Verified" in the sense of a broker callback is **not** available. The metric does not pretend it is.
 
+Events for the two-door page, still unmeasured: `door_about_to_change`, `door_only_reading`, `inputs_rejected` with a reason code (blank, negative, months, proposed_above_current, amount_confirm), `card_shown`, `reason_selected`, `choice_keep`, `choice_reduce`, `choice_pause`, `restart_month_set`, `restart_month_skipped`, `restatement_passed`, `restatement_failed`, `dismissed`, `pressure_flag`. Sample-mode sessions are excluded from the informed-choice rate unless the person replaces the sample amount. The distribution gate uses `door_about_to_change` over the first 50 non-staff sessions and is defined in `22_scorecard_revision.md`. It is not a measured baseline.
+
 ## L1 — Drivers
 
 | Metric | Formula | Instrumentation | Baseline |

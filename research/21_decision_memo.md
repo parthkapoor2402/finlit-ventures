@@ -198,3 +198,9 @@ After approval: a mobile-width clickable flow, sample and editable inputs, teste
 **When to abandon.** Those test failures; or a verified in-app flow that already does this branch clearly; or counsel says even the descriptive card is advice the firm cannot give. In that last case the choice is register, or do not ship.
 
 The recommendation stands because the test is cheap and the alternative concepts are either inoperable (A) or too late (C). It should not stand if the test fails.
+
+## Revision after the external scorecard
+
+An external review scored the summary 60/100 and did not have this folder. Presentation was left unchanged. The accepted product changes, and the items that stay unproven, are in `22_scorecard_revision.md`.
+
+In short: one entry page with two doors; the calculator is only `(current − proposed) × months`, labeled as contributions that would not be invested; the ₹36,000 figure is that illustration for ₹12,000 reduced to ₹6,000 over 6 months; a restart month does not restart anything; the rate-based goal gap is out of the MVP. No interviews, no prototype, and no legal clearance were added.

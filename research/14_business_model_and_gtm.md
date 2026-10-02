@@ -36,14 +36,25 @@ All rates below are empty or assumed. Do not read them as forecasts.
 | Support and compliance | A legal read of the copy before public launch. Cost unknown |
 | Contribution | Cannot be signed until conversion is observed |
 
+## Commercial line, so it cannot be missed
+
+| Item | Decision |
+| --- | --- |
+| Payer | The user, only if they ask for a review |
+| Free | Skip Check |
+| Price | Existing list prices, first session ₹99 through ₹2,499 a year. No new price for the card |
+| Not sold | Trail, affiliate, or any fee that depends on the SIP continuing |
+| Conflict control | Equal choices. Continuation is not the north star. No fund link on the card |
+
 ## GTM hypothesis
 
-- **Segment:** salaried SIP investors searching the pause question. Urban, because that is where MF participation is higher in the SEBI survey.
-- **Proposition:** "Before you skip the SIP, separate a cash need from a market scare and see the rupees. You can still pause."
-- **Channels:** articles that answer the query already ranking for publishers (the Economic Times and Mint pieces show the query exists); the existing contact form; the ₹99 session. No paid-acquisition CAC is assumed.
+- **The one channel under test:** a FinLit page the person opens, with two doors: "I am about to change a SIP in my own app" and "I am only reading." The card runs only after the first door. A broker embed is not this test.
+- **Segment:** salaried SIP investors who search the pause question. Urban participation is higher in the SEBI survey. That is context, not proof they will open this page.
+- **Proposition:** "Before you confirm a skip, see the contributions that would not be invested, and whether your reason is cash or the market. You can still pause."
+- **Planning rule, not a result:** in the first 50 non-staff sessions, fewer than 10 choices of "about to change a SIP" means this channel failed. See `22_scorecard_revision.md`.
 - **Activation:** article ends in Skip Check, sample pre-filled, personal numbers optional.
 - **Trust:** repeat the unregistered status in plain language; no fund affiliate links on the card.
 - **Onboarding:** no account required to see a sample. An account only if they save a restart reminder.
 - **Retention:** email only if they ask to be reminded of a restart month.
 - **Partnership:** do not pitch a broker until the card's comprehension test passes and counsel has reviewed the copy.
-- **Experiment:** the usability protocol in `17`, then a public article with the tool and a count of completions. A few hundred sessions would still be a sample of arrivals, not of India.
+- **Experiment:** usability protocol in `17`, then the two-door page. Completions on that page are a sample of arrivals, not of India. The 10-of-50 rule is a planning gate, not a result.
