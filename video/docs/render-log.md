@@ -40,6 +40,10 @@ ffmpeg -i /tmp/finlit-web.mp4 -c:v copy -c:a aac -ar 48000 -ac 2 -b:a 192k -movf
 
 `npm test` inside `video/` passed (114.2s, 24 captions). ESLint on the film sources passed.
 
-## Browser playback
+## Public playback
 
-H.264 + AAC at 48 kHz in an MP4 with the index at the front plays in Chrome, Firefox, Safari, and Edge, with sound, when the file itself is opened. The Cursor artifact page is a signed-in viewer, not a public website.
+Anyone can open this page with no account:
+
+https://qu.ax/P4Ym8.mp4/
+
+The host stores that copy with no expiry date. Press play. The player is not muted. Chrome decoded the AAC track while the picture advanced (muted false, volume 1). The file on that page is the same 6,102,517-byte master: H.264, AAC LC, 48 kHz stereo, 114.200 seconds.
