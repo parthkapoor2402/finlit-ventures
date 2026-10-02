@@ -1,0 +1,28 @@
+export type Cue = { start: number; end: number; text: string }
+
+export const CAPTIONS: Cue[] = [
+  { start: 0.100, end: 5.018, text: "Every month, you make a small decision for your future." },
+  { start: 4.968, end: 8.691, text: "But sometimes, life changes the plan." },
+  { start: 8.691, end: 11.992, text: "Maybe the market feels uncertain." },
+  { start: 11.992, end: 15.213, text: "Maybe an expense cannot wait." },
+  { start: 15.213, end: 18.242, text: "Or maybe your goal has changed." },
+  { start: 18.242, end: 20.484, text: "Different reasons." },
+  { start: 20.484, end: 23.107, text: "One important decision." },
+  { start: 23.107, end: 26.884, text: "Your investing app helps you manage your SIP." },
+  { start: 26.884, end: 34.275, text: "But before you confirm a change, you may want to understand what it means for the contributions you planned." },
+  { start: 34.275, end: 37.237, text: "That's where Skip Check comes in." },
+  { start: 37.237, end: 43.107, text: "Skip Check gives you a simple place to understand the difference before you decide." },
+  { start: 43.107, end: 46.109, text: "Start with what's on your mind." },
+  { start: 46.109, end: 55.702, text: "Whether it's a cash need, market uncertainty, or a change in your goals, Skip Check doesn't assume it knows what's right for you." },
+  { start: 55.702, end: 62.536, text: "Suppose you reduce a twelve-thousand-rupee monthly SIP to six thousand rupees for six months." },
+  { start: 62.536, end: 68.541, text: "That's thirty-six thousand rupees less in planned contributions over that period." },
+  { start: 68.541, end: 74.248, text: "Your existing units remain invested unless you separately redeem them." },
+  { start: 74.248, end: 83.066, text: "This number is about planned contributions, not investment losses, future returns, or future units." },
+  { start: 83.066, end: 86.327, text: "Keep, reduce, or pause." },
+  { start: 86.327, end: 88.990, text: "The options remain yours." },
+  { start: 88.990, end: 95.607, text: "Review the difference, make sure it makes sense, and choose what fits your situation." },
+  { start: 95.607, end: 101.965, text: "Then return to your own investing app, with a clearer understanding of the choice ahead." },
+  { start: 101.965, end: 103.867, text: "Skip Check." },
+  { start: 103.867, end: 105.973, text: "See the difference." },
+  { start: 105.973, end: 108.202, text: "Make your decision." },
+]

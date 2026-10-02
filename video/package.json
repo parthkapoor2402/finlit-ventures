@@ -1,0 +1,23 @@
+{
+  "name": "skip-check-film",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts FinLitSkipCheckAd out/finlit-skip-check-brand-film.mp4 --codec=h264 --crf=18",
+    "test": "node --experimental-strip-types tests/film.test.ts"
+  },
+  "dependencies": {
+    "@fontsource/newsreader": "^5.2.8",
+    "@fontsource/source-sans-3": "^5.2.7",
+    "@remotion/cli": "^4.0.372",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "remotion": "^4.0.372"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "typescript": "~5.9.2"
+  }
+}
