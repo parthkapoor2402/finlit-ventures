@@ -42,8 +42,12 @@ ffmpeg -i /tmp/finlit-web.mp4 -c:v copy -c:a aac -ar 48000 -ac 2 -b:a 192k -movf
 
 ## Public playback
 
-Anyone can open this page with no account:
+Deck hyperlink (raw MP4 when the deck sends a referrer):
+
+https://qu.ax/x/P4Ym8.mp4
+
+Player page (same file, press play, sound on):
 
 https://qu.ax/P4Ym8.mp4/
 
-The host stores that copy with no expiry date. Press play. The player is not muted. Chrome decoded the AAC track while the picture advanced (muted false, volume 1). The file on that page is the same 6,102,517-byte master: H.264, AAC LC, 48 kHz stereo, 114.200 seconds.
+The host stores that copy with no expiry date. SHA-256 `e3f3c0480259c71dfa4e56b356b72aacddab8914c2af8797734256a6ca99bbdc`, 6,102,517 bytes, H.264, AAC LC, 48 kHz stereo, 114.200 seconds. A request that includes a referrer returns `video/mp4`. A request with no referrer redirects to the player page, which is not muted. Chrome decoded the AAC track while the picture advanced.
