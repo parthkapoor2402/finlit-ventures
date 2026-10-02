@@ -91,7 +91,7 @@ Make an instalment decision the user can explain.
 
 - It will not place, pause, or cancel a SIP.
 - It will not say "you should stay invested" as an instruction.
-- It will not predict NAV, returns, or a goal date as a fact. A goal illustration runs only off a rate the user types, labeled as their assumption.
+- It will not predict NAV, returns, or a goal date. The MVP calculator is only the difference in contributions. A rate-based goal illustration is out.
 - It will not recommend a replacement fund.
 - It will not take a commission on the mutual fund.
 - It will not require a broker login in the MVP.
