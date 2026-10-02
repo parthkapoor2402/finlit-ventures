@@ -10,6 +10,11 @@ lerna-debug.log*
 node_modules
 dist
 video/out
+
+# Local secrets. Paste keys in .env. Never commit that file.
+.env
+.env.*
+!.env.example
 dist-ssr
 *.local
 playwright-report
