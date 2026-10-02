@@ -1,27 +1,25 @@
 # Approved narration
 
-Voice: female, warm, and spoken at full speaking level so it stays audible over the music.
+The film is 70 seconds. The voice is a new read, generated sentence by sentence. It is not a speed change of the previous 114-second track.
 
-Grok Text to Speech (`ara`) was requested. This environment has no `XAI_API_KEY`, and `https://api.x.ai/v1/tts` returned 401. The track in the film is Microsoft edge-tts `en-IN-NeerjaNeural`, rate −8%, pitch −2Hz, volume +100%, then loudness-normalised to about −16 LUFS. It is a female Indian-English voice. It is not the Grok `ara` voice.
+Grok Text to Speech (`ara`) was requested. This environment has no `XAI_API_KEY`, so `https://api.x.ai/v1/tts` was not called. The voice in the film is not Grok.
 
-The spoken track is `video/public/audio/voiceover.mp3` (108.2 seconds). Scene lengths follow the cue timings. The voice is not time-stretched. The picture holds for about six seconds after the last line, so the film is 114.2 seconds.
+The track is Microsoft edge-tts `en-IN-NeerjaNeural`, one sentence at a time, then joined with unequal gaps. Rates sit between +8% and +12% except the two scene 1 lines and the two scene 5 lines, which are quicker so each spoken line finishes inside its scene. Pitch is −1Hz or +0Hz. Volume is between +4% and +14%. A light high-pass, a small EQ cut around 220Hz, a small lift around 2.8kHz, gentle compression, and loudnorm at I=−16 LUFS, TP=−1.5 dB follow. No time-stretch, no fake breaths.
 
-Every month, you make a small decision for your future. But sometimes, life changes the plan.
+The finished voice file is 64.639 seconds. The last word, "decision", ends at 64.239 seconds. The picture holds to 70.000 seconds.
 
-Maybe the market feels uncertain. Maybe an expense cannot wait. Or maybe your goal has changed. Different reasons. One important decision.
+Scene 1 is 10 frames longer than the 8.000-second mark, and scene 2 is 10 frames shorter, so the cut falls after "SIP". The other scene boundaries match the 70-second map.
 
-Your investing app helps you manage your SIP. But before you confirm a change, you may want to understand what it means for the contributions you planned. That's where Skip Check comes in.
+Life doesn't always go according to plan. An unexpected expense, an uncertain market, or simply a change in priorities can make you rethink your SIP.
 
-Skip Check gives you a simple place to understand the difference before you decide.
+But before you make that change, wouldn't it help to understand what it means for your planned contributions?
 
-Start with what's on your mind. Whether it's a cash need, market uncertainty, or a change in your goals, Skip Check doesn't assume it knows what's right for you.
+Meet Skip Check by FinLit Ventures. A simple way to compare your options before deciding what works for you.
 
-Suppose you reduce a twelve-thousand-rupee monthly SIP to six thousand rupees for six months. That's thirty-six thousand rupees less in planned contributions over that period.
+Say your monthly SIP is twelve thousand rupees, and you're considering reducing it to six thousand for six months. That's thirty-six thousand rupees less in planned contributions over that period.
 
-Your existing units remain invested unless you separately redeem them. This number is about planned contributions, not investment losses, future returns, or future units.
+That's a contribution difference, not an investment loss or a prediction of future returns. Your existing units remain invested unless you separately redeem them.
 
-Keep, reduce, or pause. The options remain yours. Review the difference, make sure it makes sense, and choose what fits your situation.
-
-Then return to your own investing app, with a clearer understanding of the choice ahead.
+Keep, reduce, or pause. Review the difference, understand the trade-off, and choose what fits your situation.
 
 Skip Check. See the difference. Make your decision.

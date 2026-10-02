@@ -1,12 +1,10 @@
-import { useCurrentFrame, useVideoConfig } from "remotion"
+import { useCurrentFrame } from "remotion"
 import { CAPTIONS } from "../data/captions.ts"
 import { INK, SANS } from "../styles/tokens.ts"
 
 export function Caption() {
   const frame = useCurrentFrame()
-  const { fps } = useVideoConfig()
-  const time = frame / fps
-  const cue = CAPTIONS.find((item) => time >= item.start && time < item.end)
+  const cue = CAPTIONS.find((item) => frame >= item.startFrame && frame < item.endFrame)
   if (!cue) return null
 
   return (

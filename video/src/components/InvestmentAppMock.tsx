@@ -1,48 +1,26 @@
-import { CARD, FOREST, INK, LINE, MUTED, SANS, SERIF } from "../styles/tokens.ts"
+import { CARD, INK, LINE, MUTED, SANS, SERIF } from "../styles/tokens.ts"
 
-/** A generic investing screen. It is not a named broker and it does not complete a change. */
-export function InvestmentAppMock({ paused = false }: { paused?: boolean }) {
+/** A generic investing screen. No broker name. The change is not confirmed. */
+export function InvestmentAppMock() {
   return (
-    <div style={{ padding: "28px 26px", fontFamily: SANS, color: INK, height: "100%" }}>
-      <p style={{ margin: 0, fontSize: 14, letterSpacing: 1.4, color: MUTED }}>INVESTMENTS</p>
-      <h2 style={{ fontFamily: SERIF, fontWeight: 500, fontSize: 34, margin: "18px 0 8px" }}>Monthly SIP</h2>
-      <p style={{ margin: 0, color: MUTED, fontSize: 18, lineHeight: 1.4 }}>One instruction. Not your whole portfolio.</p>
+    <div style={{ padding: "26px 22px", fontFamily: SANS, color: INK, height: "100%" }}>
+      <p style={{ margin: 0, fontSize: 13, letterSpacing: 1.4, color: MUTED }}>INVESTMENTS</p>
+      <h2 style={{ fontFamily: SERIF, fontWeight: 500, fontSize: 30, margin: "14px 0 4px" }}>Monthly SIP</h2>
+      <p style={{ margin: 0, color: MUTED, fontSize: 16, lineHeight: 1.35 }}>One instruction. Not your whole portfolio.</p>
+      <div style={{ marginTop: 22, background: CARD, border: `1px solid ${LINE}`, padding: "14px 16px" }}>
+        <p style={{ margin: 0, color: MUTED, fontSize: 15 }}>Current monthly amount</p>
+        <p style={{ margin: "4px 0 0", fontFamily: SERIF, fontSize: 36 }}>₹12,000</p>
+      </div>
+      <div style={{ marginTop: 14, background: CARD, border: `1px solid ${LINE}`, padding: "14px 16px" }}>
+        <p style={{ margin: 0, color: MUTED, fontSize: 15 }}>Proposed change</p>
+        <p style={{ margin: "4px 0 0", fontFamily: SERIF, fontSize: 32 }}>Reduce to ₹6,000</p>
+      </div>
       <div
         style={{
-          marginTop: 28,
-          background: CARD,
+          marginTop: 22,
+          height: 52,
           border: `1px solid ${LINE}`,
-          padding: "18px 18px 16px",
-        }}
-      >
-        <p style={{ margin: 0, color: MUTED, fontSize: 16 }}>Current monthly amount</p>
-        <p style={{ margin: "6px 0 0", fontFamily: SERIF, fontSize: 42 }}>₹12,000</p>
-      </div>
-      <div style={{ marginTop: 22, display: "grid", gap: 10 }}>
-        {["Keep as it is", "Reduce the amount", "Pause the instruction"].map((label) => (
-          <div
-            key={label}
-            style={{
-              border: `1px solid ${LINE}`,
-              minHeight: 52,
-              display: "flex",
-              alignItems: "center",
-              padding: "0 16px",
-              fontSize: 18,
-              background: CARD,
-            }}
-          >
-            {label}
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          marginTop: 26,
-          height: 54,
-          background: paused ? "transparent" : FOREST,
-          color: paused ? MUTED : "#f6f1e8",
-          border: paused ? `1px solid ${LINE}` : "none",
+          color: MUTED,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -50,7 +28,7 @@ export function InvestmentAppMock({ paused = false }: { paused?: boolean }) {
           fontWeight: 600,
         }}
       >
-        {paused ? "Not confirmed" : "Review change"}
+        Not confirmed
       </div>
     </div>
   )

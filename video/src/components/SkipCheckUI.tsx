@@ -2,12 +2,18 @@ import type { ReactNode } from "react"
 import { WALKTHROUGH } from "../data/calculation.ts"
 import { AMBER, CARD, FOREST, INK, LINE, MUTED, PAPER, SANS, SERIF } from "../styles/tokens.ts"
 
+export function AdviceLine() {
+  return (
+    <p style={{ fontFamily: SANS, fontSize: 18, color: MUTED, margin: 0 }}>Decision support. Not investment advice.</p>
+  )
+}
+
 export function ProductCard({ children }: { children: ReactNode }) {
   return (
     <div
       style={{
         width: 980,
-        minHeight: 760,
+        minHeight: 640,
         background: CARD,
         border: `1px solid ${LINE}`,
         borderRadius: 18,
