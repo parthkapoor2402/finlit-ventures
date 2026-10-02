@@ -26,13 +26,13 @@ for (const phrase of ["you should", "ai-powered", "groww", "zerodha", "you will 
   assert.equal(lowered.includes(phrase), false, phrase)
 }
 
-assert.ok(CAPTIONS.length >= 30)
-assert.ok(CAPTIONS[CAPTIONS.length - 1]!.end > 115)
+assert.ok(CAPTIONS.length >= 20)
+assert.ok(CAPTIONS[CAPTIONS.length - 1]!.end > 100)
 const seconds = DURATION_IN_FRAMES / FPS
-assert.ok(seconds > 118 && seconds < 130, `duration ${seconds}`)
+assert.ok(seconds > 108 && seconds < 125, `duration ${seconds}`)
 
 const vtt = readFileSync(new URL("../public/audio/voiceover.vtt", import.meta.url), "utf8")
 assert.ok(vtt.includes("thirty-six thousand"))
-assert.ok(vtt.includes("The choice remains yours"))
+assert.ok(vtt.includes("The options remain yours"))
 
 console.log(`film checks passed (${seconds.toFixed(1)}s, ${CAPTIONS.length} captions)`)

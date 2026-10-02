@@ -29,8 +29,8 @@ const SCENE_VIEW = {
 export function FinLitSkipCheckAd() {
   return (
     <AbsoluteFill style={{ background: PAPER }}>
-      <Audio src={staticFile("audio/voiceover.mp3")} />
-      <Audio src={staticFile("audio/music.mp3")} volume={0.09} />
+      <Audio src={staticFile("audio/voiceover.mp3")} volume={1} />
+      <Audio src={staticFile("audio/music.mp3")} volume={0.045} />
       {SCENES.map((scene) => {
         const View = SCENE_VIEW[scene.id]
         return (

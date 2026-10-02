@@ -34,8 +34,12 @@ export function Landing({ selected = false }: { selected?: boolean }) {
         A separate check for one SIP. It does not change the instruction. You finish any action in your own app.
       </p>
       <div style={{ display: "grid", gap: 14, marginTop: 28 }}>
-        <Door title="I'm about to change a SIP" body="I have not confirmed the change in my own app." active={selected} />
-        <Door title="I'm only reading" body="An illustrative sample. It is not counted as a decision." active={false} />
+        <Door
+          title="I'm about to change a SIP"
+          body="In my own app, and I have not confirmed it. This is a decision session."
+          active={selected}
+        />
+        <Door title="I'm only reading" body="A sample. It is not a decision session." active={false} />
       </div>
     </ProductCard>
   )

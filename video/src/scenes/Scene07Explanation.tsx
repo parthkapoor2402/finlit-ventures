@@ -5,9 +5,9 @@ import { WALKTHROUGH } from "../data/calculation.ts"
 import { CARD, INK, LINE, PAPER, SANS, SERIF } from "../styles/tokens.ts"
 
 const LINES = [
-  "Existing units stay invested.",
+  "Existing units remain invested.",
   "Future units are not estimated.",
-  "Skip Check does not change your SIP.",
+  "This is not a return forecast.",
 ]
 
 export function Scene07Explanation() {

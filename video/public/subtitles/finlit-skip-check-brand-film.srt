@@ -1,131 +1,95 @@
 1
-00:00:00,100 --> 00:00:04,450
+00:00:00,100 --> 00:00:05,018
 Every month, you make a small decision for your future.
 
 2
-00:00:04,400 --> 00:00:09,629
-You invest, you plan, and you move a little closer to what matters.
-
-3
-00:00:09,629 --> 00:00:12,922
+00:00:04,968 --> 00:00:08,691
 But sometimes, life changes the plan.
 
-4
-00:00:12,922 --> 00:00:15,843
+3
+00:00:08,691 --> 00:00:11,992
 Maybe the market feels uncertain.
 
-5
-00:00:15,843 --> 00:00:18,691
+4
+00:00:11,992 --> 00:00:15,213
 Maybe an expense cannot wait.
 
-6
-00:00:18,691 --> 00:00:21,372
+5
+00:00:15,213 --> 00:00:18,242
 Or maybe your goal has changed.
 
-7
-00:00:21,372 --> 00:00:23,355
+6
+00:00:18,242 --> 00:00:20,484
 Different reasons.
 
-8
-00:00:23,355 --> 00:00:25,675
+7
+00:00:20,484 --> 00:00:23,107
 One important decision.
 
-9
-00:00:25,675 --> 00:00:29,016
+8
+00:00:23,107 --> 00:00:26,884
 Your investing app helps you manage your SIP.
 
+9
+00:00:26,884 --> 00:00:34,275
+But before you confirm a change, you may want to understand what it means for the contributions you planned.
+
 10
-00:00:29,016 --> 00:00:35,350
-Before you confirm a change, you may want to understand what it means for the contributions you planned.
+00:00:34,275 --> 00:00:37,237
+That's where Skip Check comes in.
 
 11
-00:00:35,350 --> 00:00:38,090
-That is where Skip Check comes in.
+00:00:37,237 --> 00:00:43,107
+Skip Check gives you a simple place to understand the difference before you decide.
 
 12
-00:00:38,090 --> 00:00:43,283
-Skip Check is a separate decision-support experience from FinLit Ventures.
+00:00:43,107 --> 00:00:46,109
+Start with what's on your mind.
 
 13
-00:00:43,283 --> 00:00:48,944
-It helps you see the contribution difference before you finish the action in your own app.
+00:00:46,109 --> 00:00:55,702
+Whether it's a cash need, market uncertainty, or a change in your goals, Skip Check doesn't assume it knows what's right for you.
 
 14
-00:00:48,944 --> 00:00:51,023
-Start with the reason.
+00:00:55,702 --> 00:01:02,536
+Suppose you reduce a twelve-thousand-rupee monthly SIP to six thousand rupees for six months.
 
 15
-00:00:51,023 --> 00:00:57,489
-Market uncertainty, a cash need, a changing goal, or simply not being sure.
+00:01:02,536 --> 00:01:08,541
+That's thirty-six thousand rupees less in planned contributions over that period.
 
 16
-00:00:57,489 --> 00:01:01,516
-Skip Check does not assume it knows what is right for you.
+00:01:08,541 --> 00:01:14,248
+Your existing units remain invested unless you separately redeem them.
 
 17
-00:01:01,516 --> 00:01:07,093
-Enter your current contribution, the change you are considering, and a time period.
+00:01:14,248 --> 00:01:23,066
+This number is about planned contributions, not investment losses, future returns, or future units.
 
 18
-00:01:07,093 --> 00:01:17,429
-Here, reducing twelve thousand rupees a month to six thousand, for six months, means thirty-six thousand rupees less in planned contributions over that period.
-
-19
-00:01:17,429 --> 00:01:21,203
-That is a comparison of future contributions.
-
-20
-00:01:21,203 --> 00:01:23,763
-Not a prediction of returns.
-
-21
-00:01:23,763 --> 00:01:25,518
-Not a loss.
-
-22
-00:01:25,518 --> 00:01:30,554
-Your existing units stay invested when future contributions pause.
-
-23
-00:01:30,554 --> 00:01:33,126
-Future units are unknown.
-
-24
-00:01:33,126 --> 00:01:36,131
-And Skip Check never changes your SIP.
-
-25
-00:01:36,131 --> 00:01:39,016
+00:01:23,066 --> 00:01:26,327
 Keep, reduce, or pause.
 
-26
-00:01:39,016 --> 00:01:41,348
-The choice remains yours.
+19
+00:01:26,327 --> 00:01:28,990
+The options remain yours.
 
-27
-00:01:41,348 --> 00:01:44,172
-If you need to pause, you can.
+20
+00:01:28,990 --> 00:01:35,607
+Review the difference, make sure it makes sense, and choose what fits your situation.
 
-28
-00:01:44,172 --> 00:01:49,364
-Skip Check will not restart the SIP, and it will not make the change for you.
+21
+00:01:35,607 --> 00:01:41,965
+Then return to your own investing app, with a clearer understanding of the choice ahead.
 
-29
-00:01:49,364 --> 00:01:51,612
-Understand the difference.
+22
+00:01:41,965 --> 00:01:43,867
+Skip Check.
 
-30
-00:01:51,612 --> 00:01:54,929
-Then finish your decision in your own app.
-
-31
-00:01:54,929 --> 00:01:57,802
-Skip Check by FinLit Ventures.
-
-32
-00:01:57,802 --> 00:01:59,665
+23
+00:01:43,867 --> 00:01:45,973
 See the difference.
 
-33
-00:01:59,665 --> 00:02:01,636
+24
+00:01:45,973 --> 00:01:48,202
 Make your decision.

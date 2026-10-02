@@ -1,39 +1,27 @@
 # Approved narration
 
-Voice: Microsoft edge-tts `en-IN-NeerjaNeural`, rate +4%, pitch −1Hz. Indian English, female, calm.
+Voice: female, warm, and spoken at full speaking level so it stays audible over the music.
 
-The spoken track is `video/public/audio/voiceover.mp3` (121.6 seconds). Scene lengths follow the cue timings, so the picture is cut to the voice rather than the voice being stretched.
+Grok Text to Speech (`ara`) was requested. This environment has no `XAI_API_KEY`, and `https://api.x.ai/v1/tts` returned 401. The track in the film is Microsoft edge-tts `en-IN-NeerjaNeural`, rate −8%, pitch −2Hz, volume +100%, then loudness-normalised to about −16 LUFS. It is a female Indian-English voice. It is not the Grok `ara` voice.
 
-Every month, you make a small decision for your future. You invest, you plan, and you move a little closer to what matters.
+The spoken track is `video/public/audio/voiceover.mp3` (108.2 seconds). Scene lengths follow the cue timings. The voice is not time-stretched. The picture holds for about six seconds after the last line, so the film is 114.2 seconds.
 
-But sometimes, life changes the plan.
+Every month, you make a small decision for your future. But sometimes, life changes the plan.
 
-Maybe the market feels uncertain. Maybe an expense cannot wait. Or maybe your goal has changed.
+Maybe the market feels uncertain. Maybe an expense cannot wait. Or maybe your goal has changed. Different reasons. One important decision.
 
-Different reasons. One important decision.
+Your investing app helps you manage your SIP. But before you confirm a change, you may want to understand what it means for the contributions you planned. That's where Skip Check comes in.
 
-Your investing app helps you manage your SIP. Before you confirm a change, you may want to understand what it means for the contributions you planned.
+Skip Check gives you a simple place to understand the difference before you decide.
 
-That is where Skip Check comes in.
+Start with what's on your mind. Whether it's a cash need, market uncertainty, or a change in your goals, Skip Check doesn't assume it knows what's right for you.
 
-Skip Check is a separate decision-support experience from FinLit Ventures. It helps you see the contribution difference before you finish the action in your own app.
+Suppose you reduce a twelve-thousand-rupee monthly SIP to six thousand rupees for six months. That's thirty-six thousand rupees less in planned contributions over that period.
 
-Start with the reason. Market uncertainty, a cash need, a changing goal, or simply not being sure.
+Your existing units remain invested unless you separately redeem them. This number is about planned contributions, not investment losses, future returns, or future units.
 
-Skip Check does not assume it knows what is right for you.
+Keep, reduce, or pause. The options remain yours. Review the difference, make sure it makes sense, and choose what fits your situation.
 
-Enter your current contribution, the change you are considering, and a time period.
+Then return to your own investing app, with a clearer understanding of the choice ahead.
 
-Here, reducing twelve thousand rupees a month to six thousand, for six months, means thirty-six thousand rupees less in planned contributions over that period.
-
-That is a comparison of future contributions. Not a prediction of returns. Not a loss.
-
-Your existing units stay invested when future contributions pause. Future units are unknown. And Skip Check never changes your SIP.
-
-Keep, reduce, or pause. The choice remains yours.
-
-If you need to pause, you can. Skip Check will not restart the SIP, and it will not make the change for you.
-
-Understand the difference. Then finish your decision in your own app.
-
-Skip Check by FinLit Ventures. See the difference. Make your decision.
+Skip Check. See the difference. Make your decision.

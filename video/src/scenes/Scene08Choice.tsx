@@ -6,7 +6,7 @@ import { INK, MUTED, PAPER, SANS, SERIF } from "../styles/tokens.ts"
 
 export function Scene08Choice() {
   const frame = useCurrentFrame()
-  const showCheck = frame > 230
+  const showCheck = frame > 190
   return (
     <AbsoluteFill style={{ background: PAPER, alignItems: "center", paddingTop: 48 }}>
       {showCheck ? (
