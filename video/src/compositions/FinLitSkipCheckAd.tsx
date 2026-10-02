@@ -2,22 +2,22 @@ import { AbsoluteFill, Audio, Sequence, staticFile } from "remotion"
 import { Caption } from "../components/Caption.tsx"
 import { SCENES } from "../data/timeline.ts"
 import { Scene01Opening } from "../scenes/Scene01Opening.tsx"
-import { Scene02App } from "../scenes/Scene02App.tsx"
 import { Scene03Meet } from "../scenes/Scene03Meet.tsx"
 import { Scene04Calculation } from "../scenes/Scene04Calculation.tsx"
-import { Scene05Explanation } from "../scenes/Scene05Explanation.tsx"
-import { Scene06Choice } from "../scenes/Scene06Choice.tsx"
-import { Scene07Close } from "../scenes/Scene07Close.tsx"
+import { Scene05Plan } from "../scenes/Scene05Plan.tsx"
+import { Scene06Continuity } from "../scenes/Scene06Continuity.tsx"
+import { Scene07Choice } from "../scenes/Scene07Choice.tsx"
+import { Scene08Close } from "../scenes/Scene08Close.tsx"
 import { PAPER } from "../styles/tokens.ts"
 
 const SCENE_VIEW = {
   opening: Scene01Opening,
-  app: Scene02App,
   meet: Scene03Meet,
   calculation: Scene04Calculation,
-  explanation: Scene05Explanation,
-  choice: Scene06Choice,
-  close: Scene07Close,
+  plan: Scene05Plan,
+  continuity: Scene06Continuity,
+  choice: Scene07Choice,
+  close: Scene08Close,
 } as const
 
 export function FinLitSkipCheckAd() {

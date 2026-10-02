@@ -27,7 +27,13 @@ const lowered = NARRATION.toLowerCase()
 for (const phrase of ["you should", "ai-powered", "groww", "zerodha", "you will lose", "guaranteed return"]) {
   assert.equal(lowered.includes(phrase), false, phrase)
 }
-for (const phrase of ["thirty-six thousand", "keep, reduce, or pause", "see the difference"]) {
+for (const phrase of [
+  "thirty-six thousand",
+  "keep, reduce, or pause",
+  "months of planned contributions",
+  "decision card",
+  "seventy-two thousand",
+]) {
   assert.equal(lowered.includes(phrase), true, phrase)
 }
 
@@ -48,7 +54,13 @@ assert.ok(seconds >= 69.9 && seconds <= 70.1, `duration ${seconds}`)
 
 const vtt = readFileSync(new URL("../public/audio/voiceover.vtt", import.meta.url), "utf8")
 const srt = readFileSync(new URL("../public/subtitles/finlit-skip-check-brand-film.srt", import.meta.url), "utf8")
-for (const phrase of ["thirty-six thousand", "Keep, reduce, or pause", "See the difference"]) {
+for (const phrase of [
+  "thirty-six thousand",
+  "Keep, reduce, or pause",
+  "months of planned contributions",
+  "decision card",
+  "seventy-two thousand",
+]) {
   assert.ok(vtt.includes(phrase), phrase)
   assert.ok(srt.includes(phrase), phrase)
 }

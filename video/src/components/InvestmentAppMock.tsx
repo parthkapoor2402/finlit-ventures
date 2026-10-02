@@ -30,6 +30,9 @@ export function InvestmentAppMock() {
       >
         Not confirmed
       </div>
+      <p style={{ margin: "18px 0 0", color: MUTED, fontSize: 15, lineHeight: 1.35 }}>
+        The plan you made is not on this screen.
+      </p>
     </div>
   )
 }

@@ -28,7 +28,7 @@ export function Scene04Calculation() {
           marginBottom: 36,
         }}
       >
-        <p style={{ fontFamily: SANS, letterSpacing: 1.4, color: MUTED, fontSize: 16, margin: 0 }}>THE COMPARISON</p>
+        <p style={{ fontFamily: SANS, letterSpacing: 1.4, color: MUTED, fontSize: 16, margin: 0 }}>THE GAP</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 18, marginTop: 22 }}>
           {ROWS.map(([label, value]) => (
             <div key={label} style={{ borderBottom: `1px solid ${LINE}`, paddingBottom: 12 }}>
@@ -73,7 +73,7 @@ export function Scene04Calculation() {
           </div>
         </div>
         <p style={{ fontFamily: SANS, fontSize: 26, lineHeight: 1.35, color: INK, margin: "8px 0 0" }}>
-          Contributions that would not be invested
+          Contributions that would not be invested. The multiplication is the gap, not the decision.
         </p>
       </div>
       <div style={{ position: "absolute", bottom: 108 }}>

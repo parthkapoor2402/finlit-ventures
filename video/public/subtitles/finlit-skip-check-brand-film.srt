@@ -1,75 +1,87 @@
 1
-00:00:00,167 --> 00:00:02,700
-Life doesn't always go according to plan.
+00:00:00,233 --> 00:00:01,433
+Before you confirm,
 
 2
-00:00:02,700 --> 00:00:05,267
-An unexpected expense, an uncertain market,
+00:00:01,433 --> 00:00:03,633
+your app shows a new monthly amount,
 
 3
-00:00:05,267 --> 00:00:08,367
-or simply a change in priorities can make you rethink your SIP.
+00:00:03,633 --> 00:00:06,200
+not the plan you already made.
 
 4
-00:00:08,367 --> 00:00:10,100
-But before you make that change,
+00:00:06,667 --> 00:00:08,900
+Skip Check, by FinLit Ventures,
 
 5
-00:00:10,100 --> 00:00:13,767
-wouldn't it help to understand what it means for your planned contributions?
+00:00:08,900 --> 00:00:11,033
+does not change the SIP.
 
 6
-00:00:16,167 --> 00:00:18,533
-Meet Skip Check by FinLit Ventures.
+00:00:11,500 --> 00:00:12,867
+Twelve thousand rupees,
 
 7
-00:00:18,533 --> 00:00:22,667
-A simple way to compare your options before deciding what works for you.
+00:00:12,867 --> 00:00:15,200
+reduced to six thousand for six months,
 
 8
-00:00:25,200 --> 00:00:27,800
-Say your monthly SIP is twelve thousand rupees,
+00:00:15,200 --> 00:00:19,900
+is thirty-six thousand rupees of contributions that would not be invested.
 
 9
-00:00:27,800 --> 00:00:31,433
-and you're considering reducing it to six thousand for six months.
+00:00:20,367 --> 00:00:22,400
+If you state a contribution target,
 
 10
-00:00:31,433 --> 00:00:35,900
-That's thirty-six thousand rupees less in planned contributions over that period.
+00:00:22,400 --> 00:00:25,767
+that gap is six months of planned contributions.
 
 11
-00:00:40,133 --> 00:00:41,867
-That's a contribution difference,
+00:00:26,067 --> 00:00:29,567
+Not wealth, not a return, and not units.
 
 12
-00:00:41,867 --> 00:00:45,200
-not an investment loss or a prediction of future returns.
+00:00:30,033 --> 00:00:32,500
+A full pause of twelve thousand for six months
 
 13
-00:00:45,200 --> 00:00:49,167
-Your existing units remain invested unless you separately redeem them.
+00:00:32,500 --> 00:00:36,200
+is seventy-two thousand rupees, labeled separately.
 
 14
-00:00:49,167 --> 00:00:51,300
-Keep, reduce, or pause.
+00:00:36,500 --> 00:00:39,100
+A pause stops the contribution.
 
 15
-00:00:51,300 --> 00:00:53,900
-Review the difference, understand the trade-off,
+00:00:39,100 --> 00:00:41,200
+A reduction does not.
 
 16
-00:00:53,900 --> 00:00:56,000
-and choose what fits your situation.
+00:00:41,500 --> 00:00:44,867
+The restart month stays on the decision card.
 
 17
-00:01:00,833 --> 00:01:01,900
-Skip Check.
+00:00:44,867 --> 00:00:47,667
+Skip Check will not restart the SIP.
 
 18
-00:01:01,900 --> 00:01:03,133
-See the difference.
+00:00:48,133 --> 00:00:50,800
+Keep, reduce, or pause.
 
 19
-00:01:03,133 --> 00:01:04,433
-Make your decision.
+00:00:51,100 --> 00:00:54,167
+A cash need can make a pause legitimate.
+
+20
+00:00:54,167 --> 00:00:56,900
+Existing units stay invested.
+
+21
+00:00:57,367 --> 00:00:59,767
+Take the decision card with you.
+
+22
+00:00:59,767 --> 00:01:04,000
+Decision support. Not investment advice.
