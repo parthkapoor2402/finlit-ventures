@@ -11,7 +11,7 @@ export function Scene07Close() {
     <AbsoluteFill style={{ background: PAPER }}>
       <div style={{ opacity: 1 - card }}>
         <div style={{ position: "absolute", left: 150, top: 64 }}>
-          <PhoneFrame width={360}>
+          <PhoneFrame width={380} height={540}>
             <InvestmentAppMock />
           </PhoneFrame>
         </div>

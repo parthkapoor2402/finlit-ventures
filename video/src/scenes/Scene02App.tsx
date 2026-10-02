@@ -9,7 +9,7 @@ export function Scene02App() {
   return (
     <AbsoluteFill style={{ background: PAPER }}>
       <div style={{ position: "absolute", left: 120, top: 48, ...enterStyle(frame, 4) }}>
-        <PhoneFrame width={400}>
+        <PhoneFrame width={400} height={560}>
           <InvestmentAppMock />
         </PhoneFrame>
       </div>

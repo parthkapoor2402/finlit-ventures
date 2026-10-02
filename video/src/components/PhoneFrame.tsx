@@ -1,12 +1,12 @@
 import type { ReactNode } from "react"
 import { INK, PAPER } from "../styles/tokens.ts"
 
-export function PhoneFrame({ children, width = 520 }: { children: ReactNode; width?: number }) {
+export function PhoneFrame({ children, width = 520, height }: { children: ReactNode; width?: number; height?: number }) {
   return (
     <div
       style={{
         width,
-        height: Math.round(width * 1.72),
+        height: height ?? Math.round(width * 1.72),
         borderRadius: 40,
         background: INK,
         padding: 12,

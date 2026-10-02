@@ -6,9 +6,9 @@ import { CALC_REVEAL_FRAME } from "../data/timeline.ts"
 import { CARD, INK, LINE, MUTED, PAPER, SANS, SERIF } from "../styles/tokens.ts"
 
 const ROWS = [
-  ["Current monthly SIP", WALKTHROUGH.current],
-  ["Proposed monthly amount", WALKTHROUGH.proposed],
-  ["Months", String(WALKTHROUGH.months)],
+  ["Current", WALKTHROUGH.current],
+  ["Proposed", WALKTHROUGH.proposed],
+  ["Months", `${WALKTHROUGH.months} months`],
 ]
 
 export function Scene04Calculation() {
@@ -20,39 +20,61 @@ export function Scene04Calculation() {
     <AbsoluteFill style={{ background: PAPER, alignItems: "center", justifyContent: "center" }}>
       <div
         style={{
-          width: 1480,
+          width: 1500,
           background: CARD,
           border: `1px solid ${LINE}`,
           borderRadius: 16,
-          padding: "42px 64px 36px",
-          marginBottom: 48,
+          padding: "40px 56px 36px",
+          marginBottom: 36,
         }}
       >
         <p style={{ fontFamily: SANS, letterSpacing: 1.4, color: MUTED, fontSize: 16, margin: 0 }}>THE COMPARISON</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 48, marginTop: 18, alignItems: "center" }}>
-          <div>
-            {ROWS.map(([label, value]) => (
-              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: `1px solid ${LINE}`, padding: "14px 0" }}>
-                <span style={{ fontFamily: SANS, fontSize: 26, color: MUTED }}>{label}</span>
-                <span style={{ fontFamily: SERIF, fontSize: 44, color: INK }}>{value}</span>
-              </div>
-            ))}
-          </div>
-          <div>
-            <p style={{ fontFamily: SANS, fontSize: 28, color: INK, margin: 0 }}>{formula} =</p>
-            <div style={{ position: "relative", height: 120, marginTop: 8 }}>
-              <p style={{ position: "absolute", inset: 0, margin: 0, fontFamily: SERIF, fontSize: 92, lineHeight: 1, color: MUTED, opacity: 1 - revealed }}>
-                —
-              </p>
-              <p style={{ position: "absolute", inset: 0, margin: 0, fontFamily: SERIF, fontSize: 92, lineHeight: 1, color: INK, opacity: revealed }}>
-                {WALKTHROUGH.difference}
-              </p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 18, marginTop: 22 }}>
+          {ROWS.map(([label, value]) => (
+            <div key={label} style={{ borderBottom: `1px solid ${LINE}`, paddingBottom: 12 }}>
+              <div style={{ fontFamily: SANS, fontSize: 20, color: MUTED }}>{label}</div>
+              <div style={{ fontFamily: SERIF, fontSize: 48, color: INK, marginTop: 4 }}>{value}</div>
             </div>
-            <p style={{ fontFamily: SANS, fontSize: 26, lineHeight: 1.35, color: INK, margin: "8px 0 0", maxWidth: 560 }}>
-              Contributions that would not be invested
+          ))}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 20, marginTop: 28, minHeight: 96 }}>
+          <p style={{ fontFamily: SANS, fontSize: 34, color: INK, margin: 0 }}>{formula} =</p>
+          <div style={{ position: "relative", width: 480, height: 96 }}>
+            <p
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                margin: 0,
+                fontFamily: SERIF,
+                fontSize: 80,
+                lineHeight: "96px",
+                color: MUTED,
+                opacity: 1 - revealed,
+              }}
+            >
+              —
+            </p>
+            <p
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                margin: 0,
+                fontFamily: SERIF,
+                fontSize: 80,
+                lineHeight: "96px",
+                color: INK,
+                opacity: revealed,
+              }}
+            >
+              {WALKTHROUGH.difference}
             </p>
           </div>
         </div>
+        <p style={{ fontFamily: SANS, fontSize: 26, lineHeight: 1.35, color: INK, margin: "8px 0 0" }}>
+          Contributions that would not be invested
+        </p>
       </div>
       <div style={{ position: "absolute", bottom: 108 }}>
         <AdviceLine />
