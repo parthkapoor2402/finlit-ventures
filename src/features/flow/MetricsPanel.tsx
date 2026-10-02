@@ -15,7 +15,7 @@ export function MetricsPanel({ events }: { events: AnalyticsEvent[] }) {
         <p>Decision sessions with a comparison: {summary.denominator}</p>
         <p>Informed choices among those sessions: {summary.numerator}</p>
         <p>Sample sessions opened: {sampleSessionCount(events)}</p>
-        <p>Left before the recap: {decisionAbandonmentCount(events)}</p>
+        <p>Left before the decision card: {decisionAbandonmentCount(events)}</p>
       </div>
     </details>
   )

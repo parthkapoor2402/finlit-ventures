@@ -11,7 +11,7 @@ Decisions made while building the prototype, where the brief allowed more than o
 | Above ₹10,00,000 | Greater than 10,00,000, not equal | The brief says "above". |
 | Entry doors | Same visual weight | A louder "change a SIP" door would push people into the decision path. |
 | Keep, Reduce, Pause | Same size, border, and type. The selected one gets the same forest outline whichever it is. | The brief forbids making Keep easier. |
-| Impact before choice | The input step collects a proposed amount. The impact step shows that preview. The choice step recomputes from Keep, Reduce, or Pause, and the recap uses that later figure. | The brief orders the screens this way, and the choice has to be allowed to change the figure. |
+| Impact before choice | The input step collects a proposed amount and an optional remaining contribution target. The plan step translates that preview. The choice step recomputes from Keep, Reduce, or Pause, and the decision card uses that later figure. | The choice has to be allowed to change the figure. The rupee product is not the climax. |
 | Restart month | Optional, after Pause only. Copy says nothing will restart the SIP. | A required month reads like an instruction to the AMC. |
 | "I'm not sure" | Contribution line and units line only. No extra market sentence. | The brief says not to infer a recommendation. |
 | Sample path | Opens on the comparison for ₹12,000 to ₹6,000 over 6 months, with a persistent banner. Back reaches the same inputs. Excluded from the informed-choice denominator. | The worked example has to be visible immediately, and it must not look like Ananya's real session or count as one. |

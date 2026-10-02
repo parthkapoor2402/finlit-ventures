@@ -1,3 +1,4 @@
+import { parseRemainingTarget } from '../../domain/plan-translation.ts'
 import {
   calculateContributionDifference,
   contributionForChoice,
@@ -20,6 +21,7 @@ export type FieldErrors = {
   months?: string
   choice?: string
   reason?: string
+  target?: string
 }
 
 export type FlowState = {
@@ -30,6 +32,7 @@ export type FlowState = {
   currentRaw: string
   proposedRaw: string
   monthsRaw: string
+  targetRaw: string
   amountConfirmed: boolean
   preview: ContributionSuccess | null
   choice: Choice | null
@@ -51,6 +54,7 @@ export const initialFlowState: FlowState = {
   currentRaw: '',
   proposedRaw: '',
   monthsRaw: '',
+  targetRaw: '',
   amountConfirmed: false,
   preview: null,
   choice: null,
@@ -69,7 +73,7 @@ export type FlowAction =
   | { type: 'start-sample'; sessionId: string }
   | { type: 'set-reason'; reason: Reason }
   | { type: 'continue-reason' }
-  | { type: 'set-field'; field: 'currentRaw' | 'proposedRaw' | 'monthsRaw'; value: string }
+  | { type: 'set-field'; field: 'currentRaw' | 'proposedRaw' | 'monthsRaw' | 'targetRaw'; value: string }
   | { type: 'submit-inputs' }
   | { type: 'confirm-amount' }
   | { type: 'cancel-amount' }
@@ -154,6 +158,14 @@ export function flowReducer(state: FlowState, action: FlowAction): FlowState {
           preview: null,
         }
       }
+      const target = parseRemainingTarget(state.targetRaw)
+      if (!target.ok) {
+        return {
+          ...state,
+          fieldErrors: { target: target.message },
+          preview: null,
+        }
+      }
       if (result.confirmationRequired && !state.amountConfirmed) {
         return { ...state, preview: result, fieldErrors: {}, step: 'confirm-amount' }
       }
@@ -184,7 +196,7 @@ export function flowReducer(state: FlowState, action: FlowAction): FlowState {
         ...state,
         choice: action.choice,
         fieldErrors: {},
-        restartMonth: action.choice === 'pause' ? state.restartMonth : '',
+        restartMonth: action.choice === 'keep' ? '' : state.restartMonth,
         reduceDraft: draft,
       }
     }

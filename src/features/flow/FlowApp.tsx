@@ -11,10 +11,10 @@ const STEP_TITLES = {
   reason: 'Reason — Skip Check',
   inputs: 'Amounts — Skip Check',
   'confirm-amount': 'Check the digits — Skip Check',
-  impact: 'Contribution comparison — Skip Check',
+  impact: 'The plan — Skip Check',
   choice: 'Choice — Skip Check',
   comprehension: 'Restate the comparison — Skip Check',
-  recap: 'Recap — Skip Check',
+  recap: 'Decision card — Skip Check',
 } as const
 
 export function FlowApp() {

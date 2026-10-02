@@ -14,7 +14,7 @@ async function fillAmounts(page: Page, current: string, proposed: string, months
   await page.getByLabel('Current monthly SIP').fill(current)
   await page.getByLabel('Monthly amount you are considering').fill(proposed)
   await page.getByLabel('Months to compare').fill(months)
-  await page.getByRole('button', { name: 'See the comparison' }).click()
+  await page.getByRole('button', { name: 'See the plan' }).click()
 }
 
 async function choose(page: Page, name: RegExp) {
@@ -26,7 +26,7 @@ async function choose(page: Page, name: RegExp) {
 async function passCheck(page: Page) {
   await page.getByRole('radio', { name: /contributions that would not be invested/ }).check()
   await page.getByRole('radio', { name: /Existing units stay invested/ }).check()
-  await page.getByRole('button', { name: 'Show the recap' }).click()
+  await page.getByRole('button', { name: 'Show the decision card' }).click()
 }
 
 test.beforeEach(async ({ page }) => {
@@ -57,9 +57,10 @@ test('market worry can reduce a SIP', async ({ page }) => {
   await expect(page.getByText('Contributions that would not be invested over this period under these inputs.')).toBeVisible()
   await choose(page, /^Reduce/)
   await passCheck(page)
-  await expect(page.getByRole('heading', { name: 'Your recap' })).toBeVisible()
-  await expect(page.getByText('Market worry')).toBeVisible()
-  await expect(page.getByText('₹36,000')).toBeVisible()
+  const card = page.locator('#decision-card')
+  await expect(card.getByRole('heading', { name: 'Decision card' })).toBeVisible()
+  await expect(card.getByText('Market worry', { exact: true })).toBeVisible()
+  await expect(card.getByText('₹36,000', { exact: true })).toBeVisible()
 })
 
 test('cash need can pause a SIP', async ({ page }) => {
@@ -71,9 +72,10 @@ test('cash need can pause a SIP', async ({ page }) => {
   await expect(page.getByText(/Skip Check will not restart it/)).toBeVisible()
   await page.getByRole('button', { name: 'Continue' }).click()
   await passCheck(page)
-  await expect(page.getByText('Pause', { exact: true })).toBeVisible()
-  await expect(page.getByText('₹72,000')).toBeVisible()
-  await expect(page.getByText('Cash need')).toBeVisible()
+  const card = page.locator('#decision-card')
+  await expect(card.getByText('Pause', { exact: true })).toBeVisible()
+  await expect(card.getByText('₹72,000', { exact: true })).toBeVisible()
+  await expect(card.getByText('Cash need', { exact: true })).toBeVisible()
 })
 
 test('keep leaves the contribution difference at zero', async ({ page }) => {
@@ -83,8 +85,9 @@ test('keep leaves the contribution difference at zero', async ({ page }) => {
   await expect(page.getByText('₹0')).toBeVisible()
   await choose(page, /^Keep/)
   await passCheck(page)
-  await expect(page.getByText('Keep')).toBeVisible()
-  await expect(page.getByText('₹0')).toBeVisible()
+  const card = page.locator('#decision-card')
+  await expect(card.getByText('Keep', { exact: true })).toBeVisible()
+  await expect(card.getByText('₹0', { exact: true })).toBeVisible()
 })
 
 test('I am not sure does not add a recommendation', async ({ page }) => {
@@ -94,7 +97,7 @@ test('I am not sure does not add a recommendation', async ({ page }) => {
   await expect(page.getByText(/judge the market|you should/i)).toHaveCount(0)
   await choose(page, /^Reduce/)
   await passCheck(page)
-  await expect(page.getByText("I'm not sure")).toBeVisible()
+  await expect(page.locator('#decision-card').getByText("I'm not sure", { exact: true })).toBeVisible()
   await expect(page.getByText(/you should/i)).toHaveCount(0)
 })
 
@@ -102,12 +105,12 @@ test('invalid amounts can be corrected', async ({ page }) => {
   await startDecision(page)
   await chooseReason(page, 'Fund no longer fits')
   await page.getByLabel('Current monthly SIP').fill('-5')
-  await page.getByRole('button', { name: 'See the comparison' }).click()
+  await page.getByRole('button', { name: 'See the plan' }).click()
   await expect(page.getByRole('alert')).toContainText(/minus sign/)
   await page.getByLabel('Current monthly SIP').fill('10000')
   await page.getByLabel('Monthly amount you are considering').fill('2500')
   await page.getByLabel('Months to compare').fill('4')
-  await page.getByRole('button', { name: 'See the comparison' }).click()
+  await page.getByRole('button', { name: 'See the plan' }).click()
   await expect(page.getByText('₹30,000')).toBeVisible()
 })
 
@@ -119,7 +122,7 @@ test('an amount above ₹10,00,000 stays hidden until the digits are confirmed',
   await expect(page.getByText('Contributions that would not be invested over this period under these inputs.')).toHaveCount(0)
   await page.getByRole('button', { name: 'Change the amounts' }).click()
   await expect(page.getByText('₹60,00,006')).toHaveCount(0)
-  await page.getByRole('button', { name: 'See the comparison' }).click()
+  await page.getByRole('button', { name: 'See the plan' }).click()
   await page.getByRole('button', { name: 'These digits are right' }).click()
   await expect(page.getByText('₹60,00,006')).toBeVisible()
 })
@@ -131,7 +134,7 @@ test('one month and twenty-four months both compare', async ({ page }) => {
   await expect(page.getByTestId('contribution-figure')).toContainText('₹6,000')
   await page.getByRole('button', { name: 'Back' }).click()
   await page.getByLabel('Months to compare').fill('24')
-  await page.getByRole('button', { name: 'See the comparison' }).click()
+  await page.getByRole('button', { name: 'See the plan' }).click()
   await expect(page.getByTestId('contribution-figure')).toContainText('₹1,44,000')
 })
 
@@ -142,7 +145,7 @@ test('back navigation edits the proposed amount', async ({ page }) => {
   await expect(page.getByText('₹36,000')).toBeVisible()
   await page.getByRole('button', { name: 'Back' }).click()
   await page.getByLabel('Monthly amount you are considering').fill('8000')
-  await page.getByRole('button', { name: 'See the comparison' }).click()
+  await page.getByRole('button', { name: 'See the plan' }).click()
   await expect(page.getByText('₹24,000')).toBeVisible()
   await expect(page.getByText('₹36,000')).toHaveCount(0)
 })
@@ -154,11 +157,11 @@ test('the comprehension check can be corrected', async ({ page }) => {
   await choose(page, /^Pause/)
   await page.getByRole('radio', { name: /a loss the change would cause/ }).check()
   await page.getByRole('radio', { name: /sells the units/ }).check()
-  await page.getByRole('button', { name: 'Show the recap' }).click()
+  await page.getByRole('button', { name: 'Show the decision card' }).click()
   await expect(page.getByRole('status')).toContainText(/not a loss/)
   await expect(page.getByText(/incorrect/i)).toHaveCount(0)
   await passCheck(page)
-  await expect(page.getByRole('heading', { name: 'Your recap' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Decision card' })).toBeVisible()
 })
 
 test('the recap states the handoff', async ({ page }) => {
@@ -167,9 +170,10 @@ test('the recap states the handoff', async ({ page }) => {
   await fillAmounts(page, '15000', '5000', '2')
   await choose(page, /^Reduce/)
   await passCheck(page)
-  await expect(page.getByText('Any change has to be finished in your own investing app.')).toBeVisible()
-  await expect(page.getByText(/not an order/)).toBeVisible()
-  await expect(page.getByText('₹20,000')).toBeVisible()
+  const card = page.locator('#decision-card')
+  await expect(card.getByText('Any change has to be finished in your own investing app.')).toBeVisible()
+  await expect(card.getByText(/not an order/)).toBeVisible()
+  await expect(card.getByText('₹20,000', { exact: true })).toBeVisible()
 })
 
 test('the sample path is not a decision session', async ({ page }) => {
@@ -187,8 +191,8 @@ test('leaving before the recap is counted for a decision session', async ({ page
   await startDecision(page)
   await page.getByRole('button', { name: 'Leave without choosing' }).click()
   await page.getByText('Local counts in this tab').click()
-  await expect(page.getByText('Left before the recap: 1')).toBeVisible()
-  await expect(page.getByRole('heading', { name: /Before you change your SIP/ })).toBeVisible()
+  await expect(page.getByText('Left before the decision card: 1')).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Before you confirm a SIP change/ })).toBeVisible()
 })
 
 test('refresh clears amounts', async ({ page }) => {
@@ -196,7 +200,7 @@ test('refresh clears amounts', async ({ page }) => {
   await chooseReason(page, 'Cash need')
   await page.getByLabel('Current monthly SIP').fill('12000')
   await page.reload()
-  await expect(page.getByRole('heading', { name: /Before you change your SIP/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Before you confirm a SIP change/ })).toBeVisible()
   await expect(page.getByLabel('Current monthly SIP')).toHaveCount(0)
 })
 
@@ -245,7 +249,7 @@ test('keyboard navigation completes a keep flow', async ({ page }) => {
   await page.keyboard.type('12000')
   await tabTo(page.getByLabel('Months to compare'))
   await page.keyboard.type('6')
-  await tabTo(page.getByRole('button', { name: 'See the comparison' }))
+  await tabTo(page.getByRole('button', { name: 'See the plan' }))
   await page.keyboard.press('Enter')
   await expect(page.getByText('₹0')).toBeVisible()
 
@@ -259,8 +263,9 @@ test('keyboard navigation completes a keep flow', async ({ page }) => {
   await page.keyboard.press('Space')
   await tabTo(page.getByRole('radio', { name: /Existing units stay invested/ }))
   await page.keyboard.press('Space')
-  await tabTo(page.getByRole('button', { name: 'Show the recap' }))
+  await tabTo(page.getByRole('button', { name: 'Show the decision card' }))
   await page.keyboard.press('Enter')
-  await expect(page.getByRole('heading', { name: 'Your recap' })).toBeVisible()
-  await expect(page.getByText('Keep')).toBeVisible()
+  const card = page.locator('#decision-card')
+  await expect(card.getByRole('heading', { name: 'Decision card' })).toBeVisible()
+  await expect(card.getByText('Keep', { exact: true })).toBeVisible()
 })

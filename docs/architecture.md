@@ -35,14 +35,14 @@ The calculator is the only place the formula lives. Screens format the string it
 flowchart TD
   entry[Entry: two doors]
   reason[Reason]
-  inputs[Amounts and months]
+  inputs[Amounts, months, optional contribution target]
   confirm{Amount above 10 lakh?}
   digits[Confirm digits]
-  impact[Contribution comparison]
+  impact[Plan translation]
   choice[Keep, Reduce, or Pause]
-  restart[Optional restart month after Pause]
+  restart[Optional restart month after Reduce or Pause]
   check[Comprehension]
-  recap[Recap and handoff]
+  recap[Decision card]
   entry -->|About to change a SIP| reason
   entry -->|Only reading| reason
   reason --> inputs
@@ -53,7 +53,8 @@ flowchart TD
   digits -->|Go back| inputs
   impact --> choice
   choice -->|Pause| restart
-  choice -->|Keep or Reduce| check
+  choice -->|Keep| check
+  choice -->|Reduce| restart
   restart --> check
   check -->|Restated| recap
   check -->|Not yet| check

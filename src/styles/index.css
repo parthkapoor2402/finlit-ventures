@@ -9,6 +9,7 @@
   --color-line: #e4dcd0;
   --color-forest: #1e4d3a;
   --color-card: #fffdf8;
+  --color-amber: #8a5a2b;
   --color-error: #7f1d1d;
 }
 
@@ -35,6 +36,23 @@ h1:focus {
 
 .figure {
   overflow-wrap: anywhere;
+}
+
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  main {
+    max-width: none;
+    padding: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

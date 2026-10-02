@@ -27,7 +27,7 @@ async function fillAmounts(
   await user.type(screen.getByLabelText('Current monthly SIP'), current)
   await user.type(screen.getByLabelText('Monthly amount you are considering'), proposed)
   await user.type(screen.getByLabelText('Months to compare'), months)
-  await user.click(screen.getByRole('button', { name: 'See the comparison' }))
+  await user.click(screen.getByRole('button', { name: 'See the plan' }))
 }
 
 async function passCheck(user: ReturnType<typeof userEvent.setup>) {
@@ -35,14 +35,14 @@ async function passCheck(user: ReturnType<typeof userEvent.setup>) {
     screen.getByRole('radio', { name: /contributions that would not be invested/ }),
   )
   await user.click(screen.getByRole('radio', { name: /Existing units stay invested/ }))
-  await user.click(screen.getByRole('button', { name: 'Show the recap' }))
+  await user.click(screen.getByRole('button', { name: 'Show the decision card' }))
 }
 
 describe('Skip Check journey', () => {
   it('renders the entry and keeps the two doors at the same weight', () => {
     render(<FlowApp />)
     expect(
-      screen.getByRole('heading', { name: /Before you change your SIP, see the contribution difference/ }),
+      screen.getByRole('heading', { name: /Before you confirm a SIP change/ }),
     ).toBeInTheDocument()
     const change = screen.getByRole('button', { name: /I'm about to change a SIP/ })
     const reading = screen.getByRole('button', { name: /I'm only reading/ })
@@ -57,6 +57,8 @@ describe('Skip Check journey', () => {
     await fillAmounts(user, '12000', '6000', '6')
     expect(screen.getByText('₹36,000')).toBeInTheDocument()
     expect(screen.getByText(DIFFERENCE_LABEL)).toBeInTheDocument()
+    expect(screen.getByTestId('plan-headline')).toHaveTextContent('6 months of uninterrupted contribution stop')
+    expect(screen.queryByText(/planned-contribution months/)).not.toBeInTheDocument()
     expect(screen.getByText(/units stay invested/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Continue' }))
     const choices = screen.getAllByRole('radio')
@@ -68,16 +70,61 @@ describe('Skip Check journey', () => {
     await user.click(screen.getByRole('radio', { name: /^Reduce/ }))
     await user.click(screen.getByRole('button', { name: 'Continue' }))
     await passCheck(user)
-    expect(screen.getByRole('heading', { name: 'Your recap' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Decision card' })).toBeInTheDocument()
     expect(screen.getByText('Market worry')).toBeInTheDocument()
     expect(screen.getByText('Reduce')).toBeInTheDocument()
     expect(screen.getByText('₹12,000')).toBeInTheDocument()
     expect(screen.getByText('₹6,000')).toBeInTheDocument()
     expect(screen.getByText('6 months')).toBeInTheDocument()
-    expect(screen.getByText(/finish any change in your own investing app|own investing app/i)).toBeInTheDocument()
-    expect(screen.getByText(/not an order/i)).toBeInTheDocument()
+    expect(screen.getByRole('article', { name: 'Decision card' })).toHaveTextContent(/own investing app/i)
+    expect(screen.getByRole('article', { name: 'Decision card' })).toHaveTextContent(/not an order/i)
     expect(JSON.stringify(getEvents())).not.toContain('12000')
     expect(informedChoiceRate(getEvents())).toEqual({ numerator: 1, denominator: 1, rate: 1 })
+  })
+
+  it('translates a stated target into planned-contribution months and a decision card', async () => {
+    const user = userEvent.setup()
+    await startDecision(user, 'Cash need')
+    await user.type(screen.getByLabelText('Current monthly SIP'), '12000')
+    await user.type(screen.getByLabelText('Monthly amount you are considering'), '6000')
+    await user.type(screen.getByLabelText('Months to compare'), '6')
+    await user.type(screen.getByLabelText(/Remaining contribution target/), '144000')
+    await user.click(screen.getByRole('button', { name: 'See the plan' }))
+    expect(screen.getByTestId('plan-headline')).toHaveTextContent('6 months of planned contributions')
+    expect(screen.getByText(/24 months of planned contributions/)).toBeInTheDocument()
+    expect(screen.getByText(/not wealth, returns, or units/)).toBeInTheDocument()
+    expect(screen.getByText('₹36,000')).toBeInTheDocument()
+    expect(screen.getByTestId('pause-aside')).toHaveTextContent('₹72,000')
+    expect(screen.getByText('Full pause, shown separately')).toBeInTheDocument()
+    expect(screen.getByText(/legitimate choice/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+    await user.click(screen.getByRole('radio', { name: /^Reduce/ }))
+    await user.type(screen.getByLabelText(/Restart month/), 'June')
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+    await passCheck(user)
+    expect(screen.getByRole('heading', { name: 'Decision card' })).toBeInTheDocument()
+    expect(screen.getByTestId('plan-headline')).toHaveTextContent('6 months of planned contributions')
+    expect(screen.getByText('June')).toBeInTheDocument()
+    expect(screen.getByText('Decision support. Not investment advice.')).toBeInTheDocument()
+    const plain = screen.getByTestId('decision-plain-text') as HTMLTextAreaElement
+    expect(plain.value).toContain('Contribution gap: ₹36,000')
+    expect(plain.value).toContain('Restart month: June')
+    expect(plain.value).toContain('Decision support. Not investment advice.')
+    expect(document.body.textContent).not.toMatch(/you should/i)
+  })
+
+  it('does not divide a pause by zero when a target was stated', async () => {
+    const user = userEvent.setup()
+    await startDecision(user, 'Market worry')
+    await user.type(screen.getByLabelText('Current monthly SIP'), '12000')
+    await user.type(screen.getByLabelText('Monthly amount you are considering'), '0')
+    await user.type(screen.getByLabelText('Months to compare'), '6')
+    await user.type(screen.getByLabelText(/Remaining contribution target/), '144000')
+    await user.click(screen.getByRole('button', { name: 'See the plan' }))
+    expect(screen.getByText('₹72,000')).toBeInTheDocument()
+    expect(screen.getByTestId('plan-headline')).toHaveTextContent('6 months of uninterrupted contribution stop')
+    expect(screen.getByText(/not computed while the chosen monthly amount is ₹0/)).toBeInTheDocument()
+    expect(screen.queryByText('24 months of planned contributions')).not.toBeInTheDocument()
   })
 
   it('lets a cash-need session pause without a restart month', async () => {
@@ -117,7 +164,7 @@ describe('Skip Check journey', () => {
     const user = userEvent.setup()
     await startDecision(user, 'Goal reached or near')
     await user.type(screen.getByLabelText('Current monthly SIP'), 'abc')
-    await user.click(screen.getByRole('button', { name: 'See the comparison' }))
+    await user.click(screen.getByRole('button', { name: 'See the plan' }))
     expect(screen.getByRole('alert')).toHaveTextContent(/digits only/)
     expect(screen.queryByText(DIFFERENCE_LABEL)).not.toBeInTheDocument()
     await user.clear(screen.getByLabelText('Current monthly SIP'))
@@ -137,7 +184,7 @@ describe('Skip Check journey', () => {
     await user.click(screen.getByRole('button', { name: 'Change the amounts' }))
     expect(screen.queryByText(DIFFERENCE_LABEL)).not.toBeInTheDocument()
     expect(screen.getByLabelText('Current monthly SIP')).toHaveValue('1000001')
-    await user.click(screen.getByRole('button', { name: 'See the comparison' }))
+    await user.click(screen.getByRole('button', { name: 'See the plan' }))
     await user.click(screen.getByRole('button', { name: 'These digits are right' }))
     expect(screen.getByText(DIFFERENCE_LABEL)).toBeInTheDocument()
     expect(screen.getByText('₹60,00,006')).toBeInTheDocument()
@@ -153,7 +200,7 @@ describe('Skip Check journey', () => {
     const proposed = screen.getByLabelText('Monthly amount you are considering')
     await user.clear(proposed)
     await user.type(proposed, '8000')
-    await user.click(screen.getByRole('button', { name: 'See the comparison' }))
+    await user.click(screen.getByRole('button', { name: 'See the plan' }))
     expect(screen.getByText('₹24,000')).toBeInTheDocument()
     expect(screen.queryByText('₹36,000')).not.toBeInTheDocument()
   })
@@ -175,7 +222,7 @@ describe('Skip Check journey', () => {
     await startDecision(user, 'Cash need')
     await user.click(screen.getByRole('button', { name: 'Leave without choosing' }))
     expect(
-      screen.getByRole('heading', { name: /Before you change your SIP/ }),
+      screen.getByRole('heading', { name: /Before you confirm a SIP change/ }),
     ).toBeInTheDocument()
     expect(getEvents().some((event) => event.name === 'flow_abandoned' && event.sessionKind === 'decision')).toBe(
       true,
@@ -192,7 +239,9 @@ describe('Skip Check journey', () => {
     await user.click(screen.getByRole('button', { name: 'Continue' }))
     await passCheck(user)
     expect(screen.getByText('June')).toBeInTheDocument()
-    expect(screen.getByText(/will not restart it unless that app says so/)).toBeInTheDocument()
+    expect(screen.getByRole('article', { name: 'Decision card' })).toHaveTextContent(
+      /will not restart it unless that app says so/,
+    )
   })
 
   it('explains a mismatched restatement and then accepts a correction', async () => {
@@ -204,12 +253,12 @@ describe('Skip Check journey', () => {
     await user.click(screen.getByRole('button', { name: 'Continue' }))
     await user.click(screen.getByRole('radio', { name: /a loss the change would cause/ }))
     await user.click(screen.getByRole('radio', { name: /sells the units/ }))
-    await user.click(screen.getByRole('button', { name: 'Show the recap' }))
+    await user.click(screen.getByRole('button', { name: 'Show the decision card' }))
     expect(screen.getByRole('status')).toHaveTextContent(/not a loss/)
-    expect(screen.queryByRole('heading', { name: 'Your recap' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Decision card' })).not.toBeInTheDocument()
     expect(document.body.textContent).not.toMatch(/incorrect|wrong answer|you should/i)
     await passCheck(user)
-    expect(screen.getByRole('heading', { name: 'Your recap' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Decision card' })).toBeInTheDocument()
     expect(screen.getByTestId('contribution-figure')).toHaveTextContent('₹8,000')
   })
 })

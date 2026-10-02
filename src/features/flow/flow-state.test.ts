@@ -32,6 +32,32 @@ describe('flowReducer', () => {
     expect(cancelled.amountConfirmed).toBe(false)
   })
 
+  it('rejects a contribution target that is not a whole-rupee figure and does not invent one when blank', () => {
+    const rejected = apply([
+      { type: 'start-decision', sessionId: 'd1' },
+      { type: 'set-reason', reason: 'goal_reached' },
+      { type: 'continue-reason' },
+      { type: 'set-field', field: 'currentRaw', value: '12000' },
+      { type: 'set-field', field: 'proposedRaw', value: '6000' },
+      { type: 'set-field', field: 'monthsRaw', value: '6' },
+      { type: 'set-field', field: 'targetRaw', value: '12.5' },
+      { type: 'submit-inputs' },
+    ])
+    expect(rejected.step).toBe('inputs')
+    expect(rejected.preview).toBeNull()
+    expect(rejected.fieldErrors.target).toMatch(/digits only/)
+    const blankTarget = apply(
+      [
+        { type: 'set-field', field: 'targetRaw', value: '' },
+        { type: 'submit-inputs' },
+      ],
+      rejected,
+    )
+    expect(blankTarget.step).toBe('impact')
+    expect(blankTarget.preview?.contributionDifference).toBe('36000')
+    expect(blankTarget.targetRaw).toBe('')
+  })
+
   it('rejects invalid input without a preview and accepts a correction', () => {
     let state = apply([
       { type: 'start-decision', sessionId: 'd1' },

@@ -3,22 +3,20 @@ import { ForwardButton } from '../../components/ForwardButton.tsx'
 import { TextField } from '../../components/TextField.tsx'
 import { track } from '../../analytics/track-event.ts'
 import {
+  ADVICE_LINE,
   CHOICE_COPY,
   DIFFERENCE_LABEL,
-  DOES_NOT_CHANGE,
-  HANDOFF,
-  NOT_A_LOSS,
   REASON_LABELS,
   RESTART_COPY,
   SAMPLE_BANNER,
-  UNITS_STAY,
-  UNITS_UNKNOWN,
-  reasonNote,
 } from '../../domain/decision-rules.ts'
 import { formatInrDigits } from '../../domain/money.ts'
+import { translatePlan } from '../../domain/plan-translation.ts'
 import { contributionForChoice } from '../../domain/sip-calculator.ts'
 import { REASONS, type Choice, type ContributionSuccess } from '../../domain/sip-types.ts'
+import { DecisionCard } from './DecisionCard.tsx'
 import type { FlowAction, FlowState } from './flow-state.ts'
+import { PauseAside, PlanReading, StandingList } from './PlanReading.tsx'
 
 type Props = {
   state: FlowState
@@ -86,29 +84,16 @@ function monthsPhrase(months: string): string {
 function Figure({ result }: { result: ContributionSuccess }) {
   return (
     <div aria-live="polite" aria-atomic="true" data-testid="contribution-figure">
-      <p className="figure font-serif text-5xl leading-none tracking-tight">
+      <p className="text-sm text-muted">Contribution gap</p>
+      <p className="figure mt-2 font-serif text-3xl leading-none tracking-tight">
         {formatInrDigits(result.contributionDifference)}
       </p>
-      <p className="mt-4 text-lg leading-snug">{DIFFERENCE_LABEL}</p>
+      <p className="mt-4 leading-snug">{DIFFERENCE_LABEL}</p>
       <p className="mt-4 text-muted leading-relaxed">
         Monthly amount {formatInrDigits(result.current)} compared with{' '}
         {formatInrDigits(result.proposed)}, over {monthsPhrase(result.months)}.
       </p>
     </div>
-  )
-}
-
-function Explanations({ reason }: { reason: FlowState['reason'] }) {
-  const note = reason ? reasonNote(reason) : null
-  return (
-    <ul className="mt-8 space-y-4 border-t border-line pt-6 leading-relaxed">
-      {note ? <li>{note}</li> : null}
-      <li>{NOT_A_LOSS}</li>
-      <li>{UNITS_STAY}</li>
-      <li>{UNITS_UNKNOWN}</li>
-      <li>{DOES_NOT_CHANGE}</li>
-      <li>{HANDOFF}</li>
-    </ul>
   )
 }
 
@@ -152,11 +137,12 @@ function Entry({
   return (
     <>
       <Heading headingRef={headingRef}>
-        Before you change your SIP, see the contribution difference.
+        Before you confirm a SIP change, read it against the plan you already made.
       </Heading>
       <p className="mt-4 leading-relaxed">
-        Skip Check compares contributions you would not invest if you keep, reduce, or pause one
-        SIP. It does not change the SIP. You finish any action in your own investing app.
+        Skip Check turns an unconfirmed skip, reduction, or pause into a decision card. The rupee
+        gap is one line on that card. The card shows what the gap does to a contribution target you
+        state, or the continuity of the habit if you state none. It does not change the SIP.
       </p>
       <div className="mt-8 grid gap-3">
         <button
@@ -262,7 +248,15 @@ function InputsStep({ state, dispatch, headingRef }: Props) {
         error={state.fieldErrors.months}
         onChange={(value) => dispatch({ type: 'set-field', field: 'monthsRaw', value })}
       />
-      <ForwardButton>See the comparison</ForwardButton>
+      <TextField
+        id="contribution-target"
+        label="Remaining contribution target, if you have one"
+        hint="Whole rupees of contributions you already planned to make. Leave this blank if you have no figure. This is not a wealth target."
+        value={state.targetRaw}
+        error={state.fieldErrors.target}
+        onChange={(value) => dispatch({ type: 'set-field', field: 'targetRaw', value })}
+      />
+      <ForwardButton>See the plan</ForwardButton>
       <NavRow dispatch={dispatch} showBack />
     </form>
   )
@@ -312,14 +306,34 @@ function ConfirmStep({ state, dispatch, headingRef }: Props) {
 }
 
 function ImpactStep({ state, dispatch, headingRef }: Props) {
-  if (!state.preview) return null
+  if (!state.preview || !state.reason) return null
+  const plan = translatePlan({
+    result: state.preview,
+    remainingTargetRaw: state.targetRaw,
+    restartMonth: state.restartMonth,
+  })
   return (
     <>
-      <Heading headingRef={headingRef}>Contribution comparison</Heading>
-      <div className="mt-6">
+      <Heading headingRef={headingRef}>What this does to the plan</Heading>
+      <p className="mt-4 leading-relaxed">
+        This reads the amounts you entered. Keep, reduce, and pause can still change the card. The
+        contribution gap is recorded here, and it is not the whole decision.
+      </p>
+      {plan.ok ? (
+        <div className="mt-8">
+          <PlanReading translation={plan.translation} reason={state.reason} />
+        </div>
+      ) : (
+        <p role="alert" className="mt-6 text-sm text-error">
+          {plan.message}
+        </p>
+      )}
+      <div className="mt-8 border-t border-line pt-6">
         <Figure result={state.preview} />
       </div>
-      <Explanations reason={state.reason} />
+      <PauseAside result={state.preview} />
+      <StandingList reason={state.reason} />
+      <p className="mt-6 text-sm text-muted">{ADVICE_LINE}</p>
       <button
         type="button"
         className="mt-8 w-full min-h-12 bg-forest px-4 py-3 font-semibold text-paper"
@@ -389,7 +403,7 @@ function ChoiceStep({ state, dispatch, headingRef }: Props) {
           onChange={(value) => dispatch({ type: 'set-reduce-draft', value })}
         />
       ) : null}
-      {state.choice === 'pause' ? (
+      {state.choice === 'pause' || state.choice === 'reduce' ? (
         <TextField
           id="restart-month"
           label="Restart month, if you want to note one"
@@ -404,10 +418,8 @@ function ChoiceStep({ state, dispatch, headingRef }: Props) {
           {state.fieldErrors.choice}
         </p>
       ) : null}
-      {live?.ok ? (
-        <div className="mt-8 border-t border-line pt-6">
-          <Figure result={live} />
-        </div>
+      {live?.ok && state.reason ? (
+        <ChoiceReading state={state} result={live} />
       ) : null}
       <ForwardButton>Continue</ForwardButton>
       <NavRow dispatch={dispatch} showBack />
@@ -502,9 +514,37 @@ function ComprehensionStep({ state, dispatch, headingRef }: Props) {
           {state.comprehensionNote}
         </p>
       ) : null}
-      <ForwardButton>Show the recap</ForwardButton>
+      <ForwardButton>Show the decision card</ForwardButton>
       <NavRow dispatch={dispatch} showBack />
     </form>
+  )
+}
+
+function ChoiceReading({ state, result }: { state: FlowState; result: ContributionSuccess }) {
+  if (!state.reason) return null
+  const plan = translatePlan({
+    result,
+    remainingTargetRaw: state.targetRaw,
+    restartMonth: state.restartMonth,
+  })
+  if (!plan.ok) {
+    return (
+      <p role="alert" className="mt-6 text-sm text-error">
+        {plan.message}
+      </p>
+    )
+  }
+  return (
+    <div className="mt-8 border-t border-line pt-6">
+      <p className="text-sm text-muted">This choice, read against the plan</p>
+      <div className="mt-4">
+        <PlanReading translation={plan.translation} reason={state.reason} size="compact" />
+      </div>
+      <div className="mt-6">
+        <Figure result={result} />
+      </div>
+      <PauseAside result={result} />
+    </div>
   )
 }
 
@@ -513,81 +553,62 @@ function RecapStep({ state, dispatch, headingRef }: Props) {
   const reason = state.reason
   const choice = state.choice
   if (!result || !reason || !choice) return null
+  const plan = translatePlan({
+    result,
+    remainingTargetRaw: state.targetRaw,
+    restartMonth: state.restartMonth,
+  })
+  if (!plan.ok) {
+    return (
+      <p role="alert" className="text-sm text-error">
+        {plan.message}
+      </p>
+    )
+  }
   const kind = state.kind ?? 'none'
   return (
     <>
-      <Heading headingRef={headingRef}>Your recap</Heading>
-      <p className="mt-4 leading-relaxed">
-        This is a record of what you entered. It is not an order, and nothing has been changed.
-      </p>
-      <dl className="mt-6 space-y-4">
-        <div>
-          <dt className="text-sm text-muted">Reason</dt>
-          <dd>{REASON_LABELS[reason]}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-muted">Choice</dt>
-          <dd>{CHOICE_COPY[choice].title}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-muted">Current monthly SIP</dt>
-          <dd className="figure">{formatInrDigits(result.current)}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-muted">Proposed monthly SIP</dt>
-          <dd className="figure">{formatInrDigits(result.proposed)}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-muted">Comparison period</dt>
-          <dd>{monthsPhrase(result.months)}</dd>
-        </div>
-        {choice === 'pause' && state.restartMonth.trim() ? (
-          <div>
-            <dt className="text-sm text-muted">Restart month you noted</dt>
-            <dd>{state.restartMonth.trim()}</dd>
-          </div>
-        ) : null}
-      </dl>
-      <div className="mt-8">
-        <Figure result={result} />
-      </div>
-      <ul className="mt-8 space-y-4 border-t border-line pt-6 leading-relaxed">
-        <li>{UNITS_STAY}</li>
-        <li>{UNITS_UNKNOWN}</li>
-        <li>{NOT_A_LOSS}</li>
-        <li>{DOES_NOT_CHANGE}</li>
-        <li>{HANDOFF}</li>
-        {choice === 'pause' ? <li>{RESTART_COPY}</li> : null}
-      </ul>
-      <YesNo
-        legend="Did this page push you toward one option?"
-        onAnswer={(answer) =>
-          track({
-            name: 'pressure_reported',
-            sessionId: state.sessionId,
-            sessionKind: kind,
-            answer,
-          })
-        }
-      />
-      <YesNo
-        legend="Was the comparison useful?"
-        onAnswer={(answer) =>
-          track({
-            name: 'usefulness_reported',
-            sessionId: state.sessionId,
-            sessionKind: kind,
-            answer,
-          })
-        }
-      />
-      <button
-        type="button"
-        className="mt-8 w-full min-h-12 border-2 border-line bg-card px-4 py-3"
-        onClick={() => dispatch({ type: 'leave' })}
+      <DecisionCard
+        reason={reason}
+        choice={choice}
+        result={result}
+        translation={plan.translation}
+        restartMonth={state.restartMonth}
+        headingRef={headingRef}
       >
-        Start again
-      </button>
+        <Figure result={result} />
+      </DecisionCard>
+      <div className="no-print">
+        <YesNo
+          legend="Did this page push you toward one option?"
+          onAnswer={(answer) =>
+            track({
+              name: 'pressure_reported',
+              sessionId: state.sessionId,
+              sessionKind: kind,
+              answer,
+            })
+          }
+        />
+        <YesNo
+          legend="Was the comparison useful?"
+          onAnswer={(answer) =>
+            track({
+              name: 'usefulness_reported',
+              sessionId: state.sessionId,
+              sessionKind: kind,
+              answer,
+            })
+          }
+        />
+        <button
+          type="button"
+          className="mt-8 w-full min-h-12 border-2 border-line bg-card px-4 py-3"
+          onClick={() => dispatch({ type: 'leave' })}
+        >
+          Start again
+        </button>
+      </div>
     </>
   )
 }
