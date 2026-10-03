@@ -49,7 +49,24 @@ Never imply that the app executes, pauses, cancels, or restarts SIPs.
 Always distinguish a planned contribution difference from an investment loss or a future portfolio-value estimate.`
 
 export const MISSING_KEY_MESSAGE =
-  'SIP Check Bot needs a Grok API key in the server environment variable XAI_API_KEY. The assessment still works without it. FinLit is not registered with SEBI or AMFI, and this assistant is not investment advice.'
+  'SIP Check Bot needs an API key in the server environment variable XAI_API_KEY. A key starting with gsk_ is sent to Groq. A key starting with xai- is sent to xAI Grok. The assessment still works without it. FinLit is not registered with SEBI or AMFI, and this assistant is not investment advice.'
+
+export const GROQ_CHAT_URL = 'https://api.groq.com/openai/v1/chat/completions'
+export const XAI_RESPONSES_URL = 'https://api.x.ai/v1/responses'
+export const GROQ_DEFAULT_MODEL = 'qwen/qwen3.8-27b'
+
+export function usesGroq(apiKey: string): boolean {
+  return apiKey.startsWith('gsk_')
+}
+
+/** A Grok model name is not sent to Groq. Groq receives its own default unless another model is set. */
+export function modelForKey(apiKey: string, requested?: string): string {
+  if (usesGroq(apiKey)) {
+    if (requested && !requested.startsWith('grok')) return requested
+    return GROQ_DEFAULT_MODEL
+  }
+  return requested && requested.length > 0 ? requested : 'grok-4.7'
+}
 
 const MAX_MESSAGES = 12
 const MAX_CHARS = 2000
@@ -182,7 +199,7 @@ export async function handleChatRequest(
   const parsed = validateChatRequest(body)
   if (!parsed.ok) return { status: 400, body: { message: parsed.message } }
 
-  const model = deps.model || 'grok-4.7'
+  const model = modelForKey(deps.apiKey, deps.model)
   const input = [
     { role: 'system', content: `${SIP_CHECK_SYSTEM_PROMPT}\n\n${contextAppendix(parsed.value.context)}` },
     ...parsed.value.messages,
@@ -211,14 +228,30 @@ async function postOnce(
   input: { role: string; content: string }[],
   signal: AbortSignal,
 ): Promise<Response> {
-  return fetchImpl('https://api.x.ai/v1/responses', {
+  if (usesGroq(apiKey)) {
+    return fetchImpl(GROQ_CHAT_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: modelForKey(apiKey, model),
+        messages: input,
+        max_tokens: MAX_OUTPUT_TOKENS,
+        temperature: 0.2,
+      }),
+      signal,
+    })
+  }
+  return fetchImpl(XAI_RESPONSES_URL, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model,
+      model: modelForKey(apiKey, model),
       input,
       max_output_tokens: MAX_OUTPUT_TOKENS,
       store: false,
@@ -228,6 +261,15 @@ async function postOnce(
 }
 
 async function readModel(response: Response): Promise<{ status: number; body: { reply?: string; message?: string } }> {
+  if (response.status === 401) {
+    return {
+      status: 502,
+      body: {
+        message:
+          'The API key was rejected. A key that starts with gsk_ is sent to Groq. A key that starts with xai- is sent to xAI. The assessment is still available, and your SIP has not been changed.',
+      },
+    }
+  }
   if (!response.ok) {
     return { status: 502, body: { message: 'SIP Check could not reply just now. The assessment is still available, and your SIP has not been changed.' } }
   }

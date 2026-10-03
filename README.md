@@ -12,7 +12,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Paste a Grok key into `.env` as `XAI_API_KEY` if you want SIP Check Bot. The assessment works without it. The key is read only by the Vite server for `POST /api/sip-check`. Do not prefix it with `VITE_`. Create a key at [console.x.ai](https://console.x.ai/). The route calls `POST https://api.x.ai/v1/responses` with model `grok-4.7` unless `XAI_MODEL` is set. See [the xAI API docs](https://docs.x.ai/developers/model-capabilities/text/comparison).
+Paste an API key into `.env` as `XAI_API_KEY` if you want SIP Check Bot. The assessment works without it. The key is read only by the Vite server for `POST /api/sip-check`. Do not prefix it with `VITE_`. A key that starts with `gsk_` is sent to Groq at `POST https://api.groq.com/openai/v1/chat/completions`, using `qwen/qwen3.8-27b` unless `GROQ_MODEL` names another model that key can call. A key that starts with `xai-` is sent to xAI at `POST https://api.x.ai/v1/responses` with model `grok-4.7` unless `XAI_MODEL` is set. Create a Groq key at [console.groq.com/keys](https://console.groq.com/keys) or an xAI key at [console.x.ai](https://console.x.ai/). Restart `npm run dev` after changing `.env`.
 
 The development server runs at [http://127.0.0.1:5173](http://127.0.0.1:5173).
 
@@ -52,7 +52,7 @@ The live journey is Skip Check, then an optional SIP Check Bot.
 - One rupee calculation: `(current monthly SIP − proposed monthly SIP) × months`, in whole rupees, for 1 to 24 months. A pause is a proposed amount of ₹0. ₹12,000 reduced to ₹6,000 for 6 months is ₹36,000 less in planned contributions. That figure is not a loss or a return.
 - Increasing a SIP is rejected. Amounts above ₹10,00,000 ask for a digit confirmation and are not corrected silently.
 - A recap is stored in this browser only after consent. It can be edited or deleted. An optional review date is shown on a later visit. There is no email, push, or WhatsApp delivery.
-- SIP Check Bot explains the calculator’s figures through Grok. It does not choose Keep, Reduce, or Pause, and it does not change the SIP. Without `XAI_API_KEY`, the bot explains how to configure the key and the assessment still works.
+- SIP Check Bot explains the calculator’s figures. A `gsk_` key uses Groq. An `xai-` key uses Grok. It does not choose Keep, Reduce, or Pause, and it does not change the SIP. Without a key, the bot says how to configure one and the assessment still works.
 - Analytics stay in the browser tab. Events do not include amounts or chat text.
 
 The only formula lives in `src/domain/sip-calculator.ts`. The earlier plan-translation screens remain in `src/features/flow` and are covered by their own tests. They are not the live homepage.

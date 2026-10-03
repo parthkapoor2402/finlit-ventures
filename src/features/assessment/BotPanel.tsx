@@ -68,7 +68,7 @@ export function BotPanel({
     <section className="mt-8 rounded-2xl border border-line bg-card p-4" aria-label="SIP Check Bot">
       <h2 className="font-serif text-2xl">SIP Check Bot</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted">
-        This assistant uses Grok to explain the numbers the app already calculated. It does not choose for you, and it does not change your SIP. FinLit is not registered with SEBI or AMFI.
+        This assistant explains the numbers the app already calculated. A key starting with gsk_ is answered by Groq. A key starting with xai- is answered by Grok. It does not choose for you, and it does not change your SIP. FinLit is not registered with SEBI or AMFI.
       </p>
       {!open ? (
         <button

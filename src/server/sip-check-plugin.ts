@@ -16,9 +16,8 @@ export function sipCheckApiPlugin(): Plugin {
     name: 'sip-check-api',
     configResolved(config) {
       const env = loadEnv(config.mode, config.root, '')
-      apiKey = env.XAI_API_KEY || process.env.XAI_API_KEY || undefined
-      model = env.XAI_MODEL || process.env.XAI_MODEL || 'grok-4.7'
-      if (apiKey === '') apiKey = undefined
+      apiKey = firstSet(env.GROQ_API_KEY, process.env.GROQ_API_KEY, env.XAI_API_KEY, process.env.XAI_API_KEY)
+      model = firstSet(env.GROQ_MODEL, process.env.GROQ_MODEL, env.XAI_MODEL, process.env.XAI_MODEL)
     },
     configureServer(server: ViteDevServer) {
       attach(server.middlewares)
@@ -89,4 +88,11 @@ function send(
 export function __setApiKeyForTests(key: string | undefined): void {
   apiKey = key
   resetRateLimit()
+}
+
+function firstSet(...values: Array<string | undefined>): string | undefined {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim() !== '') return value.trim()
+  }
+  return undefined
 }

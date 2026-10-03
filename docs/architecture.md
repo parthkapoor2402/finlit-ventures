@@ -100,7 +100,7 @@ Invalid input stays on the input step with a field message. An application rende
 
 No account, no broker credentials, and no payment. A saved assessment recap stays in this browser only after consent, and the person can delete it. Unsaved amounts clear on refresh. Analytics events stay in memory and do not include amounts or chat text.
 
-SIP Check Bot calls Grok from the Vite server at `POST /api/sip-check`. `XAI_API_KEY` is read on the server. It is not prefixed with `VITE_` and is not sent to the browser. If the key is missing or the call fails, the assessment still runs. The model is not the source of the rupee arithmetic.
+SIP Check Bot calls the configured provider from the Vite server at `POST /api/sip-check`. `XAI_API_KEY` is read on the server. A `gsk_` key goes to Groq chat completions. An `xai-` key goes to the xAI responses API. The key is not prefixed with `VITE_` and is not sent to the browser. If the key is missing or the call fails, the assessment still runs. The model is not the source of the rupee arithmetic.
 
 ## Testing
 

@@ -1,7 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import {
+  GROQ_CHAT_URL,
+  GROQ_DEFAULT_MODEL,
   MISSING_KEY_MESSAGE,
   SIP_CHECK_SYSTEM_PROMPT,
+  XAI_RESPONSES_URL,
   contextAppendix,
   extractReply,
   handleChatRequest,
@@ -30,7 +33,7 @@ describe('SIP Check request checks', () => {
     )
     expect(result.status).toBe(503)
     expect(result.body.message).toBe(MISSING_KEY_MESSAGE)
-    expect(JSON.stringify(result.body)).not.toMatch(/xai-|sk-|Bearer/)
+    expect(JSON.stringify(result.body)).not.toMatch(/xai-[A-Za-z0-9]|gsk_[A-Za-z0-9]|Bearer/)
   })
 
   it('puts the calculator figures in the model context and keeps the safety rules', () => {
@@ -62,8 +65,30 @@ describe('SIP Check request checks', () => {
     )
     expect(result.status).toBe(200)
     expect(result.body.reply).toMatch(/stay invested/i)
-    expect(calls).toEqual(['https://api.x.ai/v1/responses'])
+    expect(calls).toEqual([XAI_RESPONSES_URL])
     expect(JSON.stringify(result.body)).not.toContain('test-key-not-real')
+  })
+
+  it('sends a gsk_ key to Groq chat completions and reads the reply', async () => {
+    let body = ''
+    const fetchImpl: typeof fetch = async (input, init) => {
+      body = String(init?.body ?? '')
+      expect(String(input)).toBe(GROQ_CHAT_URL)
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: 'That is ₹36,000 less in planned contributions.' } }] }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      )
+    }
+    const result = await handleChatRequest(
+      { messages: [{ role: 'user', content: 'Explain the contribution difference.' }], context },
+      '10.0.0.10',
+      { apiKey: 'gsk_test_key_not_real', model: 'grok-4.7', fetchImpl },
+    )
+    expect(result.status).toBe(200)
+    expect(result.body.reply).toMatch(/36,000/)
+    expect(body).toContain(GROQ_DEFAULT_MODEL)
+    expect(body).not.toContain('gsk_test_key_not_real')
+    expect(body).not.toContain('grok-4.7')
   })
 
   it('reports a timeout without claiming the SIP changed', async () => {
