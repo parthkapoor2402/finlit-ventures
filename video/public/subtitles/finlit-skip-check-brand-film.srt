@@ -1,87 +1,63 @@
 1
-00:00:00,233 --> 00:00:01,433
-Before you confirm,
+00:00:00,433 --> 00:00:06,367
+Life changes. Expenses shift, and sometimes you reconsider your monthly SIP.
 
 2
-00:00:01,433 --> 00:00:03,633
-your app shows a new monthly amount,
+00:00:07,167 --> 00:00:09,933
+Skip Check by FinLit helps you understand
 
 3
-00:00:03,633 --> 00:00:06,200
-not the plan you already made.
+00:00:09,933 --> 00:00:12,667
+what a change could mean, before you decide.
 
 4
-00:00:06,667 --> 00:00:08,900
-Skip Check, by FinLit Ventures,
+00:00:13,467 --> 00:00:16,967
+Start with what's changed. You can choose a reason,
 
 5
-00:00:08,900 --> 00:00:11,033
-does not change the SIP.
+00:00:16,967 --> 00:00:20,467
+add a note, or skip the explanation entirely.
 
 6
-00:00:11,500 --> 00:00:12,867
-Twelve thousand rupees,
+00:00:21,267 --> 00:00:24,300
+Enter your current contribution, the amount you're considering,
 
 7
-00:00:12,867 --> 00:00:15,200
-reduced to six thousand for six months,
+00:00:24,300 --> 00:00:27,333
+and how long the change might last.
 
 8
-00:00:15,200 --> 00:00:19,900
-is thirty-six thousand rupees of contributions that would not be invested.
+00:00:28,133 --> 00:00:33,800
+Now compare the possibilities. Keep, reduce, or pause.
 
 9
-00:00:20,367 --> 00:00:22,400
-If you state a contribution target,
+00:00:33,800 --> 00:00:39,500
+Reducing to two thousand three hundred rupees means thirty-two thousand four hundred rupees less in planned contributions over twelve months.
 
 10
-00:00:22,400 --> 00:00:25,767
-that gap is six months of planned contributions.
+00:00:40,267 --> 00:00:44,400
+That's a difference in planned contributions, not an investment loss.
 
 11
-00:00:26,067 --> 00:00:29,567
-Not wealth, not a return, and not units.
+00:00:44,400 --> 00:00:48,500
+Existing units stay invested when future contributions are paused.
 
 12
-00:00:30,033 --> 00:00:32,500
-A full pause of twelve thousand for six months
+00:00:49,267 --> 00:00:53,300
+Need more clarity? SIP Check Bot explains the numbers,
 
 13
-00:00:32,500 --> 00:00:36,200
-is seventy-two thousand rupees, labeled separately.
+00:00:53,300 --> 00:00:57,300
+and the difference between reducing and pausing, without deciding for you.
 
 14
-00:00:36,500 --> 00:00:39,100
-A pause stops the contribution.
+00:00:58,100 --> 00:01:01,233
+Understand the difference, review your options,
 
 15
-00:00:39,100 --> 00:00:41,200
-A reduction does not.
+00:01:01,233 --> 00:01:04,400
+and make your own decision in your own investing app.
 
 16
-00:00:41,500 --> 00:00:44,867
-The restart month stays on the decision card.
-
-17
-00:00:44,867 --> 00:00:47,667
-Skip Check will not restart the SIP.
-
-18
-00:00:48,133 --> 00:00:50,800
-Keep, reduce, or pause.
-
-19
-00:00:51,100 --> 00:00:54,167
-A cash need can make a pause legitimate.
-
-20
-00:00:54,167 --> 00:00:56,900
-Existing units stay invested.
-
-21
-00:00:57,367 --> 00:00:59,767
-Take the decision card with you.
-
-22
-00:00:59,767 --> 00:01:04,000
-Decision support. Not investment advice.
+00:01:05,200 --> 00:01:09,633
+Skip Check. See the difference. Make your decision.

@@ -1,23 +1,21 @@
 # Render log
 
-Recut on 2 October 2026 so the film shows the plan translation and the decision card, not only the rupee multiplication.
+Product demo rendered on 3 October 2026.
 
 ## Voice
 
-Grok Text to Speech was not called. No `XAI_API_KEY` is present. The voice is edge-tts `en-IN-NeerjaNeural`, one sentence at a time. Rates are between +9% and +12%. Pitch is −1Hz or +0Hz. No time-stretch.
+ElevenLabs, Cartesia, and Grok text-to-speech were not used. No credentials for those services are configured.
 
-The joined voice is about 64 seconds of speech inside a 70-second picture. Music from `video/public/audio/music.mp3` is ducked under the voice.
+The voice is Edge neural `en-IN-NeerjaExpressiveNeural`, one sentence at a time, with a different rate on each sentence. The joined track is not time-stretched. Music from `video/public/audio/music.mp3` sits under the voice.
+
+The delivered MP4 contains an AAC stereo stream. Measured loudness is about −24 dB mean and −6 dB peak, so the voice is present.
 
 ## Picture
 
-Remotion rendered 2100 frames at 30 fps. The delivered file is H.264 High, yuv420p, bt709, AAC LC 48 kHz stereo, faststart. The rupee reveal is ₹36,000. The plan scene shows 6 months of planned contributions against a ₹1,44,000 remaining contribution target. A full pause is ₹72,000, labeled separately.
+Remotion rendered 2100 frames at 30 fps, 1920×1080, H.264. Duration 70.016 seconds. The example is ₹5,000 reduced to ₹2,300 for 12 months, which is ₹32,400 less in planned contributions. A pause is ₹60,000 less in planned contributions.
 
-## Public playback
+## Public page
 
-Raw MP4, when the request sends a referrer:
+A temporary public page was opened with a Cloudflare tunnel and checked from outside this machine. The page, the MP4, and the SRT each returned HTTP 200. The downloaded MP4 is 70.016 seconds and includes the AAC voice track.
 
-https://qu.ax/x/cQucM.mp4
-
-Player page:
-
-https://qu.ax/cQucM.mp4/
+There is no Vercel, Netlify, or other permanent host signed in, so this link lasts only while that tunnel is running.

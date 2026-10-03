@@ -3,9 +3,9 @@ import { goalShiftCopy, translatePlan } from "../../../src/domain/plan-translati
 import { calculateContributionDifference } from "../../../src/domain/sip-calculator.ts"
 
 const result = calculateContributionDifference({
-  currentMonthlyAmount: "12000",
-  proposedMonthlyAmount: "6000",
-  months: "6",
+  currentMonthlyAmount: "5000",
+  proposedMonthlyAmount: "2300",
+  months: "12",
 })
 
 if (!result.ok) {
@@ -13,9 +13,9 @@ if (!result.ok) {
 }
 
 const pause = calculateContributionDifference({
-  currentMonthlyAmount: "12000",
+  currentMonthlyAmount: "5000",
   proposedMonthlyAmount: "0",
-  months: "6",
+  months: "12",
 })
 
 if (!pause.ok) {
@@ -42,6 +42,9 @@ export const WALKTHROUGH = {
   months: result.months,
   rawDifference: result.contributionDifference,
   pauseDifference: formatInrDigits(pause.contributionDifference),
+  keepTotal: formatInrDigits((BigInt(result.current) * BigInt(result.months)).toString()),
+  reduceTotal: formatInrDigits((BigInt(result.proposed) * BigInt(result.months)).toString()),
+  pauseTotal: formatInrDigits("0"),
   target: formatInrDigits(plan.translation.remainingTarget),
   plannedMonths: copy.headline,
   targetLine: copy.targetLine,

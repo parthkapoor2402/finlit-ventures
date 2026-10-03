@@ -57,6 +57,10 @@ The live journey is Skip Check, then an optional SIP Check Bot.
 
 The only formula lives in `src/domain/sip-calculator.ts`. The earlier plan-translation screens remain in `src/features/flow` and are covered by their own tests. They are not the live homepage.
 
+## Product demo
+
+The 70-second film lives in `video/`. Render and playback instructions are in `video/README.md`. The spoken track is inside the MP4.
+
 ## Architecture
 
 See `docs/architecture.md`, `docs/product-decisions.md`, `docs/test-plan.md`, and `docs/implementation-log.md`.
