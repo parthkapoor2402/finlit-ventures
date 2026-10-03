@@ -31,3 +31,4 @@ blob-report
 *.njsproj
 *.sln
 *.sw?
+.vercel
