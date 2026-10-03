@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { BOT_OPENING, type BotContext } from '../../domain/bot-copy.ts'
 import { trackAssessment } from '../../analytics/assessment-events.ts'
+import { ReplyText } from './ReplyText.tsx'
 
 type ChatTurn = { role: 'user' | 'assistant'; content: string }
 
@@ -98,12 +99,21 @@ export function BotPanel({
             ))}
           </ul>
           <div className="mt-4 space-y-3" aria-live="polite">
-            {turns.map((turn, index) => (
-              <p key={`${turn.role}-${index}`} className="leading-relaxed">
-                <span className="font-semibold">{turn.role === 'user' ? 'You' : 'SIP Check'}: </span>
-                {turn.content}
-              </p>
-            ))}
+            {turns.map((turn, index) =>
+              turn.role === 'user' ? (
+                <p key={`${turn.role}-${index}`} className="leading-relaxed">
+                  <span className="font-semibold">You: </span>
+                  {turn.content}
+                </p>
+              ) : (
+                <div key={`${turn.role}-${index}`} className="rounded-2xl bg-paper px-3 py-3">
+                  <p className="font-semibold">SIP Check</p>
+                  <div className="mt-2">
+                    <ReplyText text={turn.content} />
+                  </div>
+                </div>
+              ),
+            )}
             {pending ? <p className="text-sm text-muted">SIP Check is writing…</p> : null}
             {error ? (
               <p role="alert" className="text-sm text-error">

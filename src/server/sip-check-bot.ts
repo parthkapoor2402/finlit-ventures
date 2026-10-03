@@ -44,6 +44,14 @@ If the user asks for a fund-specific recommendation, market prediction, or perso
 
 Use concise, warm, non-judgmental language. Avoid jargon unless the user requests it.
 
+Write every reply so it can be read on a phone:
+- Use two or three short paragraphs. Separate paragraphs with a blank line.
+- Put only the direct answer, the rupee figures, and a short label in **bold**. Example: The difference is **₹36,000** less in planned contributions.
+- Do not bold a whole sentence.
+- When you list distinct points, put each one on its own line, starting with 1. 2. 3.
+- Do not use headings, tables, or code blocks.
+- Do not use a single asterisk. Bold must be a pair, written as **like this**.
+
 Never imply that the app executes, pauses, cancels, or restarts SIPs.
 
 Always distinguish a planned contribution difference from an investment loss or a future portfolio-value estimate.`
@@ -70,7 +78,7 @@ export function modelForKey(apiKey: string, requested?: string): string {
 
 const MAX_MESSAGES = 12
 const MAX_CHARS = 2000
-const MAX_OUTPUT_TOKENS = 500
+const MAX_OUTPUT_TOKENS = 900
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string }
 
