@@ -59,7 +59,11 @@ The only formula lives in `src/domain/sip-calculator.ts`. The earlier plan-trans
 
 ## Product demo
 
-The 70-second film lives in `video/`. Render and playback instructions are in `video/README.md`. The spoken track is inside the MP4.
+The product film lives in `video/`. It runs about 82 seconds and includes the What if explorer. Render and playback instructions are in `video/README.md`. The spoken track is inside the MP4.
+
+## Vercel
+
+`npm run build` writes the static app to `dist` and bundles `api/sip-check.js` for the bot. Set `XAI_API_KEY` or `GROQ_API_KEY` in the Vercel project environment. The key is not part of the client bundle. Without it, the assessment still works and the bot explains that it is not configured.
 
 ## Architecture
 
