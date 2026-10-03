@@ -1,6 +1,6 @@
 # Skip Check product demo
 
-A 70-second film of the current Skip Check journey: landing, reason, amounts, Keep / Reduce / Pause, the contribution-difference explanation, SIP Check Bot, and the recap.
+An 82-second film of the current Skip Check journey: landing, reason, amounts, Keep / Reduce / Pause, the What if explorer, the contribution-difference explanation, SIP Check Bot, and the recap.
 
 The picture is 1920×1080 at 30 fps. The spoken track is in the MP4.
 
@@ -36,7 +36,7 @@ Check the file:
 ffprobe -hide_banner dist/finlit-skip-check-product-demo.mp4
 ```
 
-Expect H.264, 1920×1080, 30 fps, about 70 seconds, and an AAC audio stream.
+Expect H.264, 1920×1080, 30 fps, about 82 seconds, and an AAC audio stream.
 
 ## Demo page
 
@@ -57,5 +57,7 @@ The figures come from `calculateContributionDifference`:
 - 12 months
 - Reduce: ₹32,400 less in planned contributions
 - Pause: ₹60,000 less in planned contributions
+
+The What if scene then moves the same ₹5,000 SIP to ₹1,000 for 6 months. Reducing means ₹24,000 less in planned contributions. Keeping is ₹30,000 with no difference. Pausing means ₹30,000 less. Those cards use the same calculator.
 
 That number is planned contributions, not an investment loss. Skip Check does not change the SIP.

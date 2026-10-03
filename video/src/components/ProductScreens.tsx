@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react"
-import { WALKTHROUGH } from "../data/calculation.ts"
+import { figuresFor, WALKTHROUGH } from "../data/calculation.ts"
 import { CARD, FOREST, INK, LINE, MUTED, PAPER, SANS, SERIF } from "../styles/tokens.ts"
 
 export function Browser({ children }: { children: ReactNode }) {
@@ -198,14 +198,119 @@ export function CompareScreen({ revealMath }: { revealMath: boolean }) {
   )
 }
 
-function Card({ title, monthly, total, diff }: { title: string; monthly: string; total: string; diff: string }) {
+function Card({
+  title,
+  monthly,
+  total,
+  diff,
+  emphasis = false,
+}: {
+  title: string
+  monthly: string
+  total: string
+  diff: string
+  emphasis?: boolean
+}) {
   return (
-    <div style={{ border: `1px solid ${LINE}`, background: CARD, borderRadius: 16, padding: 14, minHeight: 168 }}>
+    <div
+      style={{
+        border: `${emphasis ? 2 : 1}px solid ${emphasis ? FOREST : LINE}`,
+        background: CARD,
+        borderRadius: 16,
+        padding: 14,
+        minHeight: 168,
+      }}
+    >
       <h2 style={{ fontFamily: SERIF, fontWeight: 500, fontSize: 28, margin: 0 }}>{title}</h2>
       <p style={{ fontFamily: SANS, fontSize: 16, margin: "8px 0 0" }}>Monthly: {monthly}</p>
       <p style={{ fontFamily: SANS, fontSize: 16, margin: "4px 0 0" }}>Planned over the period: {total}</p>
       <p style={{ fontFamily: SANS, fontWeight: 600, fontSize: 16, margin: "8px 0 0" }}>{diff}</p>
     </div>
+  )
+}
+
+function Slider({ percent }: { percent: number }) {
+  const clamped = Math.min(100, Math.max(0, percent))
+  return (
+    <div style={{ position: "relative", height: 28, marginTop: 6 }}>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 11, height: 6, borderRadius: 99, background: "#d6d3d1" }} />
+      <div style={{ position: "absolute", left: 0, top: 11, height: 6, width: `${clamped}%`, borderRadius: 99, background: "#1a73e8" }} />
+      <div
+        style={{
+          position: "absolute",
+          top: 3,
+          left: `${clamped}%`,
+          width: 22,
+          height: 22,
+          borderRadius: 99,
+          background: "#1a73e8",
+          transform: "translateX(-50%)",
+          boxShadow: "0 1px 3px rgba(28,25,23,0.25)",
+        }}
+      />
+    </div>
+  )
+}
+
+export function WhatIfScreen({ proposedAmount, monthCount }: { proposedAmount: number; monthCount: number }) {
+  const figures = figuresFor(proposedAmount, monthCount)
+  const amountField = String(Math.round(Math.min(5000, Math.max(0, proposedAmount))))
+  const monthField = String(Math.round(Math.min(24, Math.max(1, monthCount))))
+  const amountPct = (Math.min(5000, Math.max(0, proposedAmount)) / 5000) * 100
+  const monthPct = ((Math.min(24, Math.max(1, monthCount)) - 1) / 23) * 100
+  return (
+    <Browser>
+      <h1 style={{ fontFamily: SERIF, fontWeight: 500, fontSize: 28, margin: "0 0 10px" }}>
+        See how different choices change your planned contributions.
+      </h1>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+        <Card title="Keep" monthly={figures.currentLabel} total={figures.keepTotal} diff="₹0 difference from the current plan." />
+        <Card
+          title="Reduce"
+          monthly={figures.proposedLabel}
+          total={figures.reduceTotal}
+          diff={`${figures.reduceDiff} less in planned contributions.`}
+          emphasis
+        />
+        <Card title="Pause" monthly="₹0" total={figures.pauseTotal} diff={`${figures.pauseDiff} less in planned contributions.`} />
+      </div>
+      <p style={{ fontFamily: SERIF, fontSize: 22, margin: "10px 0 0" }}>
+        ({figures.currentLabel} − {figures.proposedLabel}) × {figures.months} = {figures.reduceDiff}
+      </p>
+      <div style={{ marginTop: 12, border: `1px solid ${LINE}`, background: CARD, borderRadius: 16, padding: "14px 18px 16px" }}>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 500, fontSize: 28, margin: 0 }}>What if?</h2>
+        <p style={{ fontFamily: SANS, fontSize: 16, margin: "6px 0 0", color: INK }}>Want to talk through your scenario?</p>
+        <p style={{ fontFamily: SANS, fontSize: 16, margin: "8px 0 0", textDecoration: "underline" }}>Connect with FinLit Ventures</p>
+        <p style={{ fontFamily: SANS, fontSize: 16, margin: "6px 0 0", textDecoration: "underline" }}>Help me compare these scenarios</p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 148px", gap: 16, alignItems: "end", marginTop: 12 }}>
+          <div>
+            <div style={{ fontFamily: SANS, fontSize: 16 }}>Proposed monthly amount: {figures.proposedLabel}</div>
+            <Slider percent={amountPct} />
+          </div>
+          <div>
+            <div style={{ fontFamily: SANS, fontSize: 14, color: MUTED }}>Amount</div>
+            <div style={{ marginTop: 4, border: `2px solid ${LINE}`, background: PAPER, minHeight: 44, borderRadius: 8, padding: "8px 12px", fontFamily: SANS, fontSize: 20 }}>
+              {amountField}
+            </div>
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 148px", gap: 16, alignItems: "end", marginTop: 10 }}>
+          <div>
+            <div style={{ fontFamily: SANS, fontSize: 16 }}>Duration: {monthField} months</div>
+            <Slider percent={monthPct} />
+          </div>
+          <div>
+            <div style={{ fontFamily: SANS, fontSize: 14, color: MUTED }}>Months</div>
+            <div style={{ marginTop: 4, border: `2px solid ${LINE}`, background: PAPER, minHeight: 44, borderRadius: 8, padding: "8px 12px", fontFamily: SANS, fontSize: 20 }}>
+              {monthField}
+            </div>
+          </div>
+        </div>
+        <div style={{ marginTop: 14, display: "inline-flex", alignItems: "center", minHeight: 44, borderRadius: 999, border: `1px solid ${LINE}`, padding: "0 16px", fontFamily: SANS, fontSize: 16 }}>
+          Reset to my original inputs
+        </div>
+      </div>
+    </Browser>
   )
 }
 

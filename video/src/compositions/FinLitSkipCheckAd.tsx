@@ -6,6 +6,7 @@ import { Scene02Landing } from "../scenes/Scene02Landing.tsx"
 import { Scene03Reason } from "../scenes/Scene03Reason.tsx"
 import { Scene04Numbers } from "../scenes/Scene04Numbers.tsx"
 import { Scene05Comparison } from "../scenes/Scene05Comparison.tsx"
+import { SceneWhatIf } from "../scenes/SceneWhatIf.tsx"
 import { Scene06Meaning } from "../scenes/Scene06Meaning.tsx"
 import { Scene07Bot } from "../scenes/Scene07Bot.tsx"
 import { Scene08Control } from "../scenes/Scene08Control.tsx"
@@ -18,6 +19,7 @@ const SCENE_VIEW = {
   reason: Scene03Reason,
   numbers: Scene04Numbers,
   comparison: Scene05Comparison,
+  whatif: SceneWhatIf,
   meaning: Scene06Meaning,
   bot: Scene07Bot,
   control: Scene08Control,
@@ -28,7 +30,7 @@ export function FinLitSkipCheckAd() {
   return (
     <AbsoluteFill style={{ background: PAPER }}>
       <Audio src={staticFile("audio/voiceover.mp3")} volume={1} />
-      <Audio src={staticFile("audio/music.mp3")} volume={0.12} />
+      <Audio src={staticFile("audio/music.mp3")} volume={0.12} loop />
       {SCENES.map((scene) => {
         const View = SCENE_VIEW[scene.id]
         return (

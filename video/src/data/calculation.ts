@@ -34,6 +34,40 @@ if (!plan.ok || plan.translation.kind !== "goal-time-shift") {
 
 const copy = goalShiftCopy(plan.translation)
 
+/** Whole-rupee cards for the What if explorer. Current SIP stays ₹5,000. */
+export function figuresFor(proposedAmount: number, monthCount: number) {
+  const proposed = String(Math.min(5000, Math.max(0, Math.round(proposedAmount))))
+  const months = String(Math.min(24, Math.max(1, Math.round(monthCount))))
+  const reduced = calculateContributionDifference({
+    currentMonthlyAmount: "5000",
+    proposedMonthlyAmount: proposed,
+    months,
+  })
+  const paused = calculateContributionDifference({
+    currentMonthlyAmount: "5000",
+    proposedMonthlyAmount: "0",
+    months,
+  })
+  if (!reduced.ok || !paused.ok) {
+    throw new Error("what if")
+  }
+  return {
+    proposed,
+    months: reduced.months,
+    proposedLabel: formatInrDigits(reduced.proposed),
+    currentLabel: formatInrDigits(reduced.current),
+    keepTotal: formatInrDigits((BigInt(reduced.current) * BigInt(reduced.months)).toString()),
+    reduceTotal: formatInrDigits((BigInt(reduced.proposed) * BigInt(reduced.months)).toString()),
+    reduceDiff: formatInrDigits(reduced.contributionDifference),
+    pauseDiff: formatInrDigits(paused.contributionDifference),
+    pauseTotal: formatInrDigits("0"),
+    rawReduce: reduced.contributionDifference,
+  }
+}
+
+/** Screenshot state: ₹1,000 for 6 months, from the film's ₹5,000 current SIP. */
+export const WHAT_IF = figuresFor(1000, 6)
+
 export const WALKTHROUGH = {
   current: formatInrDigits(result.current),
   proposed: formatInrDigits(result.proposed),
