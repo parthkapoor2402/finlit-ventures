@@ -30,18 +30,18 @@ export const KNOWLEDGE_QUESTIONS: KnowledgeQuestion[] = [
     ],
     correctId: '36000',
     explanation:
-      '(₹12,000 − ₹6,000) × 6 = ₹36,000 less in planned contributions over that period. That figure is not an investment loss.',
+      'The monthly difference is ₹6,000. Over six months, that is ₹36,000 less in planned contributions.',
   },
   {
     id: 'portfolio',
     prompt: 'Does this contribution difference tell you how much your portfolio will gain or lose?',
     options: [
-      { id: 'yes', label: 'Yes. It is the change in portfolio value.' },
-      { id: 'no', label: 'No. It is only the difference in planned contributions.' },
+      { id: 'yes', label: 'Yes, exactly.' },
+      { id: 'no', label: 'No, it only compares planned contributions under the selected inputs.' },
     ],
     correctId: 'no',
     explanation:
-      'The number is planned contributions under the amounts entered. It is not a gain, a loss, or a forecast of portfolio value.',
+      'Investment performance depends on many factors. This calculator does not predict future returns or portfolio value.',
   },
 ]
 

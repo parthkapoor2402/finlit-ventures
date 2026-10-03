@@ -1,28 +1,32 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BOT_OPENING, type BotContext } from '../../domain/bot-copy.ts'
 import { trackAssessment } from '../../analytics/assessment-events.ts'
 
 type ChatTurn = { role: 'user' | 'assistant'; content: string }
 
 const STARTERS = [
-  'Explain the ₹ difference in my assessment.',
-  'What happens to my existing mutual fund units if I pause?',
-  'Explain the difference between reducing and pausing.',
-  'What should I consider if my monthly expenses have increased?',
-  'Explain why future investment units are uncertain.',
-  'Help me understand my saved recap.',
+  'Explain the contribution difference.',
+  'What happens to my existing units?',
+  'Explain reducing versus pausing.',
+  'Help me understand this scenario.',
+  'I want to talk to FinLit Ventures.',
 ]
 
 export function BotPanel({
   context,
   sessionId,
   sessionKind,
+  opened = false,
 }: {
   context: BotContext
   sessionId: string
   sessionKind: 'decision' | 'sample'
+  opened?: boolean
 }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(opened)
+  useEffect(() => {
+    if (opened) setOpen(true)
+  }, [opened])
   const [draft, setDraft] = useState('')
   const [turns, setTurns] = useState<ChatTurn[]>([])
   const [pending, setPending] = useState(false)
@@ -54,7 +58,7 @@ export function BotPanel({
       }
       setTurns((current) => [...current, { role: 'assistant', content: payload.reply ?? '' }])
     } catch {
-      setError('SIP Check could not be reached. The assessment is still available, and your SIP has not been changed.')
+      setError('SIP Check is unavailable right now. The numbers on this page still stand, and your SIP has not been changed.')
     } finally {
       setPending(false)
     }

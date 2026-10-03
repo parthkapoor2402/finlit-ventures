@@ -11,6 +11,17 @@ export const ASSESSMENT_REASONS = [
 export type AssessmentReason = (typeof ASSESSMENT_REASONS)[number]
 
 export const ASSESSMENT_REASON_LABELS: Record<AssessmentReason, string> = {
+  cash_need: 'My expenses or priorities have changed.',
+  market_worry: 'I’m unsure about market movements.',
+  goal_changed: 'My plans or timeline have changed.',
+  fund_reconsider: 'I want to understand my investment better.',
+  income_changed: 'My income or expenses have changed.',
+  not_sure: 'I’m still figuring things out.',
+  something_else: 'Something else.',
+}
+
+/** The earlier wording, kept so the meaning of each option stays the same. */
+export const ASSESSMENT_REASON_DETAIL: Record<AssessmentReason, string> = {
   cash_need: 'I need cash for upcoming expenses.',
   market_worry: 'I am worried about market fluctuations.',
   goal_changed: 'My financial goal or timeline has changed.',
@@ -34,7 +45,7 @@ export function assessmentReasonLine(reason: AssessmentReason): string {
     case 'income_changed':
       return 'A change in income or expenses is recorded as your reason. This page does not ask for income.'
     case 'not_sure':
-      return 'You can compare the scenarios without settling on a reason.'
+      return 'That’s completely fine. You can explore the numbers first.'
     case 'something_else':
       return 'Your note, if you add one, stays in this browser unless you choose to save the recap.'
   }

@@ -1,18 +1,27 @@
 export type AssessmentEventName =
   | 'assessment_started'
+  | 'landing_primary_clicked'
+  | 'landing_exploration_clicked'
   | 'reason_selected'
   | 'inputs_completed'
   | 'scenarios_viewed'
+  | 'scenario_explorer_opened'
   | 'scenario_adjusted'
+  | 'contribution_help_opened'
+  | 'knowledge_check_started'
+  | 'knowledge_check_skipped'
   | 'knowledge_check_completed'
   | 'knowledge_check_retry'
   | 'recap_saved'
   | 'recap_deleted'
+  | 'recap_revisited'
   | 'bot_opened'
   | 'bot_message_sent'
   | 'bot_helpfulness_submitted'
+  | 'human_support_cta_clicked'
   | 'reminder_opted_in'
   | 'reminder_opted_out'
+  | 'session_completed'
   | 'assessment_completed'
 
 export type AssessmentEvent = {
@@ -49,6 +58,7 @@ export function meaningfulReturn(eventsIn: AssessmentEvent[]): boolean {
   return eventsIn.some((event) =>
     event.name === 'scenarios_viewed' ||
     event.name === 'scenario_adjusted' ||
-    event.name === 'recap_saved',
+    event.name === 'recap_saved' ||
+    event.name === 'recap_revisited',
   )
 }

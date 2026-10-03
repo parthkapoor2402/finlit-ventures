@@ -42,9 +42,13 @@ npx playwright install chromium
 
 ## What the prototype does
 
-The live journey is the SIP impact assessment, then an optional SIP Check Bot.
+The live journey is Skip Check, then an optional SIP Check Bot.
 
-- Welcome, a reason, the amounts, three equal scenario cards (Keep, Reduce, Pause), a what-if control, a three-question knowledge check, and a recap.
+- The landing page offers “Explore my options” and “I’m just exploring”. The sample opens on illustrative numbers and does not ask for a personal SIP.
+- A reason is optional. The amounts step accepts a proposed SIP, or “I haven’t decided on an amount yet”, which opens the explorer on a clearly labelled starting figure.
+- Keep, Reduce, and Pause stay equally visible. The what-if control has a slider and a matching number field, plus “Reset to my original inputs”.
+- The three clarity questions are optional. “Skip for now” goes to the recap.
+- The recap can connect to FinLit only when `VITE_FINLIT_CONTACT_URL` or `VITE_FINLIT_BOOKING_URL` is set. Until then, the button says that no contact page, phone number, email, or booking link is configured. The ₹99 line is the published list price. This prototype does not take payment.
 - One rupee calculation: `(current monthly SIP − proposed monthly SIP) × months`, in whole rupees, for 1 to 24 months. A pause is a proposed amount of ₹0. ₹12,000 reduced to ₹6,000 for 6 months is ₹36,000 less in planned contributions. That figure is not a loss or a return.
 - Increasing a SIP is rejected. Amounts above ₹10,00,000 ask for a digit confirmation and are not corrected silently.
 - A recap is stored in this browser only after consent. It can be edited or deleted. An optional review date is shown on a later visit. There is no email, push, or WhatsApp delivery.
@@ -61,7 +65,7 @@ See `docs/architecture.md`, `docs/product-decisions.md`, `docs/test-plan.md`, an
 
 - No accounts, broker connection, payment, or external market data.
 - FinLit states that it is not registered with SEBI or AMFI. A compliance review of this prototype has not been completed.
-- The optional review mentioned in the footer starts at ₹99 on the published list. This prototype does not take payment.
+- The optional review mentioned in the footer is listed at ₹99. This prototype does not take payment and does not book that review. Set `VITE_FINLIT_CONTACT_URL` or `VITE_FINLIT_BOOKING_URL` only when a real page exists.
 - Usability and distribution gates are planning rules. They have not been run, and the app does not display them as results.
 - Integer rupees only. Raising a SIP is out of scope.
 - Ananya, used in the sample, is an illustration and has not been interviewed.

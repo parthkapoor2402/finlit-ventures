@@ -17,7 +17,7 @@ Decisions made while building the prototype, where the brief allowed more than o
 | Sample path | Opens on the comparison for ₹12,000 to ₹6,000 over 6 months, with a persistent banner. Back reaches the same inputs. Excluded from the informed-choice denominator. | The worked example has to be visible immediately, and it must not look like Ananya's real session or count as one. |
 | Persona | Named on the sample banner as an illustration that has not been interviewed. | The brief says not to present Ananya as evidence. |
 | Platform rules | Not shown | Help-center cutoffs conflicted across articles. Inventing one would be a false financial rule. |
-| Payments | A footer line that an optional review starts at ₹99. No checkout. | The price is the published list price. Taking payment is out of scope. |
+| Payments | A footer line that an optional review is listed at ₹99. No checkout, and no booking link unless `VITE_FINLIT_CONTACT_URL` or `VITE_FINLIT_BOOKING_URL` is set to a real page. | The price is the published list price. Taking payment is out of scope. The contact button says so when no page is configured. |
 | Registration | Footer states FinLit says it is not registered with SEBI or AMFI, and that a compliance review of this prototype has not happened. | The brief forbids inventing an approval. |
 | Analytics | In-memory events, no amounts, cleared on refresh | A third-party tracker would export financial inputs. |
 | Extra event | `inputs_rejected` | The brief asks for a calculator error rate, which the named event list does not cover. |

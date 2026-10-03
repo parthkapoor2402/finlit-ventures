@@ -6,7 +6,7 @@ export type ReviewChoice = 'none' | '1' | '3' | '6' | 'date'
 export type SavedRecap = {
   id: string
   savedAt: string
-  reason: AssessmentReason
+  reason: AssessmentReason | null
   current: string
   proposed: string
   months: string

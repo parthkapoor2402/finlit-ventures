@@ -79,7 +79,7 @@ export const REGISTRATION_LINE =
   'FinLit states that it is not registered with SEBI or AMFI. A compliance review of this prototype has not been completed. This is not a recommendation to buy, hold, sell, continue, reduce, or stop an investment.'
 
 export const REVIEW_LINE =
-  'An optional FinLit review starts at ₹99. This prototype does not take payment.'
+  'An optional FinLit review is listed at ₹99. This prototype does not take payment, does not book that review, and the calculator stays free.'
 
 export const SAMPLE_BANNER =
   'Illustrative sample, using Ananya’s ₹12,000 SIP as an example. Ananya has not been interviewed. This is not your SIP, and this session is not counted as a decision.'
