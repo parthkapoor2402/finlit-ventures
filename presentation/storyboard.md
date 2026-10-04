@@ -2,7 +2,7 @@
 
 The deck argues that Skip Check should be tested, and it stops before any wireframe.
 
-1. Market landscape, on a white field. The problem block says a cash gap and a market scare need different treatment, and names the reason, equal Keep / Reduce / Pause, What if, and the rupee line. The revenue block says Skip Check is free so that clarity can raise connects into work listed from ₹99 to ₹2,499, and that this lift has not been measured. Market buzz says contributions are still rising and that July’s 50.30 lakh count must not size the product. The job, the choice block, the actors, and the July chart are unchanged.
+1. Opening story. Skip Check by FinLit Ventures offers personalised clarity before an SIP decision. Investors reconsider a SIP for different reasons, and an investing app’s amounts do not explain those reasons. The job is reconstructed from desk research, not an interview. Skip Check explains the contribution difference and does not execute the change. The check is free. A pathway toward published plans from ₹99 to ₹2,499 is a hypothesis, and no conversion lift has been measured. August 2026 contributions were ₹32,297 crore across 10.02 crore accounts. July’s 50.30 lakh discontinued or completed SIPs are not a count of voluntary pauses.
 
 2. User evidence. Three Reddit threads are paraphrased and linked. Under them, Kuvera, Groww, and Mint with Economic Times are each read as evidence, then an interpretation marked as a hypothesis, then an implication. Nobody has been interviewed.
 
