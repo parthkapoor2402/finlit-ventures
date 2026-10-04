@@ -1,6 +1,6 @@
 # Slide 6 sources
 
-The six frames are screenshots of the live desktop assessment at `http://127.0.0.1:5173`, which is the same flow as https://skip-check.vercel.app. The comparison uses a current monthly SIP of ₹12,000, a proposed ₹3,500, and 6 months. The selected reason is “My plans or timeline have changed.”
+The six frames are screenshots of the live desktop assessment at `http://127.0.0.1:5173`, which is the same flow as https://skip-check.vercel.app. THE MVP on this slide opens that address. The comparison uses a current monthly SIP of ₹12,000, a proposed ₹3,500, and 6 months. The selected reason is “My plans or timeline have changed.”
 
 Welcome, reason, amounts, the explanation, and the recap were captured with the content column narrowed so the type stays legible on the slide. The Keep / Reduce / Pause cards were captured at the full desktop width, with the three cards side by side. Nothing in the frames is a phone mockup or a redrawn interface.
 

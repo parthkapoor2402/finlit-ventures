@@ -1,5 +1,5 @@
 /**
- * Skip Check strategy deck, pages 1–10.
+ * Skip Check strategy deck. The cover is first, then pages 1–10.
  * Slide 9 is the system, journey, and go-to-market canvas.
  * Slide 10 is the detailed design that slide 9 links to.
  * node build.mjs
@@ -54,7 +54,7 @@ pptx.defineLayout({ name: 'DECK', width: 13.333, height: 7.5 })
 pptx.layout = 'DECK'
 pptx.author = 'FinLit Ventures'
 pptx.title = 'Skip Check: strategy, journey, and product logic'
-pptx.subject = 'Executive product strategy, pages 1 to 10. Desk research. No interviews.'
+pptx.subject = 'Executive product strategy. Cover, then pages 1 to 10. Desk research. No interviews.'
 
 function slideBase(section, page) {
   const slide = pptx.addSlide()
@@ -1829,10 +1829,44 @@ function frameShot(slide, file, iw, ih, x, y, boxW, boxH) {
   })
 }
 
+function cover() {
+  const slide = pptx.addSlide()
+  slide.addImage({
+    path: path.join(root, 'assets', 'cover-page.png'),
+    x: 0,
+    y: 0,
+    w: 13.333,
+    h: 7.5,
+  })
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 7.78,
+    y: 5.42,
+    w: 3.4,
+    h: 0.64,
+    fill: { color: '1E4D3A', transparency: 100 },
+    line: { color: '1E4D3A', transparency: 100, width: 0 },
+    rectRadius: 0.32,
+    hyperlink: { url: 'https://skip-check-demo.vercel.app/', tooltip: 'Watch the product demo' },
+  })
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 10.5,
+    y: 6.88,
+    w: 2.7,
+    h: 0.32,
+    fill: { color: 'FFFFFF', transparency: 100 },
+    line: { color: 'FFFFFF', transparency: 100, width: 0 },
+    hyperlink: { url: 'https://skip-check-demo.vercel.app/', tooltip: 'Watch the product demo' },
+  })
+}
+
 function slide6() {
   const slide = pptx.addSlide()
   journeyBar(slide, 'wire')
-  t(slide, 'Skip Check · FinLit Ventures · Annotated interaction flow', 0.16, 0.44, 7.3, 0.22, {
+  t(slide, 'THE MVP', 0.16, 0.44, 0.85, 0.22, {
+    fontSize: 12, bold: true, color: '1A4F8B', underline: true,
+    hyperlink: { url: 'https://skip-check.vercel.app/', tooltip: 'Open the live Skip Check page' },
+  })
+  t(slide, 'Skip Check · FinLit Ventures · Annotated interaction flow', 1.08, 0.44, 6.2, 0.22, {
     fontSize: 12, color: C.muted,
   })
   t(slide, 'Product principle: Skip Check informs. The user decides.', 7.5, 0.44, 5.66, 0.22, {
@@ -2200,7 +2234,7 @@ function slide9() {
   })
   t(slide, 'METRICS & RISKS', 9.3, 0.08, 3.8, 0.26, {
     fontSize: 13, bold: true, color: 'FFFFFF', align: 'right', underline: true, valign: 'middle',
-    hyperlink: { slide: 8, tooltip: 'Success metrics and guardrails' },
+    hyperlink: { slide: 9, tooltip: 'Success metrics and guardrails' },
   })
 
   frame(slide, 0.1, 0.52, 8.22, 3.58)
@@ -2213,7 +2247,7 @@ function slide9() {
   })
   t(slide, 'DETAILED DESIGN →', 6.5, 0.58, 1.7, 0.22, {
     fontSize: 11, bold: true, color: LINK, align: 'right', underline: true,
-    hyperlink: { slide: 10, tooltip: 'Detailed system design' },
+    hyperlink: { slide: 11, tooltip: 'Detailed system design' },
   })
 
   t(slide, 'Interface', 0.2, 0.9, 0.7, 0.32, { fontSize: 10, bold: true, color: C.forest, valign: 'middle' })
@@ -2294,7 +2328,7 @@ function slide9() {
   })
   t(slide, 'DETAILED JOURNEY →', 6.4, 4.26, 1.8, 0.22, {
     fontSize: 11, bold: true, color: LINK, align: 'right', underline: true,
-    hyperlink: { slide: 6, tooltip: 'Desktop wireframes and annotated journey' },
+    hyperlink: { slide: 7, tooltip: 'Desktop wireframes and annotated journey' },
   })
 
   const steps = ['Arrive', 'Intent', 'Reason', 'Inputs', 'Compare', 'Clarity', 'Recap', 'Own app']
@@ -2403,7 +2437,7 @@ function slide10() {
   })
   t(slide, '← OVERVIEW', 10.4, 0.74, 2.7, 0.22, {
     fontSize: 12, bold: true, color: LINK, align: 'right', underline: true,
-    hyperlink: { slide: 9, tooltip: 'System design, journey, and go-to-market' },
+    hyperlink: { slide: 10, tooltip: 'System design, journey, and go-to-market' },
   })
 
   card(slide, 0.14, 1.06, 4.28, 4.28)
@@ -2481,6 +2515,7 @@ function slide10() {
 
 const fiveOnly = process.argv.includes('--five')
 
+if (!fiveOnly) cover()
 slide1()
 slide2()
 slide3()
@@ -2494,7 +2529,7 @@ if (!fiveOnly) {
   slide10()
 }
 
-const expected = fiveOnly ? 5 : 10
+const expected = fiveOnly ? 5 : 11
 if (pptx.slides.length !== expected) {
   throw new Error(`Expected ${expected} slides, got ${pptx.slides.length}`)
 }
