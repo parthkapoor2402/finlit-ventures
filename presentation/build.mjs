@@ -1329,82 +1329,257 @@ function slide3() {
 }
 
 
+function slide4Header(slide) {
+  slide.background = { color: C.paper }
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0,
+    y: 0,
+    w: 13.333,
+    h: 0.38,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
+  })
+  slide.addText('SKIP CHECK', {
+    x: 0.2,
+    y: 0.04,
+    w: 1.65,
+    h: 0.28,
+    fontFace: 'Georgia',
+    fontSize: 13,
+    bold: true,
+    color: 'FFFFFF',
+    margin: 0,
+    valign: 'middle',
+  })
+  const tabs = [
+    ['MARKET LANDSCAPE', false],
+    ['USER EVIDENCE', false],
+    ['PERSONA', false],
+    ['JOURNEY', false],
+    ['FRAMING', true],
+    ['WHAT TO TEST', false],
+  ]
+  tabs.forEach((tab, index) => {
+    const x = 2.05 + index * 1.82
+    slide.addText(tab[0], {
+      x,
+      y: 0.05,
+      w: 1.74,
+      h: 0.22,
+      fontFace: 'Calibri',
+      fontSize: 11,
+      bold: true,
+      color: 'FFFFFF',
+      align: 'center',
+      margin: 0,
+    })
+    if (tab[1]) {
+      slide.addShape(pptx.shapes.RECTANGLE, {
+        x: x + 0.16,
+        y: 0.3,
+        w: 1.42,
+        h: 0.035,
+        fill: { color: 'FFFFFF' },
+        line: { color: 'FFFFFF', width: 0 },
+      })
+    }
+  })
+}
+
 function slide4() {
-  const slide = slideBase('Journey and hypotheses', 4)
-  headline(slide, 'The idea to test is a branched explanation, and a pause is sometimes the right result.')
-  body(
+  const slide = pptx.addSlide()
+  slide4Header(slide)
+
+  const left = 0.18
+  const colW = 6.46
+  const right = 6.74
+  const topY = 0.48
+  const topH = 2.7
+  const botY = 3.28
+  const botH = 3.38
+  card(slide, left, topY, colW, topH)
+  card(slide, right, topY, colW, topH)
+  card(slide, left, botY, colW, botH)
+  card(slide, right, botY, colW, botH)
+  card(slide, left, 6.76, 12.98, 0.64)
+
+  function mark(x, y) {
+    slide.addShape(pptx.shapes.RECTANGLE, {
+      x,
+      y: y + 0.03,
+      w: 0.07,
+      h: 0.18,
+      fill: { color: C.forest },
+      line: { color: C.forest, width: 0 },
+    })
+  }
+
+  mark(0.32, 0.58)
+  t(slide, 'WHAT IS THE TRUE PROBLEM?', 0.48, 0.56, 5.96, 0.26, { bold: true, color: C.forest, fontSize: 13 })
+  t(
     slide,
-    [
-      plain(
-        'The live homepage is the assessment. Landing offers “Explore my options” or “I’m just exploring.” A reason is optional and skippable: it changes emphasis, not the formula. Amounts are whole rupees, for 1 to 24 months. Keep, Reduce, and Pause have equal weight, and Pause is a proposed ₹0. What if uses sliders, numeric fields, and a reset. Three clarity questions can be skipped. A recap is local, and only after consent. A reminder stays in that browser. Increases are rejected. Above ₹10,00,000 needs confirmation. SIP Check Bot explains and does not decide. Analytics stay in memory and store no amounts.',
-      ),
-    ],
-    { x: 0.4, y: 1.48, w: 7.2, h: 1.72 },
+    'Investors who already run a SIP may keep, reduce, or pause future instalments for different reasons. A cash need, a market worry, a changed goal, and doubt about the fund are not the same decision.',
+    0.32,
+    0.9,
+    6.16,
+    0.62,
+    { fontSize: 13 },
   )
-  body(
+  t(
     slide,
-    [
-      plain(
-        'Why H2. The darker bar is the gap to test: an undifferentiated confirm, not the pause itself. It still helps if most pauses are legitimate, because the arithmetic is shown and Pause stays allowed. H1, mean 3.7, is a mechanism, not a rate. H3, mean 3.5, is background literacy. H4, mean 2.8, is a weak product bet and a high-confidence warning that the stoppage ratio is the wrong count. The six criteria were weighted equally. These are not user ratings.',
-      ),
-    ],
-    { x: 0.4, y: 3.28, w: 7.2, h: 1.28 },
+    'An investing app can show an amount and a confirm step. That display does not explain the change in light of the person’s own reason.',
+    0.32,
+    1.56,
+    6.16,
+    0.48,
+    { fontSize: 13 },
   )
-  body(
+  t(
     slide,
-    [
-      plain(
-        'Discrepancy. research/17 still says the prototype was “not built.” docs/product-decisions.md describes an earlier card, with a restart month and no persistence. informedChoiceRate counts reason_selected, calculation_viewed, choice_recorded, and comprehension_passed over valid_card_reached. The assessment emits different events and has no observed rate. Do not present that rate as a result. Falsify H2 if a cash-need user feels pressed to continue, or cannot restate the arithmetic. That test has not been run.',
-      ),
-    ],
-    { x: 0.4, y: 4.64, w: 7.2, h: 1.55 },
+    'Skip Check joins the stated reason to the difference in planned contributions: current minus proposed, times the months. The person still decides in their own app.',
+    0.32,
+    2.1,
+    6.16,
+    0.9,
+    { fontSize: 13 },
   )
 
-  card(slide, 7.8, 1.48, 5.12, 5.5)
-  slide.addText('Equal-weight desk scores, 0 to 5', {
-    x: 8.0,
-    y: 1.62,
-    w: 4.72,
-    h: 0.32,
-    fontFace: 'Georgia',
-    fontSize: 16,
-    color: C.ink,
-    margin: 0,
-  })
-  slide.addText('These are not survey results. H2 is the darker bar.', {
-    x: 8.0,
-    y: 1.98,
-    w: 4.72,
-    h: 0.32,
-    fontFace: 'Calibri',
-    fontSize: 14,
-    color: C.muted,
-    margin: 0,
-  })
-  bars(slide, {
-    x: 8.0,
-    y: 2.46,
-    labelW: 0.52,
-    trackW: 3.2,
-    max: 5,
-    rows: [
-      { label: 'H1', value: 3.7, display: '3.7', color: C.soft },
-      { label: 'H2', value: 4.3, display: '4.3', color: C.forest },
-      { label: 'H3', value: 3.5, display: '3.5', color: C.soft },
-      { label: 'H4', value: 2.8, display: '2.8', color: C.soft },
-    ],
-  })
-  slide.addText(
-    'Each label matches one explanation in the paragraph on the left. The number is that explanation’s mean desk score, on a scale from 0 to 5, and it sits in its own column.',
+  mark(6.88, 0.58)
+  t(slide, 'WHO FACES THIS PROBLEM?', 7.04, 0.56, 5.96, 0.26, { bold: true, color: C.forest, fontSize: 13 })
+  t(
+    slide,
+    'Ananya Shah, 31, in Pune, is the one teaching case. She is salaried, with two equity SIPs of ₹12,000 a month and a house goal about eight years away. She was not interviewed.',
+    6.88,
+    0.9,
+    6.16,
+    0.62,
+    { fontSize: 13 },
+  )
+  t(slide, 'Market-worry month.', 6.88, 1.58, 6.16, 0.22, { bold: true, fontSize: 13 })
+  t(
+    slide,
+    'The fund is down, and a colleague says to wait for the bottom. She needs the rupee difference, with Keep, Reduce, and Pause left equal.',
+    6.88,
+    1.82,
+    6.16,
+    0.46,
+    { fontSize: 13 },
+  )
+  t(slide, 'Salary-delay month. Same person.', 6.88, 2.32, 6.16, 0.22, { bold: true, fontSize: 13, color: C.amber })
+  t(
+    slide,
+    'Her salary is one to three months late. Pause is a legitimate result, and existing units generally stay invested.',
+    6.88,
+    2.56,
+    6.16,
+    0.5,
+    { fontSize: 13 },
+  )
+
+  mark(0.32, 3.4)
+  t(slide, 'HOW DO WE KNOW THIS IS REAL?', 0.48, 3.38, 5.96, 0.24, { bold: true, color: C.forest, fontSize: 13 })
+  const evidence = [
     {
-      x: 8.0,
-      y: 5.28,
-      w: 4.72,
-      h: 1.4,
+      y: 3.7,
+      h: 0.7,
+      runs: [
+        plain('Public threads show one use of SIP cash for an education loan, and one question about stopping for a possible correction. Each thread is a single anecdote, not a rate. '),
+        link('Loan thread', URLS.redditLoan),
+        plain('. '),
+        link('Correction thread', URLS.redditFear),
+        plain('.'),
+      ],
+    },
+    {
+      y: 4.44,
+      h: 0.62,
+      runs: [
+        plain('Help pages record a rule people misunderstand. '),
+        link('Kuvera’s help', URLS.kuvera),
+        plain(' says a stop is not a withdrawal. '),
+        link('Groww’s help', URLS.groww),
+        plain(' says a near-dated cancel can still be debited.'),
+      ],
+    },
+    {
+      y: 5.1,
+      h: 0.7,
+      runs: [
+        plain('The explanation selected for a test is one confirm path for different reasons. That desk judgement is not a user rating, and the comparison has not been run. July’s 50.30 lakh discontinued or completed SIPs are not voluntary pauses. '),
+        link('July count', URLS.etStoppage),
+        plain('.'),
+      ],
+    },
+    {
+      y: 5.84,
+      h: 0.68,
+      runs: [
+        plain('No interview, usability test, or conversion measurement has been completed. The informed-choice rate in the notes belongs to an earlier flow. It is not a result on the live page.'),
+      ],
+    },
+  ]
+  evidence.forEach((item) => {
+    slide.addText(item.runs, {
+      x: 0.32,
+      y: item.y,
+      w: 6.16,
+      h: item.h,
       fontFace: 'Calibri',
-      fontSize: 14,
+      fontSize: 12,
       color: C.ink,
       margin: 0,
+      valign: 'top',
+    })
+  })
+
+  mark(6.88, 3.4)
+  t(slide, 'WHAT VALUE DOES SOLVING IT CREATE?', 7.04, 3.38, 5.96, 0.24, { bold: true, color: C.forest, fontSize: 13 })
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 9.9,
+    y: 3.72,
+    w: 0.01,
+    h: 2.78,
+    fill: { color: C.line },
+    line: { color: C.line, width: 0 },
+  })
+  t(slide, 'FOR THE INVESTOR', 6.88, 3.7, 2.9, 0.22, { bold: true, color: C.forest, fontSize: 12 })
+  t(slide, 'FOR FINLIT VENTURES', 10.04, 3.7, 2.96, 0.22, { bold: true, color: C.amber, fontSize: 12 })
+  const investor = [
+    'She can see current minus proposed, times the months. That figure is less in planned contributions, not an investment loss.',
+    'The reason changes the emphasis only. Keep, Reduce, and Pause stay equal, and Pause is a proposed ₹0.',
+    'Units she already holds generally stay invested. Any change is still made in her own app.',
+  ]
+  const business = [
+    'The check is free, so the choice can be clear before a paid conversation.',
+    'Listed plans run from a first session at ₹99 to one year at ₹2,499. This prototype does not take payment.',
+    'A path from the free check to a paid plan is a hypothesis. No conversion has been measured.',
+  ]
+  investor.forEach((line, index) => {
+    t(slide, line, 6.88, 4.0 + index * 0.82, 2.9, 0.76, { fontSize: 12 })
+  })
+  business.forEach((line, index) => {
+    t(slide, line, 10.04, 4.0 + index * 0.82, 2.96, 0.76, { fontSize: 12 })
+  })
+
+  t(slide, 'WHY LOOK NOW', 0.32, 6.84, 1.7, 0.22, { bold: true, color: C.forest, fontSize: 12 })
+  slide.addText(
+    [
+      plain('Contributions were higher in the '),
+      link('August 2026 note', URLS.amfiAug),
+      plain(' than in the '),
+      link('July note', URLS.amfiJul),
+      plain('. This is not framed as a redemption crisis. A test is still timely, because a cash need and a market worry can share one thin confirm, and the free check can be tried before anyone is asked to pay.'),
+    ],
+    {
+      x: 2.05,
+      y: 6.84,
+      w: 10.9,
+      h: 0.48,
+      fontFace: 'Calibri',
+      fontSize: 12,
+      color: C.ink,
+      margin: 0,
+      valign: 'top',
     },
   )
 }
