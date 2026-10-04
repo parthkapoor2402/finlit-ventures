@@ -369,28 +369,29 @@ function iconPages(slide, x, y) {
 
 function slide1() {
   const slide = pptx.addSlide()
-  slide.background = { color: C.paper }
+  slide.background = { color: 'FFFFFF' }
 
   slide.addShape(pptx.shapes.RECTANGLE, {
     x: 0,
     y: 0,
     w: 13.333,
-    h: 0.4,
+    h: 0.58,
     fill: { color: C.forest },
     line: { color: C.forest, width: 0 },
   })
   slide.addText('SKIP CHECK', {
     x: 0.22,
-    y: 0.04,
-    w: 1.7,
-    h: 0.28,
+    y: 0.1,
+    w: 1.85,
+    h: 0.38,
     fontFace: 'Georgia',
-    fontSize: 14,
+    fontSize: 16,
     bold: true,
     color: 'FFFFFF',
     margin: 0,
     valign: 'middle',
   })
+
   const tabs = [
     ['MARKET LANDSCAPE', true],
     ['USER EVIDENCE', false],
@@ -400,24 +401,264 @@ function slide1() {
     ['WHAT TO TEST', false],
   ]
   tabs.forEach((tab, index) => {
-    const x = 2.1 + index * 1.78
+    const x = 2.15 + index * 1.82
     slide.addText(tab[0], {
       x,
-      y: 0.05,
-      w: 1.7,
-      h: 0.24,
+      y: 0.12,
+      w: 1.72,
+      h: 0.28,
       fontFace: 'Calibri',
       fontSize: 12,
       bold: true,
       color: 'FFFFFF',
       align: 'center',
       margin: 0,
-      valign: 'middle',
     })
     if (tab[1]) {
       slide.addShape(pptx.shapes.RECTANGLE, {
-        x: x + 0.14,
-        y: 0.33,
+        x: x + 0.12,
+        y: 0.42,
+        w: 1.48,
+        h: 0.045,
+        fill: { color: 'FFFFFF' },
+        line: { color: 'FFFFFF', width: 0 },
+      })
+    }
+  })
+
+  const margin = 0.16
+  const gap = 0.06
+  const width = 13.333 - margin * 2
+  const pad = 0.13
+  const textW = width - pad * 2
+  const top = 0.66
+  const limit = 7.42
+  const hProblem = 0.82
+  const hFeatures = 1.92
+  const hMid = 1.22
+  const yProblem = top
+  const yFeatures = yProblem + hProblem + gap
+  const yMid = yFeatures + hFeatures + gap
+  const yBottom = yMid + hMid + gap
+  const hBottom = limit - yBottom
+  const colGap = 0.08
+  const colW = (width - colGap) / 2
+  const chartW = 4.72
+  const buzzW = width - colGap - chartW
+
+  function bodyText(content, x, y, w, h, extra = {}) {
+    slide.addText(content, {
+      x,
+      y,
+      w,
+      h,
+      fontFace: 'Calibri',
+      fontSize: 13,
+      color: C.ink,
+      margin: 0,
+      valign: 'top',
+      lineSpacing: 16,
+      ...extra,
+    })
+  }
+
+  function sentences(list) {
+    return list.map((sentence, index) => ({
+      text: sentence,
+      options: { breakLine: index < list.length - 1, color: C.ink },
+    }))
+  }
+
+  function close(run) {
+    return { text: run.text, options: { ...run.options, breakLine: true } }
+  }
+
+  panel(slide, margin, yProblem, width, hProblem)
+  panelTitle(slide, 'THE PROBLEM', margin + pad, yProblem + 0.04, textW)
+  bodyText(
+    'At a SIP change, a cash need and a market scare meet the same thin confirm, so the person cannot see what the next instalments mean, and Skip Check is built so they can restate the rupee difference, Pause stays available, and they still decide in their own app.',
+    margin + pad,
+    yProblem + 0.32,
+    textW,
+    0.46,
+  )
+
+  panel(slide, margin, yFeatures, width, hFeatures)
+  panelTitle(slide, 'WHAT SKIP CHECK INCLUDES', margin + pad, yFeatures + 0.04, textW)
+  bodyText(
+    sentences([
+      'The need is a reason that changes emphasis only, so the formula stays (current − proposed) × months, in whole rupees, for 1–24 months, and an increase is still rejected.',
+      'The need is three equal choices, so Keep, Reduce, and Pause stay side by side, and Pause remains a proposed ₹0.',
+      'The need is to try another amount first, so What if sliders and numeric fields update the cards, reset restores the inputs, and above ₹10,00,000 asks for confirmation.',
+      'The need is to tell a smaller contribution from a loss, so the difference is less in planned contributions and units generally stay invested unless redeemed separately.',
+      'The need is a check the person may skip, so three optional questions can be skipped, or they confirm units, the rupee difference, and that it is not a forecast.',
+      'The need is a recap without an email or a message, so it can be saved in that browser only after consent.',
+      'The need is an explainer that will not decide or change the SIP, so the bot restates the numbers, and empty contact or booking URLs say a person is not connected.',
+    ]),
+    margin + pad,
+    yFeatures + 0.32,
+    textW,
+    hFeatures - 0.36,
+  )
+
+  panel(slide, margin, yMid, colW, hMid)
+  panelTitle(slide, 'JTBD', margin + pad, yMid + 0.04, colW - pad * 2)
+  slide.addText('Reconstructed from desk research. This is not an interview.', {
+    x: margin + pad,
+    y: yMid + 0.3,
+    w: colW - pad * 2,
+    h: 0.2,
+    fontFace: 'Calibri',
+    fontSize: 13,
+    italic: true,
+    color: C.muted,
+    align: 'center',
+    margin: 0,
+  })
+  slide.addText(
+    'When I am about to change a SIP, I want the next instalments explained in light of my own reason, so I can choose without guessing.',
+    {
+      x: margin + pad,
+      y: yMid + 0.5,
+      w: colW - pad * 2,
+      h: 0.66,
+      fontFace: 'Georgia',
+      fontSize: 14,
+      color: C.ink,
+      align: 'center',
+      margin: 0,
+      lineSpacing: 18,
+    },
+  )
+
+  const xRev = margin + colW + colGap
+  panel(slide, xRev, yMid, colW, hMid)
+  panelTitle(slide, 'REVENUE MODEL', xRev + pad, yMid + 0.04, colW - pad * 2)
+  bodyText(
+    sentences([
+      'The need is that a person will not start a paid conversation before the choice is clear, so Skip Check is free and is built to create more connects for FinLit Ventures.',
+      'The need is paid work only after that connect, so the listed range is ₹99 to ₹2,499, this prototype takes no payment, and the lift has not been measured.',
+    ]),
+    xRev + pad,
+    yMid + 0.32,
+    colW - pad * 2,
+    hMid - 0.38,
+  )
+
+  panel(slide, margin, yBottom, buzzW, hBottom)
+  panelTitle(slide, 'MARKET BUZZ', margin + pad, yBottom + 0.04, buzzW - pad * 2)
+  bodyText(
+    [
+      plain('The need is rising contributions, not a redemption crisis, so this is not an anti-panic product: '),
+      link('August ₹32,297 crore', URLS.amfiAug),
+      plain(' (10.02 crore accounts) and '),
+      link('July ₹31,961 crore', URLS.amfiJul),
+      close(plain(' (9.90 crore accounts, not people).')),
+      plain('The need is a count of chosen pauses, so July’s '),
+      link('50.30 lakh discontinued or completed SIPs', URLS.etStoppage),
+      close(
+        plain(
+          ' is the wrong size: Economic Times citing AMFI is secondary, and a ceased SIP includes three consecutive failed instalments.',
+        ),
+      ),
+      plain('The need is that public writing mixes scare and cash, so both are explained and Pause stays: '),
+      link('Mint', URLS.mint),
+      plain(' and '),
+      link('Economic Times', URLS.etCorrections),
+      close(
+        plain(
+          ' say a cash shock can justify a pause and a correction is a weak reason, as commentary, not a behaviour count.',
+        ),
+      ),
+      plain(
+        'The need is that a stop is still confused with redeeming, so this screen says units generally stay invested: ',
+      ),
+      link('Kuvera', URLS.kuvera),
+      plain(' says a stop is not a withdrawal, and '),
+      link('Groww', URLS.groww),
+      plain(' says a near-dated debit can still go through.'),
+    ],
+    margin + pad,
+    yBottom + 0.32,
+    buzzW - pad * 2,
+    hBottom - 0.4,
+  )
+
+  const xChart = margin + buzzW + colGap
+  panel(slide, xChart, yBottom, chartW, hBottom)
+  panelTitle(slide, 'JULY 2026', xChart + pad, yBottom + 0.04, chartW - pad * 2)
+  stackedBars(slide, {
+    x: xChart + pad,
+    y: yBottom + 0.36,
+    w: chartW - pad * 2,
+    max: 70,
+    step: 0.72,
+    rows: [
+      { label: 'New registrations', value: 61.44, display: '61.44', color: C.forest },
+      { label: 'Discontinued or completed', value: 50.3, display: '50.30', color: C.amber },
+    ],
+  })
+  bodyText(
+    [
+      plain('A ceased SIP includes three consecutive failed instalments. Source: '),
+      link('Economic Times, citing AMFI', URLS.etStoppage),
+      plain('. Secondary, not re-read from an AMFI workbook.'),
+    ],
+    xChart + pad,
+    yBottom + 1.86,
+    chartW - pad * 2,
+    hBottom - 1.94,
+  )
+}
+
+function slide2Header(slide) {
+  slide.background = { color: C.paper }
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0,
+    y: 0,
+    w: 13.333,
+    h: 0.38,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
+  })
+  slide.addText('SKIP CHECK', {
+    x: 0.2,
+    y: 0.04,
+    w: 1.65,
+    h: 0.28,
+    fontFace: 'Georgia',
+    fontSize: 13,
+    bold: true,
+    color: 'FFFFFF',
+    margin: 0,
+    valign: 'middle',
+  })
+  const tabs = [
+    ['MARKET LANDSCAPE', false],
+    ['USER EVIDENCE', true],
+    ['PERSONA', false],
+    ['JOURNEY', false],
+    ['FRAMING', false],
+    ['WHAT TO TEST', false],
+  ]
+  tabs.forEach((tab, index) => {
+    const x = 2.05 + index * 1.82
+    slide.addText(tab[0], {
+      x,
+      y: 0.05,
+      w: 1.74,
+      h: 0.22,
+      fontFace: 'Calibri',
+      fontSize: 11,
+      bold: true,
+      color: 'FFFFFF',
+      align: 'center',
+      margin: 0,
+    })
+    if (tab[1]) {
+      slide.addShape(pptx.shapes.RECTANGLE, {
+        x: x + 0.16,
+        y: 0.3,
         w: 1.42,
         h: 0.035,
         fill: { color: 'FFFFFF' },
@@ -425,453 +666,395 @@ function slide1() {
       })
     }
   })
+}
 
-  card(slide, 0.22, 0.48, 12.89, 1.54)
-  slide.addText('SKIP CHECK BY FINLIT VENTURES', {
-    x: 0.4,
-    y: 0.54,
-    w: 12.52,
-    h: 0.36,
+function slide2() {
+  const slide = pptx.addSlide()
+  slide2Header(slide)
+
+  slide.addText('Understanding the SIP reconsideration moment.', {
+    x: 0.22,
+    y: 0.44,
+    w: 8.3,
+    h: 0.34,
     fontFace: 'Georgia',
-    fontSize: 26,
+    fontSize: 20,
+    color: C.ink,
+    margin: 0,
+  })
+  slide.addText('Secondary research and a product-flow review. Primary investor validation is still outstanding.', {
+    x: 8.4,
+    y: 0.46,
+    w: 4.7,
+    h: 0.32,
+    fontFace: 'Calibri',
+    fontSize: 12,
+    color: C.muted,
+    align: 'right',
+    margin: 0,
+  })
+
+  card(slide, 0.22, 0.86, 3.85, 2.52)
+  slide.addText('RESEARCH FOUNDATION', {
+    x: 0.36,
+    y: 0.94,
+    w: 3.56,
+    h: 0.26,
+    fontFace: 'Calibri',
+    fontSize: 13,
     bold: true,
     color: C.forest,
     margin: 0,
-    valign: 'middle',
   })
-  slide.addText('Personalised clarity before an SIP decision.', {
-    x: 0.4,
-    y: 0.9,
-    w: 12.52,
-    h: 0.28,
-    fontFace: 'Georgia',
-    fontSize: 18,
-    color: C.ink,
+  slide.addText(
+    'Public threads show questions people ask. They do not show how common those questions are.\n\nAMFI notes describe industry activity. A discontinued or completed SIP is not a stated reason.\n\nHelp articles record a misunderstood rule. They are not a sample of investors.\n\nThe live Skip Check flow shows what the page does. It does not show that people find it useful.',
+    {
+      x: 0.36,
+      y: 1.24,
+      w: 3.56,
+      h: 2.02,
+      fontFace: 'Calibri',
+      fontSize: 12,
+      color: C.ink,
+      margin: 0,
+    },
+  )
+
+  card(slide, 4.17, 0.86, 5.15, 2.52)
+  slide.addText('WHY INVESTORS RECONSIDER', {
+    x: 4.31,
+    y: 0.94,
+    w: 4.86,
+    h: 0.26,
+    fontFace: 'Calibri',
+    fontSize: 13,
+    bold: true,
+    color: C.forest,
     margin: 0,
   })
   slide.addText(
     [
-      plain(
-        'Investors consider changing a SIP for different personal reasons. Existing tools and investing apps may show amounts and transaction options, but that does not explain the implications in the context of the person’s reason. Skip Check addresses this gap with ',
-      ),
-      { text: 'reason-aware, personalised decision support', options: { bold: true, color: C.ink } },
-      plain(
-        '. The reason changes the emphasis, not the formula: current minus proposed, times one to twenty-four months, in whole rupees.',
-      ),
+      { text: 'Cash-flow pressure. ', options: { bold: true } },
+      plain('Public threads describe an education-loan use of SIP cash, and a two-month pause in a cash crunch. '),
+      link('Loan thread', URLS.redditLoan),
+      plain('. '),
+      link('Cash-crunch thread', URLS.redditDrawdown),
+      plain('. Not a rate.\n'),
+      { text: 'Market uncertainty. ', options: { bold: true } },
+      plain('A public thread asks whether to stop because of a possible correction. '),
+      link('Correction thread', URLS.redditFear),
+      plain('. Not a rate.\n'),
+      { text: 'Changing goals. ', options: { bold: true } },
+      plain('The live page offers this reason. No matching thread was in this sample. A trigger to validate.\n'),
+      { text: 'Understanding the investment. ', options: { bold: true } },
+      plain('The live page offers this reason. Not a measured preference.\n'),
+      { text: 'The action itself. ', options: { bold: true } },
+      link('Kuvera’s help', URLS.kuvera),
+      plain(' says stopping is not a withdrawal. '),
+      link('Groww’s help', URLS.groww),
+      plain(' says a near-dated cancel can still be debited.'),
     ],
     {
-      x: 0.4,
-      y: 1.2,
-      w: 12.52,
-      h: 0.72,
+      x: 4.31,
+      y: 1.22,
+      w: 4.86,
+      h: 2.06,
       fontFace: 'Calibri',
-      fontSize: 14,
+      fontSize: 11,
       color: C.ink,
       margin: 0,
-      lineSpacing: 16,
     },
   )
 
-  card(slide, 0.22, 2.1, 8.36, 2.46)
-  slide.addText('THE JOB TO BE DONE', {
-    x: 0.4,
-    y: 2.18,
-    w: 3.15,
+  card(slide, 9.42, 0.86, 3.69, 2.52)
+  slide.addText('SIP CONTRIBUTIONS', {
+    x: 9.56,
+    y: 0.94,
+    w: 3.4,
     h: 0.24,
     fontFace: 'Calibri',
     fontSize: 13,
     bold: true,
     color: C.forest,
     margin: 0,
-    valign: 'middle',
   })
-  slide.addText('Reconstructed from desk research, not an interview.', {
-    x: 3.5,
-    y: 2.18,
-    w: 4.88,
-    h: 0.24,
+  slide.addText('₹ crore. Both bars use a scale from 0.', {
+    x: 9.56,
+    y: 1.18,
+    w: 3.4,
+    h: 0.22,
+    fontFace: 'Calibri',
+    fontSize: 12,
+    color: C.muted,
+    margin: 0,
+  })
+  const contrib = [
+    { label: 'July 2026', value: 31961, display: '31,961' },
+    { label: 'August 2026', value: 32297, display: '32,297' },
+  ]
+  contrib.forEach((row, index) => {
+    const y = 1.48 + index * 0.58
+    slide.addText(row.label, {
+      x: 9.56,
+      y,
+      w: 3.4,
+      h: 0.2,
+      fontFace: 'Calibri',
+      fontSize: 12,
+      color: C.ink,
+      margin: 0,
+    })
+    const trackW = 2.35
+    slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+      x: 9.56,
+      y: y + 0.22,
+      w: trackW,
+      h: 0.18,
+      fill: { color: C.track },
+      line: { color: C.track, width: 0 },
+      rectRadius: 0.04,
+    })
+    slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+      x: 9.56,
+      y: y + 0.22,
+      w: Math.max(0.08, (row.value / 36000) * trackW),
+      h: 0.18,
+      fill: { color: index === 1 ? C.forest : C.soft },
+      line: { color: index === 1 ? C.forest : C.soft, width: 0 },
+      rectRadius: 0.04,
+    })
+    slide.addText(row.display, {
+      x: 11.98,
+      y: y + 0.14,
+      w: 0.95,
+      h: 0.32,
+      fontFace: 'Calibri',
+      fontSize: 13,
+      bold: true,
+      color: C.ink,
+      margin: 0,
+      valign: 'middle',
+    })
+  })
+  slide.addText(
+    [
+      plain('Contributions rose. 10.02 crore August accounts are accounts, not people. '),
+      link('August note', URLS.amfiAug),
+      plain('. '),
+      link('July note', URLS.amfiJul),
+      plain('.'),
+    ],
+    {
+      x: 9.56,
+      y: 2.7,
+      w: 3.4,
+      h: 0.56,
+      fontFace: 'Calibri',
+      fontSize: 11,
+      color: C.ink,
+      margin: 0,
+    },
+  )
+
+  card(slide, 0.22, 3.48, 12.89, 1.18)
+  slide.addText('THE CURRENT DECISION JOURNEY', {
+    x: 0.36,
+    y: 3.54,
+    w: 6.2,
+    h: 0.22,
     fontFace: 'Calibri',
     fontSize: 13,
+    bold: true,
+    color: C.forest,
+    margin: 0,
+  })
+  slide.addText('Candidate stages. Only the threads and help articles are documented.', {
+    x: 6.6,
+    y: 3.54,
+    w: 6.3,
+    h: 0.22,
+    fontFace: 'Calibri',
+    fontSize: 12,
     italic: true,
     color: C.muted,
     align: 'right',
     margin: 0,
-    valign: 'middle',
   })
-  slide.addText(
-    'When I’m reconsidering my SIP because my financial situation, confidence, or priorities have changed, I want to understand how keeping, reducing, or pausing future contributions changes my planned investment amounts, so I can make a more informed decision without guessing.',
-    {
-      x: 0.4,
-      y: 2.46,
-      w: 8.0,
-      h: 1.1,
+  const steps = [
+    ['1', 'A trigger', 'Cash or a possible correction, in public threads.'],
+    ['2', 'Their app', 'Help articles describe cancel and stop. Not a watched session.'],
+    ['3', 'A search', 'The same questions appear on a forum or a help page.'],
+    ['4', 'A choice', 'Replies split. That split is not a measured rate.'],
+    ['5', 'Their app again', 'A change, if any, is made there. Skip Check does not execute it.'],
+  ]
+  steps.forEach((step, index) => {
+    const x = 0.36 + index * 2.54
+    slide.addText(step[0], {
+      x,
+      y: 3.8,
+      w: 0.28,
+      h: 0.24,
       fontFace: 'Georgia',
       fontSize: 14,
-      italic: true,
-      color: C.ink,
-      margin: 0,
-      lineSpacing: 16,
-    },
-  )
-  slide.addText('Different reasons. One need: clarity before commitment.', {
-    x: 0.4,
-    y: 3.58,
-    w: 8.0,
-    h: 0.26,
-    fontFace: 'Georgia',
-    fontSize: 15,
-    bold: true,
-    color: C.forest,
-    margin: 0,
-  })
-  slide.addText(
-    'Reasons the product records include: “My expenses or priorities have changed.” “I’m unsure about market movements.” “My plans or timeline have changed.” “I want to understand my investment better.”',
-    {
-      x: 0.4,
-      y: 3.88,
-      w: 8.0,
-      h: 0.54,
-      fontFace: 'Calibri',
-      fontSize: 13,
-      color: C.ink,
-      margin: 0,
-      lineSpacing: 16,
-    },
-  )
-
-  card(slide, 8.7, 2.1, 4.41, 2.46)
-  slide.addText('DECISION SUPPORT, NOT\nTRANSACTION EXECUTION', {
-    x: 8.86,
-    y: 2.2,
-    w: 4.08,
-    h: 0.5,
-    fontFace: 'Georgia',
-    fontSize: 14,
-    bold: true,
-    color: C.ink,
-    margin: 0,
-    lineSpacing: 16,
-  })
-  slide.addText(
-    'Investors change SIPs in their own apps. Skip Check explains the contribution difference and does not execute, pause, cancel, or restart a SIP.',
-    {
-      x: 8.86,
-      y: 2.74,
-      w: 4.08,
-      h: 0.7,
-      fontFace: 'Calibri',
-      fontSize: 13,
-      color: C.ink,
-      margin: 0,
-      lineSpacing: 15,
-    },
-  )
-  ;[
-    'Investor reconsidering a SIP',
-    'Skip Check comparison',
-    'Investor decides',
-    'Investor returns to their own app',
-  ].forEach((label, index) => {
-    const y = 3.5 + index * 0.25
-    slide.addShape(pptx.shapes.OVAL, {
-      x: 8.88,
-      y: y + 0.01,
-      w: 0.22,
-      h: 0.22,
-      fill: { color: C.card },
-      line: { color: C.forest, width: 1.25 },
-    })
-    slide.addText(String(index + 1), {
-      x: 8.88,
-      y: y + 0.01,
-      w: 0.22,
-      h: 0.22,
-      fontFace: 'Calibri',
-      fontSize: 11,
-      bold: true,
       color: C.forest,
-      align: 'center',
       margin: 0,
-      valign: 'middle',
     })
-    slide.addText(label, {
-      x: 9.18,
-      y,
-      w: 3.76,
+    slide.addText(step[1], {
+      x: x + 0.3,
+      y: 3.8,
+      w: 2.1,
       h: 0.24,
       fontFace: 'Calibri',
       fontSize: 13,
+      bold: true,
       color: C.ink,
       margin: 0,
-      valign: 'middle',
     })
-  })
-
-  card(slide, 0.22, 4.66, 8.36, 1.28)
-  slide.addText('A FREE FEATURE. A POTENTIAL CONVERSION DRIVER.', {
-    x: 0.4,
-    y: 4.74,
-    w: 8.0,
-    h: 0.26,
-    fontFace: 'Georgia',
-    fontSize: 14,
-    bold: true,
-    color: C.ink,
-    margin: 0,
-  })
-  slide.addText(
-    [
-      plain(
-        'Skip Check is free. By addressing the person’s reason, it aims to build trust and create a pathway to FinLit’s existing paid listing plans, published from ₹99 to ₹2,499. ',
-      ),
-      { text: 'This is a hypothesis: ', options: { bold: true, color: C.ink } },
-      plain(
-        'personalised clarity may increase the likelihood that visitors explore or purchase a relevant FinLit plan. No conversion lift has been measured. This prototype does not take payment.',
-      ),
-    ],
-    {
-      x: 0.4,
-      y: 5.02,
-      w: 8.0,
-      h: 0.84,
-      fontFace: 'Calibri',
-      fontSize: 13,
-      color: C.ink,
-      margin: 0,
-      lineSpacing: 15,
-    },
-  )
-
-  card(slide, 8.7, 4.66, 4.41, 1.28)
-  slide.addText('A LARGE, ACTIVE SIP ECOSYSTEM.', {
-    x: 8.86,
-    y: 4.74,
-    w: 4.1,
-    h: 0.24,
-    fontFace: 'Georgia',
-    fontSize: 13,
-    color: C.ink,
-    margin: 0,
-  })
-  slide.addText('₹32,297 crore', {
-    x: 8.86,
-    y: 5.02,
-    w: 2.08,
-    h: 0.3,
-    fontFace: 'Georgia',
-    fontSize: 16,
-    bold: true,
-    color: C.forest,
-    margin: 0,
-  })
-  slide.addText('August 2026 SIP contributions.', {
-    x: 8.86,
-    y: 5.32,
-    w: 2.08,
-    h: 0.5,
-    fontFace: 'Calibri',
-    fontSize: 13,
-    color: C.ink,
-    margin: 0,
-    lineSpacing: 15,
-  })
-  slide.addText('10.02 crore', {
-    x: 11.0,
-    y: 5.02,
-    w: 1.94,
-    h: 0.3,
-    fontFace: 'Georgia',
-    fontSize: 16,
-    bold: true,
-    color: C.forest,
-    margin: 0,
-  })
-  slide.addText('Contributing accounts, not people.', {
-    x: 11.0,
-    y: 5.32,
-    w: 1.94,
-    h: 0.5,
-    fontFace: 'Calibri',
-    fontSize: 13,
-    color: C.ink,
-    margin: 0,
-    lineSpacing: 15,
-  })
-
-  slide.addText(
-    'About 50.30 lakh SIPs were discontinued or tenure-completed in July 2026. Discontinued SIPs are not a count of voluntary pauses from market worry or cash distress.',
-    {
-      x: 0.22,
-      y: 6.02,
-      w: 12.89,
-      h: 0.24,
-      fontFace: 'Calibri',
-      fontSize: 13,
-      color: C.ink,
-      margin: 0,
-    },
-  )
-  slide.addText(
-    [
-      link('AMFI monthly note, August 2026', URLS.amfiAug),
-      plain('. '),
-      link('Economic Times, citing AMFI', URLS.etStoppage),
-      plain(', for the July count. That July figure was not re-read from an AMFI workbook.'),
-    ],
-    {
-      x: 0.22,
-      y: 6.26,
-      w: 12.89,
-      h: 0.2,
+    slide.addText(step[2], {
+      x,
+      y: 4.06,
+      w: 2.4,
+      h: 0.5,
       fontFace: 'Calibri',
       fontSize: 11,
+      color: C.ink,
       margin: 0,
-    },
-  )
-
-  const actorRows = [
-    ['Investor. ', 'Has a SIP and is reconsidering future contributions.', 0.22, 6.52, 7.15],
-    ['Investing app. ', 'Where the change is executed.', 7.52, 6.52, 5.58],
-    [
-      'Skip Check. ',
-      'Explains the planned-contribution difference from the selected reason and inputs.',
-      0.22,
-      6.76,
-      7.15,
-    ],
-    ['FinLit Ventures. ', 'Free feature, plus an optional pathway to paid plans.', 7.52, 6.76, 5.58],
-  ]
-  actorRows.forEach(([role, detail, x, y, w]) => {
-    slide.addText(
-      [
-        { text: role, options: { bold: true, color: C.forest } },
-        { text: detail, options: { color: C.ink } },
-      ],
-      {
-        x,
-        y,
-        w,
-        h: 0.24,
-        fontFace: 'Calibri',
-        fontSize: 13,
-        margin: 0,
-        valign: 'middle',
-      },
-    )
+    })
   })
 
+  card(slide, 0.22, 4.76, 7.35, 1.92)
+  slide.addText('WHAT MAY BE NEEDED BEFORE A DECISION', {
+    x: 0.36,
+    y: 4.84,
+    w: 7.05,
+    h: 0.24,
+    fontFace: 'Calibri',
+    fontSize: 13,
+    bold: true,
+    color: C.forest,
+    margin: 0,
+  })
+  slide.addText('A mapping from this desk research to the live page. Not a usability result.', {
+    x: 0.36,
+    y: 5.08,
+    w: 7.05,
+    h: 0.2,
+    fontFace: 'Calibri',
+    fontSize: 12,
+    italic: true,
+    color: C.muted,
+    margin: 0,
+  })
+  const needs = [
+    ['Compare the three paths.', 'Keep, Reduce, and Pause are equal cards. Pause is a proposed ₹0.'],
+    ['See the rupees.', 'Current minus proposed, times the months. Not an investment loss.'],
+    ['Know what stays invested.', 'Pausing future contributions does not itself redeem existing units.'],
+    ['Name a reason.', 'The reason is optional. It changes emphasis, not the formula.'],
+    ['Keep the decision.', 'Any change is still made in the person’s own investing app.'],
+  ]
+  needs.forEach((row, index) => {
+    const y = 5.32 + index * 0.25
+    slide.addText(row[0], {
+      x: 0.36,
+      y,
+      w: 2.35,
+      h: 0.24,
+      fontFace: 'Calibri',
+      fontSize: 12,
+      bold: true,
+      color: C.ink,
+      margin: 0,
+    })
+    slide.addText(row[1], {
+      x: 2.72,
+      y,
+      w: 4.65,
+      h: 0.24,
+      fontFace: 'Calibri',
+      fontSize: 12,
+      color: C.ink,
+      margin: 0,
+    })
+  })
+
+  card(slide, 7.67, 4.76, 5.44, 1.92)
+  slide.addText('WHAT THE EVIDENCE SUGGESTS', {
+    x: 7.81,
+    y: 4.84,
+    w: 5.14,
+    h: 0.24,
+    fontFace: 'Calibri',
+    fontSize: 13,
+    bold: true,
+    color: C.forest,
+    margin: 0,
+  })
   slide.addText(
-    'FinLit states it is not registered with SEBI or AMFI. A compliance review of this prototype has not been completed. The difference is in planned contributions, not an investment loss. Existing units generally remain invested unless redeemed separately.',
+    'The reason can differ. Cash and a possible correction both appear in public threads. They are not shown to be equally common.\n\nChanging a contribution and understanding it are different questions. Kuvera’s article exists because a stop was read as a withdrawal.\n\nTrust needs a boundary. The live page calculates planned contributions, does not predict returns, and does not change the SIP.',
     {
-      x: 0.22,
-      y: 7.04,
-      w: 12.89,
-      h: 0.42,
+      x: 7.81,
+      y: 5.14,
+      w: 5.14,
+      h: 1.42,
       fontFace: 'Calibri',
-      fontSize: 13,
-      color: C.muted,
+      fontSize: 12,
+      color: C.ink,
       margin: 0,
-      lineSpacing: 15,
     },
   )
-}
 
-function slide2() {
-  const slide = slideBase('User evidence', 2)
-  headline(slide, 'The evidence is public writing. No investor has been interviewed for this product.')
-  body(
-    slide,
-    [
-      plain(
-        'Three threads, each read as evidence, then an interpretation, then an implication. The interpretation is a hypothesis. Nothing here is a quotation or a sample of Indian investors.',
-      ),
-    ],
-    { x: 0.4, y: 1.46, w: 12.52, h: 0.5 },
-  )
-
-  const cards = [
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 0.22,
+    y: 6.78,
+    w: 12.89,
+    h: 0.64,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
+    rectRadius: 0.04,
+  })
+  slide.addText(
+    'The opportunity is not simply to calculate a SIP difference. It is to make that difference understandable in the context of why the investor is reconsidering the contribution.',
     {
-      title: 'A scare, not a measured trend',
-      body: 'A poster asked whether to stop SIPs because of a possible market correction. Replies in that thread split among continuing, shifting from small-cap toward large-cap, and parking money to re-enter later. This supports a hypothesis that a scare and a plan can be mixed together. It does not say how often that happens.',
-      linkLabel: 'reddit.com/r/MutualfundsIndia',
-      url: URLS.redditFear,
-    },
-    {
-      title: 'A loan, not a crash',
-      body: 'A poster wanted to stop the next month’s SIPs and redirect the cash toward an education loan. Replies included reducing rather than stopping, and not selling units already bought. This supports a hypothesis that a cash need can be a sound reason to change a SIP.',
-      linkLabel: 'reddit.com/r/personalfinanceindia',
-      url: URLS.redditLoan,
-    },
-    {
-      title: 'Cash during a drawdown',
-      body: 'A poster described a large drawdown and a two-month SIP pause caused by a cash crunch. The thread treats cash as the first constraint. This supports a hypothesis that Pause has to stay available. It is still one anecdote.',
-      linkLabel: 'reddit.com/r/IndianStockMarket',
-      url: URLS.redditDrawdown,
-    },
-  ]
-  cards.forEach((item, index) => {
-    const x = 0.4 + index * 4.22
-    card(slide, x, 2.04, 4.06, 2.78)
-    slide.addText(item.title, {
-      x: x + 0.16,
-      y: 2.14,
-      w: 3.74,
-      h: 0.32,
+      x: 0.4,
+      y: 6.84,
+      w: 12.52,
+      h: 0.34,
       fontFace: 'Georgia',
-      fontSize: 15,
-      color: C.ink,
-      margin: 0,
-    })
-    slide.addText(item.body, {
-      x: x + 0.16,
-      y: 2.48,
-      w: 3.74,
-      h: 1.7,
-      fontFace: 'Calibri',
       fontSize: 13,
-      color: C.ink,
+      color: 'FFFFFF',
       margin: 0,
-    })
-    slide.addText([link(item.linkLabel, item.url)], {
-      x: x + 0.16,
-      y: 4.28,
-      w: 3.74,
-      h: 0.38,
+    },
+  )
+  slide.addText('Inferred from desk research. Not an observed need from interviews. July’s 50.30 lakh discontinued or completed SIPs are not voluntary pauses.', {
+    x: 0.4,
+    y: 7.16,
+    w: 9.4,
+    h: 0.2,
+    fontFace: 'Calibri',
+    fontSize: 11,
+    color: 'E7F0EB',
+    margin: 0,
+  })
+  slide.addText(
+    [
+      {
+        text: 'July count, Economic Times citing AMFI',
+        options: { hyperlink: { url: URLS.etStoppage }, color: 'F6F1E8', underline: true },
+      },
+    ],
+    {
+      x: 9.5,
+      y: 7.14,
+      w: 3.4,
+      h: 0.22,
       fontFace: 'Calibri',
-      fontSize: 13,
+      fontSize: 11,
+      align: 'right',
       margin: 0,
-    })
-  })
-
-  const notes = [
-    [
-      plain('Evidence. '),
-      link('Kuvera’s help', URLS.kuvera),
-      plain(
-        ', modified 19 April 2022, says stopping a SIP does not return the money. Interpretation, a hypothesis: a stop is easy to confuse with a withdrawal. Implication: say that existing units stay invested.',
-      ),
-    ],
-    [
-      plain('Evidence. '),
-      link('Groww’s help', URLS.groww),
-      plain(
-        ' says a cancel may not stop a near-dated debit. Interpretation, a hypothesis: the timing rule is easy to miss. Implication: this prototype does not invent a cutoff.',
-      ),
-    ],
-    [
-      plain('Evidence. '),
-      link('Mint, in 2026,', URLS.mint),
-      plain(' and an '),
-      link('Economic Times commentary', URLS.etCorrections),
-      plain(
-        ' split a cash-flow shock from a correction. Interpretation: commentary, not behaviour. Implication: a cash pause can be legitimate.',
-      ),
-    ],
-  ]
-  notes.forEach((runs, index) => {
-    body(slide, runs, { x: 0.4, y: 4.96 + index * 0.7, w: 12.52, h: 0.66, fontSize: 13 })
-  })
+    },
+  )
 }
+
 
 function slide3() {
   const slide = slideBase('One person, two months', 3)
