@@ -293,20 +293,22 @@ function slide1() {
   body(
     slide,
     [
+      plain('FinLit, founded publicly in 2026 by Nishant Jain, offers Skip Check free. '),
+      link('skip-check.vercel.app', URLS.prototype),
       plain(
-        'FinLit Ventures offers Skip Check as a free comparison of the next instalments. An optional review is listed at ₹99, and this prototype does not take payment. FinLit states that it is not registered with SEBI or AMFI, and a compliance review of this prototype has not been completed.',
+        ' opens the prototype; that is not usage. ₹99 is listed and unpaid: no payment, and no booking. The footer says FinLit is not registered with SEBI or AMFI. Discretionary wording on the same site is a compliance tension, not a feature.',
       ),
     ],
-    { x: 0.4, y: 4.86, w: 7.15, h: 0.95 },
+    { x: 0.4, y: 4.58, w: 7.15, h: 1.05 },
   )
   body(
     slide,
     [
       plain(
-        'The job to test was reconstructed from this desk research. It has not been tried with users. When a person is about to change a SIP, they want the next instalments explained in light of their own reason, so they can choose without guessing. Skip Check does not change the SIP.',
+        'The job was reconstructed from this desk research, not locked in an interview. When someone is about to change a SIP, they want the next instalments explained in light of their own reason, so they can choose without guessing. The actors are that person, their own app, and FinLit. Skip Check does not change the SIP.',
       ),
     ],
-    { x: 0.4, y: 5.86, w: 7.15, h: 1.16 },
+    { x: 0.4, y: 5.72, w: 7.15, h: 1.15 },
   )
 
   card(slide, 7.75, 1.48, 5.15, 5.48)
@@ -370,7 +372,7 @@ function slide2() {
     slide,
     [
       plain(
-        'Each Reddit item is one thread. It is a paraphrase of a public post, not a quotation presented as a testimonial, and it is not a sample of Indian investors.',
+        'Three threads, each read as evidence, then an interpretation, then an implication. The interpretation is a hypothesis. Nothing here is a quotation or a sample of Indian investors.',
       ),
     ],
     { x: 0.4, y: 1.46, w: 12.52, h: 0.5 },
@@ -432,23 +434,26 @@ function slide2() {
 
   const notes = [
     [
-      link('Kuvera’s help article', URLS.kuvera),
+      plain('Evidence. '),
+      link('Kuvera’s help', URLS.kuvera),
       plain(
-        ', modified on 19 April 2022, answers people who stopped a SIP and expected the money back. The explanation there is that the units remain. The implication is still a hypothesis: the same screen should say that existing units generally stay invested.',
+        ', modified 19 April 2022, says stopping a SIP does not return the money. Interpretation, a hypothesis: a stop is easy to confuse with a withdrawal. Implication: say that existing units stay invested.',
       ),
     ],
     [
-      link('Groww’s help article', URLS.groww),
+      plain('Evidence. '),
+      link('Groww’s help', URLS.groww),
       plain(
-        ' says a cancelled instalment can still be debited when the date is close. The implication is still a hypothesis: the timing rule is easy to miss. This prototype does not claim to know each investing app’s debit calendar.',
+        ' says a cancel may not stop a near-dated debit. Interpretation, a hypothesis: the timing rule is easy to miss. Implication: this prototype does not invent a cutoff.',
       ),
     ],
     [
+      plain('Evidence. '),
       link('Mint, in 2026,', URLS.mint),
-      plain(' quoting Varun Gupta of Groww Mutual Fund, and an '),
+      plain(' and an '),
       link('Economic Times commentary', URLS.etCorrections),
       plain(
-        ' both treat a cash-flow shock as a possible reason to pause and a correction as a weak reason. That is commentary. It is not a count of what investors do.',
+        ' split a cash-flow shock from a correction. Interpretation: commentary, not behaviour. Implication: a cash pause can be legitimate.',
       ),
     ],
   ]
@@ -500,7 +505,7 @@ function slide3() {
   )
 
   card(slide, 6.76, 2.68, 6.16, 2.28)
-  slide.addText('Cash-gap month', {
+  slide.addText('Salary delayed — same person', {
     x: 6.94,
     y: 2.8,
     w: 5.8,
@@ -539,7 +544,7 @@ function slide3() {
     ],
     [
       'Business. ',
-      'An optional review is listed at ₹99. This prototype does not take payment, and no usage has been observed.',
+      '₹99 is an unpaid list price. Nothing here is measured. The prototype keeps the formula and in-memory events with no amounts. The 7-of-10 gate is proposed, not run.',
     ],
   ]
   outcomes.forEach((pair, index) => {
@@ -570,37 +575,28 @@ function slide4() {
     slide,
     [
       plain(
-        'The live page runs in this order. A person lands on Skip Check, may name a reason or skip that step, and enters a current amount, a proposed amount, and a number of months from 1 to 24. Keep, Reduce, and Pause then appear together. What if can move the proposed amount and the months, and the cards follow. Three clarity questions are optional. A recap can be saved in that browser after consent. An increase is rejected. An amount above ₹10,00,000 asks for confirmation.',
+        'The live homepage is the assessment. Landing offers “Explore my options” or “I’m just exploring.” A reason is optional and skippable: it changes emphasis, not the formula. Amounts are whole rupees, for 1 to 24 months. Keep, Reduce, and Pause have equal weight, and Pause is a proposed ₹0. What if uses sliders, numeric fields, and a reset. Three clarity questions can be skipped. A recap is local, and only after consent. A reminder stays in that browser. Increases are rejected. Above ₹10,00,000 needs confirmation. SIP Check Bot explains and does not decide. Analytics stay in memory and store no amounts.',
       ),
     ],
-    { x: 0.4, y: 1.48, w: 7.2, h: 1.7 },
+    { x: 0.4, y: 1.48, w: 7.2, h: 1.72 },
   )
   body(
     slide,
     [
       plain(
-        'The scores on the right are desk scores. Six criteria were weighted equally: customer impact, frequency, evidence, addressability, business relevance, and feasibility. They are not ratings from users. The darker bar is the explanation selected for a test.',
+        'Why H2. The darker bar is the gap to test: an undifferentiated confirm, not the pause itself. It still helps if most pauses are legitimate, because the arithmetic is shown and Pause stays allowed. H1, mean 3.7, is a mechanism, not a rate. H3, mean 3.5, is background literacy. H4, mean 2.8, is a weak product bet and a high-confidence warning that the stoppage ratio is the wrong count. The six criteria were weighted equally. These are not user ratings.',
       ),
     ],
-    { x: 0.4, y: 3.26, w: 7.2, h: 1.02 },
+    { x: 0.4, y: 3.28, w: 7.2, h: 1.28 },
   )
   body(
     slide,
     [
       plain(
-        'H2 says the gap is an undifferentiated confirm, not the pause itself. Its mean is 4.3. H1 says fear is misread as a reason to interrupt a long-horizon SIP. Its mean is 3.7. H3 says low comprehension is the binding problem and that the moment does not matter. Its mean is 3.5. H4 says the stoppage ratio is the wrong thing to count. Its mean is 2.8, and that warning is held with high confidence as a measurement point.',
+        'Discrepancy. research/17 still says the prototype was “not built.” docs/product-decisions.md describes an earlier card, with a restart month and no persistence. informedChoiceRate counts reason_selected, calculation_viewed, choice_recorded, and comprehension_passed over valid_card_reached. The assessment emits different events and has no observed rate. Do not present that rate as a result. Falsify H2 if a cash-need user feels pressed to continue, or cannot restate the arithmetic. That test has not been run.',
       ),
     ],
-    { x: 0.4, y: 4.34, w: 7.2, h: 1.55 },
-  )
-  body(
-    slide,
-    [
-      plain(
-        'H2 would be falsified if a person with a cash need felt pressed to continue, or if people could not restate the arithmetic. The live assessment does not compute an older informed-choice rate from a previous flow, and there is no observed usage.',
-      ),
-    ],
-    { x: 0.4, y: 5.96, w: 7.2, h: 1.02 },
+    { x: 0.4, y: 4.64, w: 7.2, h: 1.55 },
   )
 
   card(slide, 7.8, 1.48, 5.12, 5.5)
@@ -658,20 +654,20 @@ function slide5() {
 
   const cells = [
     {
-      k: 'Who it is for',
-      v: 'A person who already runs a SIP and is about to keep, reduce, or pause the next instalments. Someone who has not started investing is outside this page.',
+      k: 'True problem',
+      v: 'At a SIP change, a cash need and a market worry meet the same thin confirm. The next instalments are not calculated from this person’s amounts. A pause is sometimes the right choice. The difference is not an investment loss.',
     },
     {
-      k: 'What they need',
-      v: 'As a hypothesis, they need a short explanation that follows their reason, with the three choices left equal. They do not need a forecast, and they do not need a lecture that forbids a pause.',
+      k: 'Who',
+      v: 'A person who already runs a SIP and is about to keep, reduce, or pause. Illustrated by Ananya, not interviewed. Not someone who has yet to start, and not a household that is only aware of a securities product.',
     },
     {
-      k: 'What the page calculates',
-      v: 'Only the current monthly amount minus the proposed monthly amount, multiplied by the months, in whole rupees. The range is 1 to 24 months. The difference is not an investment loss.',
+      k: 'How we know',
+      v: 'AMFI’s notes and the ceased-SIP rule, three paraphrased threads, and Kuvera and Groww help. No interviews and no measured use. The voluntary share of July’s 50.30 lakh is not published, so this deck does not invent it.',
     },
     {
-      k: 'What is still unknown',
-      v: 'The share of July’s 50.30 lakh discontinued or tenure-completed SIPs that were voluntary decisions. The sources reviewed do not publish that split, so this deck does not invent it.',
+      k: 'Value, potential only',
+      v: 'Customer, if it works: a choice she can restate, including a pause. Not a higher return. Business, if anyone comes: a free check and an unpaid ₹99 review. Not fewer pauses. Do not use the 38.5 crore TAM or “NCFE 2026.” That 27% figure is 2019 fieldwork.',
     },
   ]
   cells.forEach((cell, index) => {
@@ -745,18 +741,18 @@ function slide6() {
   const tests = [
     {
       n: '01',
-      t: 'Usability, with eight to ten people.',
-      d: 'This passes if at least seven of the ten can restate both the rupee line and the line about existing units, and if a person with a cash need can pause without hunting for the control. This test has not been run.',
+      t: 'Counsel, before a public pilot.',
+      d: 'A compliance review comes before any public pilot. FinLit states that it is not registered with SEBI or AMFI. A compliance review of this prototype has not been completed.',
     },
     {
       n: '02',
-      t: 'Distribution, on the first fifty sessions.',
-      d: 'This fails if fewer than ten of those sessions, excluding staff, are from someone who is about to change a SIP. A reach figure of 200 in the research notes is a monthly arrival assumption. It is not a result.',
+      t: 'Usability, with eight to ten people.',
+      d: 'Not run. It passes only if at least seven of the ten restate the rupee line and the units line, and a person with a cash need can pause without hunting.',
     },
     {
       n: '03',
-      t: 'Counsel, before a public pilot.',
-      d: 'A compliance review should be completed before a public pilot. FinLit states that it is not registered with SEBI or AMFI, and a compliance review of this prototype has not been completed.',
+      t: 'Distribution, on the first fifty sessions.',
+      d: 'Not run. It fails if fewer than ten of those sessions, excluding staff, are from someone about to change a SIP. Continuation is not the gate.',
     },
   ]
   tests.forEach((item, index) => {
@@ -797,19 +793,32 @@ function slide6() {
 
   slide.addText(
     [
-      plain('The prototype is deployed at '),
+      {
+        text: 'Believe. ',
+        options: { bold: true, color: C.forest },
+      },
+      plain(
+        'H2 is worth a test because it still helps if most pauses are legitimate, and the arithmetic is already deterministic. ',
+      ),
+      {
+        text: 'Unproven. ',
+        options: { bold: true, color: C.forest },
+      },
+      plain(
+        'Any interview, any restatement, whether cash-need users feel pressed, any informed-choice rate, and a RICE reach of 200. That reach is an assumption, not a historical score. ',
+      ),
       link('skip-check.vercel.app', URLS.prototype),
       plain(
-        '. That address shows that the page can be opened. It is not evidence of use, comprehension, or demand. This deck ends at the decision to test. A later section could specify the screen, and that section is not included here.',
+        ' shows that the page opens. It is not evidence of use. This deck stops before wireframes. A later section would show the screens, and those pages are not included.',
       ),
     ],
     {
       x: 0.4,
-      y: 5.46,
+      y: 5.42,
       w: 12.52,
-      h: 1.5,
+      h: 1.58,
       fontFace: 'Calibri',
-      fontSize: 15,
+      fontSize: 14,
       color: C.ink,
       margin: 0,
     },

@@ -9,7 +9,10 @@ Status words: product (in the current Skip Check code), desk (a published source
 | July 2026 new registrations 61.44 lakh; discontinued or tenure-completed 50.30 lakh; ratio 81.87% | Desk, secondary | [Economic Times, citing AMFI](https://economictimes.indiatimes.com/mf/analysis/mutual-fund-sip-stoppage-ratio-falls-to-82-in-july-as-new-registrations-outpace-closures-for-the-third-straight-month/articleshow/133202521.cms). Not re-read from an AMFI spreadsheet |
 | A ceased SIP includes three consecutive failed instalments | Desk | AMFI wording, as recorded in `research/05` |
 | Accounts are not people | Desk | Same AMFI notes and the research caveat |
-| Skip Check is free; ₹99 is the listed review price; the prototype does not take payment | Product | `src/domain/finlit-contact.ts` |
+| FinLit Ventures, founded publicly in 2026 by Nishant Jain | Desk | `research/01_company_dossier.md` |
+| Discretionary-management wording is a compliance tension, not a Skip Check feature | Desk | Same dossier. The deck does not claim the firm manages client money |
+| Skip Check is free; ₹99 is the listed review price; the prototype does not take payment or book a review | Product | `src/domain/finlit-contact.ts` |
+| skip-check.vercel.app is deployed and is not usage evidence | Product | HTTP 200 on 4 October 2026 |
 | FinLit states it is not registered with SEBI or AMFI; a compliance review of this prototype has not been completed | Product | `src/domain/decision-rules.ts` |
 | Empty contact and booking addresses say a person is not connected | Product | `src/domain/finlit-contact.ts` |
 | Skip Check does not change the SIP | Product | Assessment copy in `src/features/assessment/AssessmentApp.tsx` |
@@ -24,8 +27,11 @@ Status words: product (in the current Skip Check code), desk (a published source
 | About 6.7% of households hold mutual funds or ETFs; 36% of investors have high or moderate securities knowledge | Desk | [SEBI Investor Survey 2025 main report](https://www.sebi.gov.in/sebi_data/commondocs/jan-2026/Investor%20Survey%202025%20Main%20Report.pdf), [press note](https://www.sebi.gov.in/sebi_data/attachdocs/sep-2025/1759239238040.pdf) |
 | Ananya Shah, 31, Pune, salaried, two equity SIPs totalling ₹12,000, house goal about eight years | Illustrative | `research/06`. Not a real interviewed person |
 | H1 3.7, H2 4.3, H3 3.5, H4 2.8 | Desk scores | Equal weights in `research/04_hypothesis_register.md`. Not user ratings. H2 is the one selected to test |
-| Live assessment does not compute the older informed-choice rate | Product | `src/analytics/funnel-metrics.ts` versus `src/analytics/assessment-events.ts` |
-| Usability 8–10, pass at 7 of 10; distribution fail below 10 of the first 50 non-staff sessions | Hypothesis, not run | `research/17_execution_roadmap_and_gtm.md` |
+| A reason changes emphasis and does not change the formula. Pause is a proposed ₹0. What if uses sliders, numeric fields, and a reset | Product | `src/domain/assessment-reasons.ts`, `src/domain/sip-calculator.ts`, `AssessmentApp.tsx` |
+| SIP Check Bot explains and does not decide. Analytics stay in memory and store no amounts. A reminder stays in the browser | Product | `src/domain/bot-copy.ts`, `src/analytics/assessment-events.ts`, `src/features/assessment/recap-store.ts` |
+| research/17 says the prototype was “not built.” docs/product-decisions.md describes an earlier card with a restart month and no persistence | Discrepancy | `research/17_execution_roadmap_and_gtm.md`, `docs/product-decisions.md` |
+| informedChoiceRate counts reason_selected, calculation_viewed, choice_recorded, and comprehension_passed over valid_card_reached. The assessment emits different events and has no observed rate | Product, not a result | `src/analytics/funnel-metrics.ts`, `src/analytics/event-types.ts`, `src/analytics/assessment-events.ts` |
+| Counsel before a public pilot, then usability of 8–10 with a pass at 7 of 10, then distribution failing below 10 of the first 50 non-staff sessions | Hypothesis, not run | `research/17_execution_roadmap_and_gtm.md`, `research/22_scorecard_revision.md` |
 | Reach of 200 | Assumption | `research/17` and `research/07_opportunity_sizing.md`. Not a result |
 | Prototype URL | Product, deployed | https://skip-check.vercel.app. Opening the page is not evidence of use |
 
