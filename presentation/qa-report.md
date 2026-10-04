@@ -38,6 +38,10 @@ Those lines were added in the generator and the deck was rendered again.
 - The 11 pt footer sits under a rule and does not run into the body.
 - Source names in the body are links. The visible words are the publication, not a raw URL, except the short Reddit paths and `skip-check.vercel.app`.
 
+## Page 1, case layout
+
+Rebuilt on a white field and rendered at 140 pixels per inch. The forest bar carries the six section names, with Market landscape underlined. About, JTBD, revenue, where the choice happens, market notes, actors, and the July chart are separate bordered blocks. The 61.44 and 50.30 labels sit to the right of the bars. The source line sits under the chart. Titles are 14 pt and underlined. Body copy in the blocks is 13 pt.
+
 ## Remaining limits
 
 - Cards for the three threads are the same height because the items are parallel. The loan card and the drawdown card have more unused space inside the card than the correction card. The links sit on the same baseline.
