@@ -4,7 +4,7 @@ The deck argues that Skip Check should be tested, and it stops before any wirefr
 
 1. Opening story. Skip Check by FinLit Ventures offers personalised clarity before an SIP decision. Investors reconsider a SIP for different reasons, and an investing app’s amounts do not explain those reasons. The job is reconstructed from desk research, not an interview. Skip Check explains the contribution difference and does not execute the change. The check is free. A pathway toward published plans from ₹99 to ₹2,499 is a hypothesis, and no conversion lift has been measured. August 2026 contributions were ₹32,297 crore across 10.02 crore accounts. July’s 50.30 lakh discontinued or completed SIPs are not a count of voluntary pauses.
 
-2. User evidence. Three Reddit threads are paraphrased and linked. Under them, Kuvera, Groww, and Mint with Economic Times are each read as evidence, then an interpretation marked as a hypothesis, then an implication. Nobody has been interviewed.
+2. User research. Secondary sources and the live flow only. Public threads show a cash need and a possible correction, not how common either is. Help articles show that a stop can be mistaken for a withdrawal. July and August 2026 contributions are on one scale from zero. The journey is a candidate, not a watched session. The mapping to Keep, Reduce, and Pause is not a usability result. The closing line is an inference, not an interview finding.
 
 3. One person, two months. Ananya Shah is a teaching composite from the research notes. The market-worry month and the cash-gap month are the same person. Pause is a legitimate result in the second month. The four outcomes are intended, and none is measured. SEBI’s survey is linked as background, not as her result.
 
