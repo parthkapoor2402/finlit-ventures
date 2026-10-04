@@ -861,28 +861,34 @@ function slide2() {
   card(slide, 0.22, 0.86, 3.85, 2.52)
   slide.addText('RESEARCH FOUNDATION', {
     x: 0.36,
-    y: 0.94,
+    y: 0.92,
     w: 3.56,
-    h: 0.26,
+    h: 0.22,
     fontFace: 'Calibri',
     fontSize: 13,
     bold: true,
     color: C.forest,
     margin: 0,
+    valign: 'top',
   })
-  slide.addText(
-    'Public threads show questions people ask. They do not show how common those questions are.\n\nAMFI notes describe industry activity. A discontinued or completed SIP is not a stated reason.\n\nHelp articles record a misunderstood rule. They are not a sample of investors.\n\nThe live Skip Check flow shows what the page does. It does not show that people find it useful.',
-    {
+  ;[
+    'Public threads show questions people ask. They do not show how common those questions are.',
+    'AMFI notes describe industry activity. A discontinued or completed SIP is not a stated reason.',
+    'Help articles record a misunderstood rule. They are not a sample of investors.',
+    'The live Skip Check flow shows what the page does. It does not show that people find it useful.',
+  ].forEach((line, index) => {
+    slide.addText(line, {
       x: 0.36,
-      y: 1.24,
+      y: 1.2 + index * 0.52,
       w: 3.56,
-      h: 2.02,
+      h: 0.48,
       fontFace: 'Calibri',
       fontSize: 12,
       color: C.ink,
       margin: 0,
-    },
-  )
+      valign: 'top',
+    })
+  })
 
   card(slide, 4.17, 0.86, 5.15, 2.52)
   slide.addText('WHY INVESTORS RECONSIDER', {
