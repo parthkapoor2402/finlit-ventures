@@ -1,5 +1,5 @@
 /**
- * Skip Check strategy deck, pages 1–7.
+ * Skip Check strategy deck, pages 1–8.
  * node build.mjs
  * node build.mjs --five   writes pages 1–5 only
  */
@@ -52,7 +52,7 @@ pptx.defineLayout({ name: 'DECK', width: 13.333, height: 7.5 })
 pptx.layout = 'DECK'
 pptx.author = 'FinLit Ventures'
 pptx.title = 'Skip Check: strategy, journey, and product logic'
-pptx.subject = 'Executive product strategy, pages 1 to 7. Desk research. No interviews.'
+pptx.subject = 'Executive product strategy, pages 1 to 8. Desk research. No interviews.'
 
 function slideBase(section, page) {
   const slide = pptx.addSlide()
@@ -1999,6 +1999,171 @@ function slide7() {
   t(slide, 'Proposed gates, not completed tests. FinLit states it is not registered with SEBI or AMFI, and a written compliance review is required before a live pilot.', 0.16, 7.24, 13.0, 0.22, { fontSize: 12, color: C.muted })
 }
 
+function slide8() {
+  const slide = pptx.addSlide()
+  journeyBar(slide, 'metrics')
+  t(slide, 'Success Metrics, KPI Hierarchy & Guardrails', 0.18, 0.42, 9.3, 0.28, {
+    fontFace: 'Georgia', fontSize: 20, bold: true,
+  })
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0.18, y: 0.765, w: 6.5, h: 0.018,
+    fill: { color: C.forest }, line: { color: C.forest, width: 0 },
+  })
+  t(slide, 'Measure informed decisions, comprehension, and safe usage — not just clicks or continued SIP contributions.', 0.18, 0.80, 12.95, 0.2, {
+    fontSize: 12, color: C.muted,
+  })
+
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 0.16, y: 1.00, w: 9.18, h: 1.06,
+    fill: { color: C.card },
+    line: { color: C.forest, width: 1.25, dashType: 'dash' },
+    rectRadius: 0.06,
+  })
+  t(slide, 'North Star Metric — Informed Choice Rate (ICR)', 0.30, 1.06, 6.4, 0.2, {
+    bold: true, color: C.forest, fontSize: 13,
+  })
+  t(slide, 'ICR = (Eligible sessions that finish the checks) ÷ (Eligible sessions with a valid comparison card) × 100.', 0.30, 1.28, 6.48, 0.2, {
+    fontSize: 11,
+  })
+  t(slide, 'Record Keep, Reduce, or Pause, restate the difference, and see that a pause does not sell existing units. The three paths count the same. Proposed for the pilot, not a measured result.', 0.30, 1.50, 6.48, 0.46, {
+    fontSize: 11,
+  })
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 6.90, y: 1.14, w: 2.28, h: 0.76,
+    fill: { color: 'E7F0EB' }, line: { color: 'E7F0EB', width: 0 }, rectRadius: 0.06,
+  })
+  t(slide, '≥70%', 7.00, 1.20, 2.08, 0.38, {
+    fontFace: 'Georgia', fontSize: 22, bold: true, color: C.forest, align: 'center',
+  })
+  t(slide, 'Proposed pilot threshold', 7.00, 1.58, 2.08, 0.22, {
+    fontSize: 11, bold: true, color: C.forest, align: 'center',
+  })
+
+  card(slide, 9.48, 1.00, 3.70, 2.32)
+  t(slide, 'Leading Indicators — Early Signals', 9.60, 1.08, 3.46, 0.2, {
+    bold: true, color: C.forest, fontSize: 12,
+  })
+  t(slide, 'No historical rates. These are signals to watch.', 9.60, 1.28, 3.46, 0.18, {
+    fontSize: 11, color: C.muted,
+  })
+  const leading = [
+    'Entry intent: an unconfirmed SIP change.',
+    'Flow start: visitors who begin the flow.',
+    'Comparison reach: a valid numerical card.',
+    'Restatement: users who attempt the check.',
+    'Pause findability: a cash need can locate it.',
+    'Input recovery: users fix a validation error.',
+  ]
+  leading.forEach((line, index) => {
+    t(slide, line, 9.60, 1.50 + index * 0.28, 3.46, 0.24, { fontSize: 11 })
+  })
+
+  const kpiX = [0.22, 1.20, 2.84, 6.16, 7.66]
+  const kpiW = [0.94, 1.60, 3.28, 1.46, 1.66]
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0.18, y: 2.14, w: 9.16, h: 0.24,
+    fill: { color: C.forest }, line: { color: C.forest, width: 0 },
+  })
+  ;['Level', 'Metric', 'Definition', 'Proposed target', 'Why it matters'].forEach((label, index) => {
+    t(slide, label, kpiX[index], 2.16, kpiW[index], 0.2, {
+      fontSize: 11, bold: true, color: 'FFFFFF', valign: 'middle',
+    })
+  })
+  const kpis = [
+    ['L0 Outcome', 'Informed Choice Rate', 'Eligible sessions finishing the checks ÷ valid cards.', '≥70%', 'Options understood.'],
+    ['L1 Behaviour', 'Comparison completion', 'Valid cards ÷ sessions that start the flow.', '≥65%', 'Friction before the card.'],
+    ['L1 Behaviour', 'Amount restatement', 'Users who restate the difference in a usability test.', '≥80% usability', 'Figure is understood.'],
+    ['L1 Behaviour', 'Pause for a cash need', 'Cash-need users who reach Pause unaided.', '≥90% usability', 'Cash need finds Pause.'],
+    ['L1 Product', 'Decision recap', 'Users who finish the recap after a comparison.', '≥60%', 'Recap may add friction.'],
+    ['L2 Diagnostic', 'Invalid-input recovery', 'Fix a bad amount, then reach a valid card.', 'Baseline first', 'Set a baseline first.'],
+    ['L2 Diagnostic', 'Decision-path mix', 'Keep, Reduce, and Pause shares. No target mix.', 'No mix target', 'Do not steer one path.'],
+    ['L2 Diagnostic', 'Pre-confirm relevance', 'Considering a SIP change, not yet confirmed.', '≥20% hypothesis', 'The intended moment.'],
+  ]
+  kpis.forEach((row, index) => {
+    const y = 2.38 + index * 0.26
+    if (index % 2 === 0) {
+      slide.addShape(pptx.shapes.RECTANGLE, {
+        x: 0.18, y, w: 9.16, h: 0.26,
+        fill: { color: 'F7F3EC' }, line: { color: 'F7F3EC', width: 0 },
+      })
+    }
+    row.forEach((value, i) => {
+      t(slide, value, kpiX[i], y + 0.03, kpiW[i], 0.2, {
+        fontSize: 11,
+        bold: i === 1 || i === 3,
+        color: i === 3 ? C.forest : C.ink,
+        valign: 'middle',
+      })
+    })
+  })
+
+  t(slide, 'Guardrail Metrics — Must Not Degrade While Optimizing ICR', 0.18, 4.50, 9.16, 0.2, {
+    bold: true, color: C.forest, fontSize: 12,
+  })
+  const gX = [0.22, 2.16, 5.06]
+  const gW = [1.90, 2.86, 4.24]
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0.18, y: 4.72, w: 9.16, h: 0.22,
+    fill: { color: 'E7F0EB' }, line: { color: 'E7F0EB', width: 0 },
+  })
+  ;['Guardrail', 'Proposed threshold', 'Why it matters'].forEach((label, index) => {
+    t(slide, label, gX[index], 4.73, gW[index], 0.2, {
+      fontSize: 11, bold: true, color: C.forest, valign: 'middle',
+    })
+  })
+  const guards = [
+    ['Misread as a loss', '0 critical cases in final testing.', 'Lower contributions are not money already lost.'],
+    ['Existing units', 'At least 9 of 10 understand it.', 'A pause does not sell units already held.'],
+    ['Pressure to one path', '0 pressuring defaults, copy, or hierarchy.', 'Do not push Keep, Reduce, or Pause.'],
+    ['Cash-need blockage', '0 critical failures to locate Pause.', 'A cash need must still reach Pause.'],
+    ['Calculation integrity', '100% match with the formula in tests.', 'One wrong figure can undermine trust.'],
+    ['Privacy of amounts', '0 unauthorized sends of amounts.', 'Typed amounts stay in the browser.'],
+    ['Advice boundary', '0 unreviewed advice or execution claims.', 'No fund tip, forecast, or SIP execution.'],
+  ]
+  guards.forEach((row, index) => {
+    const y = 4.94 + index * 0.26
+    if (index % 2 === 1) {
+      slide.addShape(pptx.shapes.RECTANGLE, {
+        x: 0.18, y, w: 9.16, h: 0.26,
+        fill: { color: 'F7F3EC' }, line: { color: 'F7F3EC', width: 0 },
+      })
+    }
+    row.forEach((value, i) => {
+      t(slide, value, gX[i], y + 0.03, gW[i], 0.2, {
+        fontSize: 11,
+        bold: i === 0 || i === 1,
+        color: i === 1 ? C.forest : C.ink,
+        valign: 'middle',
+      })
+    })
+  })
+
+  card(slide, 9.48, 3.42, 3.70, 3.58)
+  t(slide, 'Downstream Signals — Validate Carefully', 9.60, 3.50, 3.46, 0.36, {
+    bold: true, color: C.forest, fontSize: 12,
+  })
+  const downstream = [
+    'Clarity before the comparison, and after it.',
+    'Can the user explain Reduce versus Pause.',
+    'Confidence in the numbers, not the market.',
+    'Later usefulness, after their own app.',
+    'Themes: cash need, worry, goals, uncertainty.',
+  ]
+  downstream.forEach((line, index) => {
+    t(slide, line, 9.60, 3.90 + index * 0.26, 3.46, 0.24, { fontSize: 11 })
+  })
+  t(slide, 'A continued SIP, fewer pauses, or a higher amount is not success.', 9.60, 5.22, 3.46, 0.40, {
+    fontSize: 11, bold: true,
+  })
+  t(slide, 'Pilot sequence: 8–10 moderated sessions, automated calculation tests, then a written compliance review. Instrument only disclosed events, set a baseline, and report the denominator, sample, time, and segment. Formative only, not proof of demand.', 9.60, 5.66, 3.46, 1.16, {
+    fontSize: 11, color: C.muted,
+  })
+
+  t(slide, 'All targets are proposed pilot thresholds, not measured results. The 8–10 person study is formative, not proof of demand. FinLit states it is not registered with SEBI or AMFI.', 0.18, 7.16, 13.0, 0.26, {
+    fontSize: 11, color: C.muted,
+  })
+}
+
 const fiveOnly = process.argv.includes('--five')
 
 slide1()
@@ -2009,9 +2174,10 @@ slide5()
 if (!fiveOnly) {
   slide6()
   slide7()
+  slide8()
 }
 
-const expected = fiveOnly ? 5 : 7
+const expected = fiveOnly ? 5 : 8
 if (pptx.slides.length !== expected) {
   throw new Error(`Expected ${expected} slides, got ${pptx.slides.length}`)
 }
