@@ -2,7 +2,7 @@
 
 The deck argues that Skip Check should be tested, and it stops before any wireframe.
 
-1. Market landscape, on a white field. A forest bar names the six sections, and Market landscape is the marked one. Separate blocks cover Skip Check, the reconstructed job, the free check and the unpaid ₹99 list price, where the choice already happens, the August and July contribution notes, four actors, and the July 2026 registration chart. The shorter bar is not a count of voluntary pauses.
+1. Market landscape, on a white field. The problem block says a cash gap and a market scare need different treatment, and names the reason, equal Keep / Reduce / Pause, What if, and the rupee line. The revenue block says Skip Check is free so that clarity can raise connects into work listed from ₹99 to ₹2,499, and that this lift has not been measured. Market buzz says contributions are still rising and that July’s 50.30 lakh count must not size the product. The job, the choice block, the actors, and the July chart are unchanged.
 
 2. User evidence. Three Reddit threads are paraphrased and linked. Under them, Kuvera, Groww, and Mint with Economic Times are each read as evidence, then an interpretation marked as a hypothesis, then an implication. Nobody has been interviewed.
 
