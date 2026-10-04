@@ -1062,111 +1062,272 @@ function slide2() {
 }
 
 
-function slide3() {
-  const slide = slideBase('One person, two months', 3)
-  headline(slide, 'The same illustrative person has a market-worry month and a cash-gap month.')
-  body(
-    slide,
-    [
-      plain(
-        'Ananya Shah is a teaching composite. She was not interviewed, and she is not a customer. The notes place her at 31, in Pune, in a salaried job, with two equity SIPs totalling ₹12,000 a month and a house goal about eight years away. ',
-      ),
-      link('SEBI’s 2025 investor survey', URLS.sebiReport),
-      plain(' is background for that portrait, not a measurement of her: about 6.7 percent of households hold mutual funds or ETFs, and '),
-      link('the survey press note', URLS.sebiPress),
-      plain(' says 36 percent of investors have high or moderate securities knowledge.'),
-    ],
-    { x: 0.4, y: 1.46, w: 12.52, h: 1.12 },
-  )
-
-  card(slide, 0.4, 2.68, 6.16, 2.28)
-  slide.addText('Market-worry month', {
-    x: 0.58,
-    y: 2.8,
-    w: 5.8,
-    h: 0.32,
-    fontFace: 'Georgia',
-    fontSize: 16,
-    color: C.ink,
-    margin: 0,
+function slide3Header(slide) {
+  slide.background = { color: C.paper }
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0,
+    y: 0,
+    w: 13.333,
+    h: 0.38,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
   })
-  slide.addText(
-    'The fund is down, and a colleague says to wait for the bottom. That trigger follows the shape of the public threads on the previous page. It is not a sentence Ananya spoke. Keep, Reduce, and Pause stay equal. A useful result is that she can restate the rupee difference and still choose for herself.',
-    {
-      x: 0.58,
-      y: 3.16,
-      w: 5.8,
-      h: 1.62,
-      fontFace: 'Calibri',
-      fontSize: 14,
-      color: C.ink,
-      margin: 0,
-    },
-  )
-
-  card(slide, 6.76, 2.68, 6.16, 2.28)
-  slide.addText('Salary delayed — same person', {
-    x: 6.94,
-    y: 2.8,
-    w: 5.8,
-    h: 0.32,
+  slide.addText('SKIP CHECK', {
+    x: 0.2,
+    y: 0.04,
+    w: 1.65,
+    h: 0.28,
     fontFace: 'Georgia',
-    fontSize: 16,
-    color: C.ink,
+    fontSize: 13,
+    bold: true,
+    color: 'FFFFFF',
     margin: 0,
+    valign: 'middle',
   })
-  slide.addText(
-    'Her salary is delayed by one to three months. Pause is a legitimate result in this month. A useful result is that she can pause without being talked out of it. Continuation is not the success metric here. The product fails this month if the pause is hidden or discouraged.',
-    {
-      x: 6.94,
-      y: 3.16,
-      w: 5.8,
-      h: 1.62,
-      fontFace: 'Calibri',
-      fontSize: 14,
-      color: C.ink,
-      margin: 0,
-    },
-  )
-
-  const outcomes = [
-    [
-      'Immediate. ',
-      'She can restate the difference: current monthly amount minus proposed monthly amount, multiplied by the months, in whole rupees. That figure is less in planned contributions. It is not an investment loss.',
-    ],
-    [
-      'Behaviour. ',
-      'She decides in her own investing application. Skip Check does not change the SIP. Units she already holds generally remain invested unless she redeems them separately.',
-    ],
-    [
-      'Trust. ',
-      'FinLit states that it is not registered with SEBI or AMFI. If the contact and booking addresses are empty, the page says a person is not connected.',
-    ],
-    [
-      'Business. ',
-      '₹99 is an unpaid list price. Nothing here is measured. The prototype keeps the formula and in-memory events with no amounts. The 7-of-10 gate is proposed, not run.',
-    ],
+  const tabs = [
+    ['MARKET LANDSCAPE', false],
+    ['USER EVIDENCE', false],
+    ['PERSONA', true],
+    ['JOURNEY', false],
+    ['FRAMING', false],
+    ['WHAT TO TEST', false],
   ]
-  outcomes.forEach((pair, index) => {
-    const col = index % 2
-    const row = Math.floor(index / 2)
+  tabs.forEach((tab, index) => {
+    const x = 2.05 + index * 1.82
+    slide.addText(tab[0], {
+      x,
+      y: 0.05,
+      w: 1.74,
+      h: 0.22,
+      fontFace: 'Calibri',
+      fontSize: 11,
+      bold: true,
+      color: 'FFFFFF',
+      align: 'center',
+      margin: 0,
+    })
+    if (tab[1]) {
+      slide.addShape(pptx.shapes.RECTANGLE, {
+        x: x + 0.16,
+        y: 0.3,
+        w: 1.42,
+        h: 0.035,
+        fill: { color: 'FFFFFF' },
+        line: { color: 'FFFFFF', width: 0 },
+      })
+    }
+  })
+}
+
+function t(slide, text, x, y, w, h, extra = {}) {
+  slide.addText(text, {
+    x,
+    y,
+    w,
+    h,
+    fontFace: 'Calibri',
+    fontSize: 12,
+    color: C.ink,
+    margin: 0,
+    valign: 'top',
+    ...extra,
+  })
+}
+
+function personaCard(slide, spec) {
+  const { x, y, w, h, month, monthColor, note, demo, needs, behaviour, pain, outcome } = spec
+  card(slide, x, y, w, h)
+  const portrait = path.join(root, 'assets', 'ananya-shah-illustration.jpg')
+  slide.addImage({
+    path: portrait,
+    x: x + 0.12,
+    y: y + 0.12,
+    w: 0.82,
+    h: 0.82,
+    rounding: true,
+  })
+  t(slide, 'Ananya Shah', x + 1.06, y + 0.14, 2.12, 0.26, {
+    fontFace: 'Georgia',
+    fontSize: 15,
+    color: C.ink,
+  })
+  t(slide, month, x + 1.06, y + 0.4, 2.12, 0.2, { bold: true, color: monthColor, fontSize: 12 })
+  t(slide, note, x + 1.06, y + 0.62, 2.12, 0.28, { fontSize: 11, color: C.muted })
+
+  t(slide, 'SITUATION', x + 0.14, y + 1.04, 3.0, 0.18, { bold: true, color: C.forest, fontSize: 11 })
+  demo.forEach((line, index) => {
+    t(slide, line, x + 0.14, y + 1.24 + index * 0.22, 3.0, 0.2, { fontSize: 12 })
+  })
+  t(slide, 'NEEDS', x + 0.14, y + 1.94, 3.0, 0.18, { bold: true, color: C.forest, fontSize: 11 })
+  needs.forEach((line, index) => {
+    t(slide, line, x + 0.14, y + 2.14 + index * 0.24, 3.0, 0.22, { fontSize: 12 })
+  })
+
+  t(slide, 'BEHAVIOUR', x + 3.28, y + 0.14, 3.08, 0.18, { bold: true, color: C.forest, fontSize: 11 })
+  behaviour.forEach((line, index) => {
+    t(slide, line, x + 3.28, y + 0.36 + index * 0.48, 3.08, 0.44, { fontSize: 12 })
+  })
+  t(slide, 'PAIN POINTS', x + 3.28, y + 1.36, 3.08, 0.18, { bold: true, color: C.forest, fontSize: 11 })
+  pain.forEach((line, index) => {
+    t(slide, line, x + 3.28, y + 1.56 + index * 0.48, 3.08, 0.44, { fontSize: 12 })
+  })
+
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: x + 0.12,
+    y: y + 2.72,
+    w: w - 0.24,
+    h: 0.38,
+    fill: { color: 'E7F0EB' },
+    line: { color: 'E7F0EB', width: 0 },
+    rectRadius: 0.04,
+  })
+  t(slide, outcome, x + 0.22, y + 2.78, w - 0.44, 0.26, { fontSize: 12, color: C.forest })
+}
+
+function slide3() {
+  const slide = pptx.addSlide()
+  slide3Header(slide)
+
+  t(slide, 'User personas and expected outcomes.', 0.22, 0.44, 8.0, 0.32, {
+    fontFace: 'Georgia',
+    fontSize: 20,
+    color: C.ink,
+  })
+  t(slide, 'One teaching case, in two months. Not an interview.', 8.2, 0.48, 4.9, 0.24, {
+    fontSize: 12,
+    color: C.muted,
+    align: 'right',
+  })
+
+  card(slide, 0.22, 0.84, 6.22, 1.16)
+  t(slide, 'TARGET USER', 0.36, 0.92, 5.94, 0.2, { bold: true, color: C.forest, fontSize: 12 })
+  t(
+    slide,
+    'Salaried investors with a live SIP, about to keep, reduce, or pause, and a goal still years away. The notes illustrate that moment with Ananya Shah, 31, in Pune. She was not interviewed.',
+    0.36,
+    1.16,
+    5.94,
+    0.74,
+    { fontSize: 13 },
+  )
+
+  card(slide, 0.22, 2.1, 6.22, 2.58)
+  const outcomeCols = [
+    {
+      x: 0.36,
+      title: 'PRODUCT OUTCOMES',
+      color: C.forest,
+      lines: [
+        'The reason changes emphasis. The formula does not.',
+        'Keep, Reduce, and Pause stay equal. Pause is ₹0.',
+        'Not a loss. She changes the SIP only in her app.',
+      ],
+    },
+    {
+      x: 3.36,
+      title: 'BUSINESS OUTCOMES',
+      color: C.amber,
+      lines: [
+        'The check is free, before a paid conversation.',
+        'Listed plans run from ₹99 to ₹2,499.',
+        'Any enquiry lift is a hypothesis, not a result.',
+      ],
+    },
+  ]
+  outcomeCols.forEach((col) => {
+    t(slide, col.title, col.x, 2.2, 2.9, 0.2, { bold: true, color: col.color, fontSize: 12 })
+    slide.addShape(pptx.shapes.RECTANGLE, {
+      x: col.x,
+      y: 2.42,
+      w: 1.35,
+      h: 0.025,
+      fill: { color: col.color },
+      line: { color: col.color, width: 0 },
+    })
+    col.lines.forEach((line, index) => {
+      t(slide, line, col.x, 2.52 + index * 0.46, 2.9, 0.42, { fontSize: 12 })
+    })
+  })
+  t(
+    slide,
+    'Explanation, then a restated choice, then a possible enquiry. The last step is a hypothesis.',
+    0.36,
+    4.16,
+    5.94,
+    0.4,
+    { fontSize: 12, color: C.forest },
+  )
+
+  card(slide, 0.22, 4.78, 6.22, 2.58)
+  t(slide, 'POTENTIAL IMPACT', 0.36, 4.88, 5.94, 0.2, { bold: true, color: C.forest, fontSize: 12 })
+  const impact = [
+    ['User value. ', 'She can see the next instalments beside the reason she names. Intended, not observed.'],
+    ['Business value. ', 'A free check may build trust before a paid review. No lift is measured. Fewer pauses are not the aim.'],
+    ['Validation. ', 'Whether she can restate the difference, and whether a cash month still allows Pause. The informed-choice rate in the notes belongs to an earlier flow. It is not a result here.'],
+  ]
+  impact.forEach((row, index) => {
+    const yy = [5.16, 5.78, 6.48][index]
+    const hh = [0.54, 0.62, 0.76][index]
     slide.addText(
       [
-        { text: pair[0], options: { bold: true, color: C.forest } },
-        { text: pair[1], options: { color: C.ink } },
+        { text: row[0], options: { bold: true, color: C.forest } },
+        { text: row[1], options: { color: C.ink } },
       ],
       {
-        x: 0.4 + col * 6.36,
-        y: 5.12 + row * 0.96,
-        w: 6.16,
-        h: 0.9,
+        x: 0.36,
+        y: yy,
+        w: 5.94,
+        h: hh,
         fontFace: 'Calibri',
-        fontSize: 14,
+        fontSize: 12,
         margin: 0,
+        valign: 'top',
       },
     )
   })
+
+  personaCard(slide, {
+    x: 6.58,
+    y: 0.84,
+    w: 6.53,
+    h: 3.2,
+    month: 'Market-worry month',
+    monthColor: C.forest,
+    note: 'Not a participant.',
+    demo: ['31 · Pune · salaried', 'Two equity SIPs, ₹12,000 a month', 'House goal about eight years away'],
+    needs: ['See the rupee difference.', 'Keep the three paths equal.'],
+    behaviour: [
+      'The fund is down. A colleague says to wait for the bottom.',
+      'She may then ask a forum. This is not a quote from her.',
+    ],
+    pain: [
+      'The app shows the fall, not the next instalments.',
+      'A stop can be read as a withdrawal. It is not.',
+    ],
+    outcome: 'Intended: restate the difference, then choose. Not measured.',
+  })
+  personaCard(slide, {
+    x: 6.58,
+    y: 4.16,
+    w: 6.53,
+    h: 3.2,
+    month: 'Salary delayed',
+    monthColor: C.amber,
+    note: 'Same person, new month.',
+    demo: ['Same age, city, and SIPs', 'Salary late by one to three months', 'The house goal is unchanged'],
+    needs: ['See a proposed ₹0 in rupees.', 'Know units generally stay invested.'],
+    behaviour: [
+      'The trigger is a salary delay, not the index.',
+      'Pause is legitimate. She still decides in her app.',
+    ],
+    pain: [
+      'A cash month and a market scare can look the same.',
+      'If Pause is hidden, this month fails.',
+    ],
+    outcome: 'Intended: Pause stays open. Staying invested is not success.',
+  })
 }
+
 
 function slide4() {
   const slide = slideBase('Journey and hypotheses', 4)
