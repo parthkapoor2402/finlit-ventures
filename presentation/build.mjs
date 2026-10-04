@@ -1,6 +1,7 @@
 /**
- * Skip Check strategy deck, pages 1–6.
+ * Skip Check strategy deck, pages 1–7.
  * node build.mjs
+ * node build.mjs --five   writes pages 1–5 only
  */
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
@@ -50,8 +51,8 @@ const pptx = new PptxGenJS()
 pptx.defineLayout({ name: 'DECK', width: 13.333, height: 7.5 })
 pptx.layout = 'DECK'
 pptx.author = 'FinLit Ventures'
-pptx.title = 'Skip Check: what to test before building further'
-pptx.subject = 'Executive product strategy, pages 1 to 6. Desk research. No interviews.'
+pptx.title = 'Skip Check: strategy, journey, and product logic'
+pptx.subject = 'Executive product strategy, pages 1 to 7. Desk research. No interviews.'
 
 function slideBase(section, page) {
   const slide = pptx.addSlide()
@@ -1752,104 +1753,251 @@ function slide5() {
   )
 }
 
-function slide6() {
-  const slide = slideBase('What to validate next', 6)
-  slide.addText('Three tests should pass before any further solution work.', {
-    x: 0.4,
-    y: 0.48,
-    w: 12.52,
-    h: 0.48,
-    fontFace: 'Georgia',
-    fontSize: 26,
-    color: C.ink,
-    margin: 0,
+function journeyBar(slide, active) {
+  slide.background = { color: C.paper }
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0, y: 0, w: 13.333, h: 0.38,
+    fill: { color: C.forest }, line: { color: C.forest, width: 0 },
   })
-
-  const tests = [
-    {
-      n: '01',
-      t: 'Counsel, before a public pilot.',
-      d: 'A compliance review comes before any public pilot. FinLit states that it is not registered with SEBI or AMFI. A compliance review of this prototype has not been completed.',
-    },
-    {
-      n: '02',
-      t: 'Usability, with eight to ten people.',
-      d: 'Not run. It passes only if at least seven of the ten restate the rupee line and the units line, and a person with a cash need can pause without hunting.',
-    },
-    {
-      n: '03',
-      t: 'Distribution, on the first fifty sessions.',
-      d: 'Not run. It fails if fewer than ten of those sessions, excluding staff, are from someone about to change a SIP. Continuation is not the gate.',
-    },
+  slide.addText('SKIP CHECK', {
+    x: 0.16, y: 0.05, w: 1.55, h: 0.26,
+    fontFace: 'Georgia', fontSize: 13, bold: true, color: 'FFFFFF', margin: 0, valign: 'middle',
+  })
+  const tabs = [
+    ['WIREFRAMES', 1.85, 1.5, 'wire'],
+    ['DESKTOP MVP USER JOURNEY', 3.4, 3.55, 'wire'],
+    ['METRICS & PRODUCT LOGIC', 8.7, 4.4, 'metrics'],
   ]
-  tests.forEach((item, index) => {
-    const y = 1.12 + index * 1.42
-    card(slide, 0.4, y, 12.52, 1.32)
-    slide.addText(item.n, {
-      x: 0.58,
-      y: y + 0.28,
-      w: 0.72,
-      h: 0.7,
-      fontFace: 'Georgia',
-      fontSize: 22,
-      color: C.forest,
-      margin: 0,
-      valign: 'middle',
+  tabs.forEach((tab) => {
+    const on = tab[3] === active
+    slide.addText(tab[0], {
+      x: tab[1], y: 0.05, w: tab[2], h: 0.24,
+      fontFace: 'Calibri', fontSize: 12, bold: true,
+      color: on ? 'FFFFFF' : 'C5D5CC',
+      margin: 0, valign: 'middle',
     })
-    slide.addText(item.t, {
-      x: 1.45,
-      y: y + 0.12,
-      w: 11.2,
-      h: 0.34,
-      fontFace: 'Georgia',
-      fontSize: 16,
-      color: C.ink,
-      margin: 0,
-    })
-    slide.addText(item.d, {
-      x: 1.45,
-      y: y + 0.5,
-      w: 11.2,
-      h: 0.7,
-      fontFace: 'Calibri',
-      fontSize: 14,
-      color: C.ink,
-      margin: 0,
-    })
+    if (on) {
+      slide.addShape(pptx.shapes.RECTANGLE, {
+        x: tab[1], y: 0.31, w: Math.min(tab[2], 2.4), h: 0.035,
+        fill: { color: 'FFFFFF' }, line: { color: 'FFFFFF', width: 0 },
+      })
+    }
+  })
+}
+
+function stepCircle(slide, n, x, y) {
+  slide.addShape(pptx.shapes.OVAL, {
+    x, y, w: 0.3, h: 0.3,
+    fill: { color: C.card },
+    line: { color: C.forest, width: 1.5 },
+  })
+  slide.addText(String(n), {
+    x, y, w: 0.3, h: 0.3,
+    fontFace: 'Calibri', fontSize: 13, bold: true, color: C.forest,
+    align: 'center', valign: 'middle', margin: 0,
+  })
+}
+
+function hArrow(slide, x1, x2, y) {
+  slide.addShape(pptx.shapes.LINE, {
+    x: x1, y, w: x2 - x1, h: 0,
+    line: { color: C.forest, width: 1.25, endArrowType: 'triangle' },
+  })
+}
+
+function frameShot(slide, file, iw, ih, x, y, boxW, boxH) {
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x, y, w: boxW, h: boxH,
+    fill: { color: C.card },
+    line: { color: C.line, width: 1 },
+    rectRadius: 0.06,
+  })
+  const aspect = iw / ih
+  let w = boxW - 0.08
+  let h = w / aspect
+  if (h > boxH - 0.08) {
+    h = boxH - 0.08
+    w = h * aspect
+  }
+  slide.addImage({
+    path: file,
+    x: x + (boxW - w) / 2,
+    y: y + (boxH - h) / 2,
+    w, h,
+  })
+}
+
+function slide6() {
+  const slide = pptx.addSlide()
+  journeyBar(slide, 'wire')
+  t(slide, 'Skip Check · FinLit Ventures · Annotated interaction flow', 0.16, 0.44, 7.3, 0.22, {
+    fontSize: 12, color: C.muted,
+  })
+  t(slide, 'Product principle: Skip Check informs. The user decides.', 7.5, 0.44, 5.66, 0.22, {
+    fontSize: 12, bold: true, color: C.forest, align: 'right',
   })
 
-  slide.addText(
-    [
-      {
-        text: 'Believe. ',
-        options: { bold: true, color: C.forest },
-      },
-      plain(
-        'H2 is worth a test because it still helps if most pauses are legitimate, and the arithmetic is already deterministic. ',
-      ),
-      {
-        text: 'Unproven. ',
-        options: { bold: true, color: C.forest },
-      },
-      plain(
-        'Any interview, any restatement, whether cash-need users feel pressed, any informed-choice rate, and a RICE reach of 200. That reach is an assumption, not a historical score. ',
-      ),
-      link('skip-check.vercel.app', URLS.prototype),
-      plain(
-        ' shows that the page opens. It is not evidence of use. This deck stops before wireframes. A later section would show the screens, and those pages are not included.',
-      ),
-    ],
-    {
-      x: 0.4,
-      y: 5.42,
-      w: 12.52,
-      h: 1.58,
-      fontFace: 'Calibri',
-      fontSize: 14,
-      color: C.ink,
-      margin: 0,
-    },
-  )
+  const shot = path.join(root, 'assets', 'mvp', 'slide')
+  const cols = [0.16, 4.56, 8.96]
+  const colW = 4.22
+  const frames = [
+    ['01-welcome.png', 1272, 792],
+    ['02-reason.png', 1272, 1460],
+    ['03-amounts.png', 1272, 1340],
+    ['04-cards.png', 2216, 666],
+    ['05-meaning.png', 1272, 554],
+    ['06-recap.png', 1272, 964],
+  ]
+  const notes = [
+    'The user opens Skip Check before changing a SIP in their own app. The page says that no change is made.',
+    'The user can record a reason or skip it. The reason is context, and it does not change the calculation.',
+    'The user enters ₹12,000, ₹3,500, and 6 months. Illustrative: (₹12,000 − ₹3,500) × 6 = ₹51,000.',
+    'Keep, Reduce, and Pause are on one screen. Over 6 months the plans are ₹72,000, ₹21,000, and ₹0. Reduce is ₹51,000 less, and Pause is ₹72,000 less.',
+    '₹51,000 is less in planned contributions, not a loss or a forecast. Existing units stay invested unless the user redeems them.',
+    'The user reviews the recap, then decides in their own app. Skip Check does not execute, pause, or cancel the SIP.',
+  ]
+
+  frames.forEach((item, index) => {
+    const row = index < 3 ? 0 : 1
+    const col = index % 3
+    const x = cols[col]
+    const circleY = row === 0 ? 0.72 : 4.18
+    const imageY = row === 0 ? 1.08 : 4.54
+    const imageH = row === 0 ? 2.22 : 1.7
+    const noteY = row === 0 ? 3.36 : 6.3
+    const noteH = row === 0 ? 0.72 : 0.64
+    stepCircle(slide, index + 1, x, circleY)
+    frameShot(slide, path.join(shot, item[0]), item[1], item[2], x, imageY, colW, imageH)
+    t(slide, notes[index], x, noteY, colW, noteH, { fontSize: 12 })
+  })
+
+  hArrow(slide, cols[0] + 0.34, cols[1] - 0.04, 0.87)
+  hArrow(slide, cols[1] + 0.34, cols[2] - 0.04, 0.87)
+  hArrow(slide, cols[0] + 0.34, cols[1] - 0.04, 4.33)
+  hArrow(slide, cols[1] + 0.34, cols[2] - 0.04, 4.33)
+
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 8.96, y: 7.02, w: 4.22, h: 0.3,
+    fill: { color: C.forest }, line: { color: C.forest, width: 0 }, rectRadius: 0.05,
+  })
+  t(slide, 'The user decides in their own app', 9.06, 7.05, 4.02, 0.24, {
+    fontSize: 12, bold: true, color: 'FFFFFF', align: 'center',
+  })
+}
+
+function slide7() {
+  const slide = pptx.addSlide()
+  journeyBar(slide, 'metrics')
+  t(slide, 'Skip Check · Calculation model · Success criteria · Validation gates', 0.16, 0.44, 12.9, 0.22, {
+    fontSize: 12, color: C.muted,
+  })
+
+  card(slide, 0.14, 0.72, 7.05, 3.16)
+  t(slide, 'CALCULATION ENGINE', 0.28, 0.8, 4.2, 0.22, { bold: true, color: C.forest, fontSize: 13 })
+  t(slide, 'Contribution difference = (Current monthly SIP − Proposed monthly SIP) × Months', 0.28, 1.04, 4.35, 0.44, { fontSize: 12 })
+
+  const rows = [
+    ['Current monthly SIP', '₹12,000'],
+    ['Proposed monthly SIP', '₹3,500'],
+    ['Duration', '6 months'],
+    ['Current-plan contributions', '₹72,000'],
+    ['Proposed-plan contributions', '₹21,000'],
+    ['Difference', '₹51,000'],
+  ]
+  rows.forEach((row, index) => {
+    const y = 1.52 + index * 0.24
+    t(slide, row[0], 0.28, y, 2.7, 0.22, { fontSize: 12 })
+    t(slide, row[1], 2.95, y, 1.65, 0.22, { fontSize: 12, bold: true, align: 'right' })
+  })
+  t(slide, 'Worked example, labeled illustrative. ₹12,000 × 6 = ₹72,000. ₹3,500 × 6 = ₹21,000. ₹72,000 − ₹21,000 = ₹51,000.', 0.28, 2.98, 4.35, 0.48, { fontSize: 12 })
+  t(slide, 'A pause differs by ₹72,000. The figure compares planned contributions, not a portfolio forecast.', 0.28, 3.4, 4.35, 0.42, { fontSize: 12 })
+
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 4.78, y: 0.92, w: 2.22, h: 2.72,
+    fill: { color: 'E7F0EB' }, line: { color: 'E7F0EB', width: 0 }, rectRadius: 0.08,
+  })
+  t(slide, '₹51,000', 4.9, 1.04, 1.98, 0.48, { fontFace: 'Georgia', fontSize: 26, bold: true, color: C.forest, align: 'center' })
+  t(slide, 'LESS IN PLANNED CONTRIBUTIONS OVER 6 MONTHS', 4.94, 1.54, 1.9, 0.7, { fontSize: 12, bold: true, color: C.forest, align: 'center' })
+  t(slide, 'Pause', 4.94, 2.32, 1.9, 0.22, { fontSize: 12, align: 'center', color: C.muted })
+  t(slide, '₹72,000', 4.9, 2.54, 1.98, 0.4, { fontFace: 'Georgia', fontSize: 22, bold: true, color: C.ink, align: 'center' })
+  t(slide, 'less over 6 months', 4.94, 2.96, 1.9, 0.4, { fontSize: 12, align: 'center' })
+
+  card(slide, 7.32, 0.72, 5.86, 3.16)
+  t(slide, 'OPTION COMPARISON', 7.46, 0.8, 5.55, 0.22, { bold: true, color: C.forest, fontSize: 13 })
+  const heads = [
+    [7.46, 2.35, 'Dimension'],
+    [9.84, 1.02, 'Keep'],
+    [10.88, 1.08, 'Reduce'],
+    [11.98, 1.02, 'Pause'],
+  ]
+  heads.forEach((col) => {
+    t(slide, col[2], col[0], 1.08, col[1], 0.22, { bold: true, fontSize: 12, color: C.muted })
+  })
+  const matrix = [
+    ['Monthly amount', '₹12,000', '₹3,500', '₹0'],
+    ['Contributions, 6 months', '₹72,000', '₹21,000', '₹0'],
+    ['Difference versus plan', '₹0', '₹51,000', '₹72,000'],
+    ['Units redeemed here', 'No', 'No', 'No'],
+    ['SIP action executed here', 'No', 'No', 'No'],
+  ]
+  matrix.forEach((row, index) => {
+    const y = 1.34 + index * 0.34
+    if (index % 2 === 0) {
+      slide.addShape(pptx.shapes.RECTANGLE, {
+        x: 7.42, y: y - 0.04, w: 5.66, h: 0.32,
+        fill: { color: 'F7F3EC' }, line: { color: 'F7F3EC', width: 0 },
+      })
+    }
+    heads.forEach((col, i) => {
+      t(slide, row[i], col[0], y, col[1], 0.26, {
+        fontSize: 12,
+        bold: i > 0,
+        color: row[i] === 'No' ? C.forest : C.ink,
+      })
+    })
+  })
+  t(slide, 'Keep, Reduce, and Pause are equally valid. Skip Check explains the numbers and does not recommend an action.', 7.46, 3.08, 5.55, 0.66, { fontSize: 12 })
+
+  card(slide, 0.14, 4.0, 7.05, 3.08)
+  t(slide, 'INFORMED CHOICE RATE', 0.28, 4.08, 6.7, 0.22, { bold: true, color: C.forest, fontSize: 13 })
+  t(slide, 'Proposed metric, not measured on the live page. It is the share of valid-comparison sessions that finish every comprehension step.', 0.28, 4.3, 6.75, 0.4, { fontSize: 12 })
+  t(slide, 'Informed Choice Rate = (Sessions that finish every required step ÷ Sessions that reach a valid comparison) × 100', 0.28, 4.72, 6.75, 0.4, { fontSize: 12 })
+  const must = [
+    '1. Reach a valid comparison card.',
+    '2. Record a reason, or explicitly skip it.',
+    '3. View the contribution-difference explanation.',
+    '4. Record Keep, Reduce, or Pause.',
+    '5. Restate the difference, and see that existing units are not redeemed.',
+  ]
+  must.forEach((line, index) => {
+    t(slide, line, 0.28, 5.16 + index * 0.2, 6.75, 0.2, { fontSize: 12 })
+  })
+  t(slide, 'Valid comparison  →  See the difference  →  Record a choice  →  Restate it', 0.28, 6.2, 6.75, 0.24, {
+    fontSize: 12, bold: true, color: C.forest,
+  })
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 0.28, y: 6.48, w: 6.75, h: 0.5,
+    fill: { color: 'E7F0EB' }, line: { color: C.forest, width: 1, dashType: 'dash' }, rectRadius: 0.05,
+  })
+  t(slide, 'Illustrative, not observed: 35 qualifying sessions ÷ 50 valid comparisons = 70%.', 0.4, 6.52, 6.5, 0.22, { fontSize: 12, bold: true })
+  t(slide, 'Keep, Reduce, and Pause stay neutral. Continuing a SIP is not the success definition.', 0.4, 6.72, 6.5, 0.22, { fontSize: 12 })
+
+  card(slide, 7.32, 4.0, 5.86, 3.08)
+  t(slide, 'VALIDATION GATES', 7.46, 4.08, 5.55, 0.2, { bold: true, color: C.forest, fontSize: 13 })
+  t(slide, 'Proposed criteria. These tests have not been run.', 7.46, 4.28, 5.55, 0.2, { fontSize: 12, color: C.muted })
+  const gates = [
+    ['Usability', 'Plan for 8 to 10 people, with a cash need and a market worry. At least 7 of 10 should restate the difference and the units line.'],
+    ['Distribution', 'If fewer than 10 of the first 50 non-staff sessions are about to change a SIP, revisit positioning. This is not retention.'],
+    ['Calculation', 'Whole rupees, for 1 to 24 months. Reject a blank, invalid, zero, or negative current amount, and any proposed amount above it. Pause is ₹0. Above ₹10,00,000, confirm the digits.'],
+    ['Trust', 'No recommendation and no SIP change. Units stay invested unless the user redeems them elsewhere.'],
+  ]
+  gates.forEach((gate, index) => {
+    const y = 4.52 + index * 0.62
+    t(slide, gate[0], 7.46, y, 5.55, 0.18, { bold: true, fontSize: 12, color: C.forest })
+    t(slide, gate[1], 7.46, y + 0.18, 5.55, 0.42, { fontSize: 12 })
+  })
+
+  t(slide, 'Proposed gates, not completed tests. FinLit states it is not registered with SEBI or AMFI, and a written compliance review is required before a live pilot.', 0.16, 7.16, 13.0, 0.26, { fontSize: 12, color: C.muted })
 }
 
 const fiveOnly = process.argv.includes('--five')
@@ -1859,9 +2007,12 @@ slide2()
 slide3()
 slide4()
 slide5()
-if (!fiveOnly) slide6()
+if (!fiveOnly) {
+  slide6()
+  slide7()
+}
 
-const expected = fiveOnly ? 5 : 6
+const expected = fiveOnly ? 5 : 7
 if (pptx.slides.length !== expected) {
   throw new Error(`Expected ${expected} slides, got ${pptx.slides.length}`)
 }
