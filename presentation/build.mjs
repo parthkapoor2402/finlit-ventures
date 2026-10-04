@@ -1,5 +1,7 @@
 /**
- * Skip Check strategy deck, pages 1–8.
+ * Skip Check strategy deck, pages 1–10.
+ * Slide 9 is the system, journey, and go-to-market canvas.
+ * Slide 10 is the detailed design that slide 9 links to.
  * node build.mjs
  * node build.mjs --five   writes pages 1–5 only
  */
@@ -52,7 +54,7 @@ pptx.defineLayout({ name: 'DECK', width: 13.333, height: 7.5 })
 pptx.layout = 'DECK'
 pptx.author = 'FinLit Ventures'
 pptx.title = 'Skip Check: strategy, journey, and product logic'
-pptx.subject = 'Executive product strategy, pages 1 to 8. Desk research. No interviews.'
+pptx.subject = 'Executive product strategy, pages 1 to 10. Desk research. No interviews.'
 
 function slideBase(section, page) {
   const slide = pptx.addSlide()
@@ -2164,6 +2166,319 @@ function slide8() {
   })
 }
 
+const LINK = '1A4F8B'
+
+function frame(slide, x, y, w, h) {
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x, y, w, h,
+    fill: { color: C.card },
+    line: { color: C.ink, width: 1.15 },
+  })
+}
+
+function chip(slide, x, y, w, h, label) {
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x, y, w, h,
+    fill: { color: 'F4F8F5' },
+    line: { color: C.forest, width: 1 },
+    rectRadius: 0.04,
+  })
+  t(slide, label, x + 0.04, y, w - 0.08, h, {
+    fontSize: 10, bold: true, align: 'center', valign: 'middle',
+  })
+}
+
+function slide9() {
+  const slide = pptx.addSlide()
+  slide.background = { color: C.paper }
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0, y: 0, w: 13.333, h: 0.42,
+    fill: { color: C.forest }, line: { color: C.forest, width: 0 },
+  })
+  t(slide, 'SYSTEM DESIGN, USER JOURNEY & GTM', 0.16, 0.06, 8.4, 0.3, {
+    fontFace: 'Georgia', fontSize: 16, bold: true, color: 'FFFFFF', valign: 'middle',
+  })
+  t(slide, 'METRICS & RISKS', 9.3, 0.08, 3.8, 0.26, {
+    fontSize: 13, bold: true, color: 'FFFFFF', align: 'right', underline: true, valign: 'middle',
+    hyperlink: { slide: 8, tooltip: 'Success metrics and guardrails' },
+  })
+
+  frame(slide, 0.1, 0.52, 8.22, 3.58)
+  frame(slide, 8.42, 0.52, 4.8, 3.58)
+  frame(slide, 0.1, 4.2, 8.22, 3.18)
+  frame(slide, 8.42, 4.2, 4.8, 3.18)
+
+  t(slide, 'HIGH LEVEL SYSTEM DESIGN (SKIP CHECK DESKTOP MVP)', 0.22, 0.58, 6.2, 0.22, {
+    fontSize: 11, bold: true, color: C.forest,
+  })
+  t(slide, 'DETAILED DESIGN →', 6.5, 0.58, 1.7, 0.22, {
+    fontSize: 11, bold: true, color: LINK, align: 'right', underline: true,
+    hyperlink: { slide: 10, tooltip: 'Detailed system design' },
+  })
+
+  t(slide, 'Interface', 0.2, 0.9, 0.7, 0.32, { fontSize: 10, bold: true, color: C.forest, valign: 'middle' })
+  const ui = [
+    [0.92, 'Landing'],
+    [2.28, 'Intent'],
+    [3.64, 'Reason'],
+    [5.0, 'Amounts'],
+  ]
+  ui.forEach((item, index) => {
+    chip(slide, item[0], 0.88, 1.2, 0.36, item[1])
+    if (index < ui.length - 1) hArrow(slide, item[0] + 1.22, ui[index + 1][0] - 0.02, 1.06)
+  })
+  t(slide, 'I’m just exploring opens a sample. That path is not a qualified decision.', 0.92, 1.26, 5.4, 0.16, {
+    fontSize: 10, color: C.muted,
+  })
+
+  t(slide, 'Calculation', 0.2, 1.5, 0.7, 0.36, { fontSize: 10, bold: true, color: C.forest, valign: 'middle' })
+  const calc = [
+    [0.92, 1.28, 'Validation'],
+    [2.4, 1.55, 'Difference'],
+    [4.15, 1.7, 'Keep, Reduce, Pause'],
+  ]
+  calc.forEach((item, index) => {
+    chip(slide, item[0], 1.48, item[1], 0.4, item[2])
+    if (index < calc.length - 1) hArrow(slide, item[0] + item[1] + 0.02, calc[index + 1][0] - 0.02, 1.68)
+  })
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 6.05, y: 1.46, w: 2.12, h: 0.46,
+    fill: { color: 'E7F0EB' }, line: { color: 'E7F0EB', width: 0 }, rectRadius: 0.04,
+  })
+  t(slide, '₹51,000', 6.1, 1.46, 2.02, 0.22, {
+    fontFace: 'Georgia', fontSize: 14, bold: true, color: C.forest, align: 'center',
+  })
+  t(slide, 'less in planned contributions', 6.1, 1.66, 2.02, 0.22, {
+    fontSize: 9, color: C.forest, align: 'center',
+  })
+
+  t(slide, 'Support', 0.2, 2.08, 0.7, 0.32, { fontSize: 10, bold: true, color: C.forest, valign: 'middle' })
+  const support = [
+    [0.92, 1.7, 'Units stay invested'],
+    [2.82, 1.45, 'Bot, if opened'],
+    [4.47, 1.55, 'Recap in browser'],
+  ]
+  support.forEach((item, index) => {
+    chip(slide, item[0], 2.04, item[1], 0.36, item[2])
+    if (index < support.length - 1) hArrow(slide, item[0] + item[1] + 0.02, support[index + 1][0] - 0.02, 2.22)
+  })
+  t(slide, '(₹12,000 − ₹3,500) × 6 = ₹51,000', 6.15, 2.04, 2.02, 0.18, { fontSize: 10, bold: true })
+  t(slide, 'Not a loss or a forecast.', 6.15, 2.22, 2.02, 0.16, { fontSize: 10 })
+
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 0.22, y: 2.5, w: 7.96, h: 0.4,
+    fill: { color: C.card },
+    line: { color: C.forest, width: 1.15, dashType: 'dash' },
+    rectRadius: 0.04,
+  })
+  t(slide, 'Outside Skip Check. The user finishes any SIP change in their own investing app.', 0.34, 2.52, 7.72, 0.18, {
+    fontSize: 10, bold: true, align: 'center',
+  })
+  t(slide, 'No connection to Groww, Coin, Kuvera, ET Money, or any other platform.', 0.34, 2.7, 7.72, 0.16, {
+    fontSize: 10, color: C.muted, align: 'center',
+  })
+
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0.22, y: 2.98, w: 7.96, h: 0.26,
+    fill: { color: C.forest }, line: { color: C.forest, width: 0 },
+  })
+  t(slide, 'NO SIP EXECUTION  ·  NO BROKER INTEGRATION  ·  NO AUTOMATIC PAUSE OR RESTART', 0.3, 3.0, 7.8, 0.22, {
+    fontSize: 10, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle',
+  })
+  t(slide, 'Amounts stay in this browser and are not sent to analytics. A recap is saved only with consent. The bot, if opened, sends the calculated context to Skip Check’s own explanation API.', 0.22, 3.28, 7.96, 0.36, {
+    fontSize: 10,
+  })
+
+  t(slide, 'CUSTOMER SIDE USER JOURNEY', 0.22, 4.26, 5.6, 0.22, {
+    fontSize: 11, bold: true, color: C.forest,
+  })
+  t(slide, 'DETAILED JOURNEY →', 6.4, 4.26, 1.8, 0.22, {
+    fontSize: 11, bold: true, color: LINK, align: 'right', underline: true,
+    hyperlink: { slide: 6, tooltip: 'Desktop wireframes and annotated journey' },
+  })
+
+  const steps = ['Arrive', 'Intent', 'Reason', 'Inputs', 'Compare', 'Clarity', 'Recap', 'Own app']
+  steps.forEach((label, index) => {
+    const x = 0.24 + index * 1.0
+    if (index === 1) {
+      slide.addShape(pptx.shapes.DIAMOND, {
+        x: x + 0.28, y: 4.54, w: 0.36, h: 0.36,
+        fill: { color: 'E7F0EB' }, line: { color: C.forest, width: 1.15 },
+      })
+    } else {
+      slide.addShape(pptx.shapes.OVAL, {
+        x: x + 0.32, y: 4.56, w: 0.32, h: 0.32,
+        fill: { color: C.card }, line: { color: C.forest, width: 1.25 },
+      })
+    }
+    t(slide, String(index + 1), x + 0.28, 4.56, 0.36, 0.32, {
+      fontSize: 11, bold: true, color: C.forest, align: 'center', valign: 'middle',
+    })
+    t(slide, label, x, 4.92, 0.96, 0.18, { fontSize: 10, align: 'center' })
+    if (index < steps.length - 1) hArrow(slide, x + 0.68, x + 1.26, 4.72)
+  })
+
+  const notes = [
+    '1  Arrival. No investing-app integration is assumed.',
+    '2  Explore my options, or I’m just exploring. A sample is not qualified.',
+    '3  Reason is optional and can be skipped. It does not change the formula.',
+    '4  Current, proposed, and 1–24 months. Invalid input stops before a card.',
+    '5  Keep, Reduce, and Pause. The three choices stay equal.',
+    '6  The figure is not a loss or a forecast. Units stay unless redeemed elsewhere.',
+    '7  The recap restates the figure. Saving it needs consent.',
+    '8  The user decides in their own app. Skip Check does not act.',
+  ]
+  notes.forEach((line, index) => {
+    const col = index < 4 ? 0 : 1
+    const row = index % 4
+    t(slide, line, 0.24 + col * 4.02, 5.16 + row * 0.32, 3.92, 0.3, { fontSize: 10 })
+  })
+
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0.22, y: 6.48, w: 7.96, h: 0.8,
+    fill: { color: 'E7F0EB' }, line: { color: 'E7F0EB', width: 0 },
+  })
+  t(slide, 'Proposed definitions, not measured. Keep, Reduce, and Pause stay equal.', 0.32, 6.52, 7.76, 0.16, {
+    fontSize: 10, bold: true, color: C.forest,
+  })
+  t(slide, 'Qualified intent: unconfirmed SIP-change sessions ÷ eligible non-staff sessions.', 0.32, 6.68, 7.76, 0.16, { fontSize: 10 })
+  t(slide, 'Valid comparison: valid cards ÷ decision-flow starts. Informed Choice Rate: choice plus the comprehension checks ÷ valid comparison cards.', 0.32, 6.84, 7.76, 0.32, { fontSize: 10 })
+
+  t(slide, 'GO-TO-MARKET STRATEGY', 8.54, 0.58, 4.56, 0.2, {
+    fontSize: 12, bold: true, color: C.forest,
+  })
+  const gtm = [
+    ['A separate desktop page. It cannot sit inside the investing app.', 0.28, { fontSize: 10 }],
+    ['PRE-LAUNCH · WEEKS 1–2 · Proposed tests', 0.18, { fontSize: 10, bold: true, color: C.forest }],
+    ['8–10 sessions: a cash need and a market worry.', 0.16, { fontSize: 10 }],
+    ['Watch whether a pause is read as selling units.', 0.16, { fontSize: 10 }],
+    ['Proposed CTA: Compare my SIP options. The check stays free.', 0.16, { fontSize: 10 }],
+    ['Exit: 7 of 10 explain the figure and the units line.', 0.16, { fontSize: 10 }],
+    ['A cash need finds Pause. Written review before a public link.', 0.18, { fontSize: 10 }],
+    ['PILOT · WEEKS 3–6 · Proposed rule', 0.18, { fontSize: 10, bold: true, color: C.forest }],
+    ['Search: plain pages on reduce versus pause, then the check.', 0.16, { fontSize: 10 }],
+    ['Communities, where allowed. No fear and no fund tip.', 0.16, { fontSize: 10 }],
+    ['Workplace: opt-in only. Employers do not see amounts.', 0.16, { fontSize: 10 }],
+    ['Gate: under 10 of the first 50 non-staff sessions, revisit it.', 0.18, { fontSize: 10 }],
+    ['SCALE · WEEKS 7–12 · Only with evidence', 0.18, { fontSize: 10, bold: true, color: C.forest }],
+    ['Compare intent, completion, and Informed Choice Rate by source.', 0.16, { fontSize: 10 }],
+    ['Fix repeated input errors and confusion about units.', 0.16, { fontSize: 10 }],
+    ['Scale after comprehension, one relevant channel, and the reviews.', 0.16, { fontSize: 10 }],
+  ]
+  let gtmY = 0.8
+  gtm.forEach((row) => {
+    t(slide, row[0], 8.54, gtmY, 4.56, row[1], row[2])
+    gtmY += row[1]
+  })
+  if (gtmY > 4.02) throw new Error(`GTM text ends at ${gtmY.toFixed(2)}`)
+
+  t(slide, 'REVENUE MODEL', 8.54, 4.28, 4.56, 0.2, {
+    fontSize: 12, bold: true, color: C.forest,
+  })
+  t(slide, '1  Free calculator — current', 8.54, 4.5, 4.56, 0.16, { fontSize: 10, bold: true })
+  t(slide, 'Keep, Reduce, and Pause stay free, so the check is usable at the decision moment. The aim is relevance, trust, and comprehension.', 8.54, 4.66, 4.56, 0.36, { fontSize: 10 })
+  t(slide, 'CURRENT PRODUCT POSITIONING', 8.54, 5.02, 4.56, 0.16, { fontSize: 10, bold: true, color: C.forest })
+
+  t(slide, '2  Optional FinLit review — hypothesis', 8.54, 5.24, 4.56, 0.16, { fontSize: 10, bold: true })
+  t(slide, 'Listed at ₹99. This prototype does not take payment or book the review. Define the service before offering it. It is not regulated advice.', 8.54, 5.4, 4.56, 0.36, { fontSize: 10 })
+  t(slide, '₹99 LISTED PRICE · DEMAND NOT YET VALIDATED', 8.54, 5.78, 4.56, 0.16, { fontSize: 10, bold: true, color: C.amber })
+
+  t(slide, '3  Distribution partnerships — future', 8.54, 6.0, 4.56, 0.16, { fontSize: 10, bold: true })
+  t(slide, 'Transparent sponsorships only. Do not sell inputs or decision records. Commercial terms must not change how the three choices are shown.', 8.54, 6.16, 4.56, 0.36, { fontSize: 10 })
+  t(slide, 'FUTURE OPTION · SUBJECT TO VALIDATION', 8.54, 6.54, 4.56, 0.16, { fontSize: 10, bold: true, color: C.amber })
+
+  t(slide, 'VALIDATE TRUST AND DISTRIBUTION BEFORE MONETIZATION.', 8.54, 6.82, 4.56, 0.36, {
+    fontSize: 11, bold: true, color: C.forest,
+  })
+}
+
+function slide10() {
+  const slide = pptx.addSlide()
+  journeyBar(slide, 'metrics')
+  t(slide, 'Detailed system design', 0.16, 0.46, 8.2, 0.28, {
+    fontFace: 'Georgia', fontSize: 22, bold: true,
+  })
+  t(slide, 'The live desktop page. Proposed work is labeled on the previous slide.', 0.16, 0.76, 9.2, 0.2, {
+    fontSize: 12, color: C.muted,
+  })
+  t(slide, '← OVERVIEW', 10.4, 0.74, 2.7, 0.22, {
+    fontSize: 12, bold: true, color: LINK, align: 'right', underline: true,
+    hyperlink: { slide: 9, tooltip: 'System design, journey, and go-to-market' },
+  })
+
+  card(slide, 0.14, 1.06, 4.28, 4.28)
+  t(slide, 'INTERFACE — LIVE', 0.28, 1.14, 4.0, 0.22, { fontSize: 13, bold: true, color: C.forest })
+  const iface = [
+    'Explore my options starts a decision session.',
+    'I’m just exploring opens a sample at ₹12,000, ₹6,000, and 6 months. The page says it is not the user’s SIP.',
+    'Reason is optional. Skip this is on the page. The reason does not change the formula.',
+    'Then the current amount, the proposed amount, and 1 to 24 months.',
+    'Above ₹10,00,000, the page asks the user to confirm the digits.',
+    'Keep, Reduce, and Pause are shown together.',
+    'Clarity questions are optional. The recap follows.',
+  ]
+  iface.forEach((line, index) => {
+    const h = index === 1 ? 0.48 : 0.36
+    const y = 1.42 + iface.slice(0, index).reduce((sum, _, i) => sum + (i === 1 ? 0.48 : 0.36), 0)
+    t(slide, line, 0.28, y, 4.0, h, { fontSize: 12 })
+  })
+
+  card(slide, 4.54, 1.06, 4.28, 4.28)
+  t(slide, 'CALCULATION — IN THE BROWSER', 4.68, 1.14, 4.0, 0.22, { fontSize: 13, bold: true, color: C.forest })
+  const calcLines = [
+    ['(Current − proposed) × months, in whole rupees.', 0.4],
+    ['Illustrative: (₹12,000 − ₹3,500) × 6 = ₹51,000.', 0.4],
+    ['That is less in planned contributions over 6 months. It is not a loss or a forecast.', 0.48],
+    ['Pause uses ₹0. On this example a pause differs by ₹72,000.', 0.4],
+    ['A blank, invalid, zero, or negative current amount is rejected. An increase is rejected.', 0.48],
+    ['There is no separate calculation service.', 0.32],
+  ]
+  let calcY = 1.44
+  calcLines.forEach((line) => {
+    t(slide, line[0], 4.68, calcY, 4.0, line[1], { fontSize: 12 })
+    calcY += line[1]
+  })
+
+  card(slide, 8.94, 1.06, 4.24, 4.28)
+  t(slide, 'TRUST AND THE OUTSIDE', 9.08, 1.14, 3.96, 0.22, { fontSize: 13, bold: true, color: C.forest })
+  const trust = [
+    ['Typed amounts stay in the browser. Page events do not include those amounts.', 0.48],
+    ['A recap is stored here only after the user agrees, and the user can delete it.', 0.48],
+    ['SIP Check Bot is optional. If opened, the calculated context goes to Skip Check’s own explanation API. The bot explains. It does not choose or change the SIP.', 0.72],
+    ['FinLit states it is not registered with SEBI or AMFI. A written compliance review has not been completed.', 0.52],
+    ['An optional review is listed at ₹99. This prototype does not take payment or book it.', 0.48],
+  ]
+  let trustY = 1.42
+  trust.forEach((line) => {
+    t(slide, line[0], 9.08, trustY, 3.96, line[1], { fontSize: 12 })
+    trustY += line[1]
+  })
+
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 0.14, y: 5.48, w: 13.04, h: 0.7,
+    fill: { color: C.card },
+    line: { color: C.forest, width: 1.25, dashType: 'dash' },
+    rectRadius: 0.05,
+  })
+  t(slide, 'USER COMPLETES ANY SIP CHANGE SEPARATELY IN THEIR OWN INVESTING APP', 0.28, 5.54, 12.76, 0.24, {
+    fontSize: 13, bold: true, align: 'center',
+  })
+  t(slide, 'No API to Groww, Coin, Kuvera, ET Money, or any other investing platform.', 0.28, 5.8, 12.76, 0.24, {
+    fontSize: 12, color: C.muted, align: 'center',
+  })
+
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x: 0.14, y: 6.32, w: 13.04, h: 0.42,
+    fill: { color: C.forest }, line: { color: C.forest, width: 0 }, rectRadius: 0.05,
+  })
+  t(slide, 'NO SIP EXECUTION  ·  NO BROKER INTEGRATION  ·  NO AUTOMATIC PAUSE OR RESTART', 0.28, 6.38, 12.76, 0.3, {
+    fontSize: 14, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle',
+  })
+  t(slide, 'Go-to-market weeks, channel gates, and partnership ideas on the previous slide are proposals. They are not signed and they are not measured.', 0.16, 6.86, 13.0, 0.36, {
+    fontSize: 12, color: C.muted,
+  })
+}
+
 const fiveOnly = process.argv.includes('--five')
 
 slide1()
@@ -2175,9 +2490,11 @@ if (!fiveOnly) {
   slide6()
   slide7()
   slide8()
+  slide9()
+  slide10()
 }
 
-const expected = fiveOnly ? 5 : 8
+const expected = fiveOnly ? 5 : 10
 if (pptx.slides.length !== expected) {
   throw new Error(`Expected ${expected} slides, got ${pptx.slides.length}`)
 }
