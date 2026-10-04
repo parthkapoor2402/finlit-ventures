@@ -1852,18 +1852,21 @@ function slide6() {
   )
 }
 
+const fiveOnly = process.argv.includes('--five')
+
 slide1()
 slide2()
 slide3()
 slide4()
 slide5()
-slide6()
+if (!fiveOnly) slide6()
 
-if (pptx.slides.length !== 6) {
-  throw new Error(`Expected 6 slides, got ${pptx.slides.length}`)
+const expected = fiveOnly ? 5 : 6
+if (pptx.slides.length !== expected) {
+  throw new Error(`Expected ${expected} slides, got ${pptx.slides.length}`)
 }
 
 await mkdir(outDir, { recursive: true })
-const pptxPath = path.join(outDir, 'finlit-skip-check-strategy.pptx')
+const pptxPath = path.join(outDir, fiveOnly ? 'finlit-skip-check-pages-1-5.pptx' : 'finlit-skip-check-strategy.pptx')
 await pptx.writeFile({ fileName: pptxPath })
 console.log(pptxPath)
