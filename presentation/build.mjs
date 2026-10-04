@@ -1958,7 +1958,7 @@ function slide7() {
   })
   t(slide, 'Keep, Reduce, and Pause are equally valid. Skip Check explains the numbers and does not recommend an action.', 7.46, 3.08, 5.55, 0.66, { fontSize: 12 })
 
-  card(slide, 0.14, 4.0, 7.05, 3.08)
+  card(slide, 0.14, 4.0, 7.05, 3.16)
   t(slide, 'INFORMED CHOICE RATE', 0.28, 4.08, 6.7, 0.22, { bold: true, color: C.forest, fontSize: 13 })
   t(slide, 'Proposed metric, not measured on the live page. It is the share of valid-comparison sessions that finish every comprehension step.', 0.28, 4.3, 6.75, 0.4, { fontSize: 12 })
   t(slide, 'Informed Choice Rate = (Sessions that finish every required step ÷ Sessions that reach a valid comparison) × 100', 0.28, 4.72, 6.75, 0.4, { fontSize: 12 })
@@ -1982,22 +1982,21 @@ function slide7() {
   t(slide, 'Illustrative, not observed: 35 qualifying sessions ÷ 50 valid comparisons = 70%.', 0.4, 6.52, 6.5, 0.22, { fontSize: 12, bold: true })
   t(slide, 'Keep, Reduce, and Pause stay neutral. Continuing a SIP is not the success definition.', 0.4, 6.72, 6.5, 0.22, { fontSize: 12 })
 
-  card(slide, 7.32, 4.0, 5.86, 3.08)
+  card(slide, 7.32, 4.0, 5.86, 3.16)
   t(slide, 'VALIDATION GATES', 7.46, 4.08, 5.55, 0.2, { bold: true, color: C.forest, fontSize: 13 })
   t(slide, 'Proposed criteria. These tests have not been run.', 7.46, 4.28, 5.55, 0.2, { fontSize: 12, color: C.muted })
   const gates = [
-    ['Usability', 'Plan for 8 to 10 people, with a cash need and a market worry. At least 7 of 10 should restate the difference and the units line.'],
-    ['Distribution', 'If fewer than 10 of the first 50 non-staff sessions are about to change a SIP, revisit positioning. This is not retention.'],
-    ['Calculation', 'Whole rupees, for 1 to 24 months. Reject a blank, invalid, zero, or negative current amount, and any proposed amount above it. Pause is ₹0. Above ₹10,00,000, confirm the digits.'],
-    ['Trust', 'No recommendation and no SIP change. Units stay invested unless the user redeems them elsewhere.'],
+    ['Usability', 'Plan for 8 to 10 people, with a cash need and a market worry. At least 7 of 10 should restate the difference and the units line.', 4.5, 0.4],
+    ['Distribution', 'If fewer than 10 of the first 50 non-staff sessions are about to change a SIP, revisit positioning. This is not retention.', 5.1, 0.4],
+    ['Calculation', 'Whole rupees, for 1 to 24 months. Reject a blank, invalid, zero, or negative current amount, and any proposed amount above it. Pause is ₹0. Above ₹10,00,000, confirm the digits.', 5.7, 0.62],
+    ['Trust', 'No recommendation and no SIP change. Units stay invested unless the user redeems them elsewhere.', 6.52, 0.42],
   ]
-  gates.forEach((gate, index) => {
-    const y = 4.52 + index * 0.62
-    t(slide, gate[0], 7.46, y, 5.55, 0.18, { bold: true, fontSize: 12, color: C.forest })
-    t(slide, gate[1], 7.46, y + 0.18, 5.55, 0.42, { fontSize: 12 })
+  gates.forEach((gate) => {
+    t(slide, gate[0], 7.46, gate[2], 5.55, 0.18, { bold: true, fontSize: 12, color: C.forest })
+    t(slide, gate[1], 7.46, gate[2] + 0.18, 5.55, gate[3], { fontSize: 12 })
   })
 
-  t(slide, 'Proposed gates, not completed tests. FinLit states it is not registered with SEBI or AMFI, and a written compliance review is required before a live pilot.', 0.16, 7.16, 13.0, 0.26, { fontSize: 12, color: C.muted })
+  t(slide, 'Proposed gates, not completed tests. FinLit states it is not registered with SEBI or AMFI, and a written compliance review is required before a live pilot.', 0.16, 7.24, 13.0, 0.22, { fontSize: 12, color: C.muted })
 }
 
 const fiveOnly = process.argv.includes('--five')
