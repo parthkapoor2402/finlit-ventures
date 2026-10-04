@@ -1584,80 +1584,171 @@ function slide4() {
   )
 }
 
-function slide5() {
-  const slide = slideBase('Problem framing', 5)
-  headline(slide, 'The problem is how the next instalments are explained at the moment of change.')
-
-  const cells = [
-    {
-      k: 'True problem',
-      v: 'At a SIP change, a cash need and a market worry meet the same thin confirm. The next instalments are not calculated from this person’s amounts. A pause is sometimes the right choice. The difference is not an investment loss.',
-    },
-    {
-      k: 'Who',
-      v: 'A person who already runs a SIP and is about to keep, reduce, or pause. Illustrated by Ananya, not interviewed. Not someone who has yet to start, and not a household that is only aware of a securities product.',
-    },
-    {
-      k: 'How we know',
-      v: 'AMFI’s notes and the ceased-SIP rule, three paraphrased threads, and Kuvera and Groww help. No interviews and no measured use. The voluntary share of July’s 50.30 lakh is not published, so this deck does not invent it.',
-    },
-    {
-      k: 'Value, potential only',
-      v: 'Customer, if it works: a choice she can restate, including a pause. Not a higher return. Business, if anyone comes: a free check and an unpaid ₹99 review. Not fewer pauses. Do not use the 38.5 crore TAM or “NCFE 2026.” That 27% figure is 2019 fieldwork.',
-    },
+function slide5Header(slide) {
+  slide.background = { color: C.paper }
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0, y: 0, w: 13.333, h: 0.38,
+    fill: { color: C.forest }, line: { color: C.forest, width: 0 },
+  })
+  slide.addText('SKIP CHECK', {
+    x: 0.2, y: 0.04, w: 1.65, h: 0.28,
+    fontFace: 'Georgia', fontSize: 13, bold: true, color: 'FFFFFF', margin: 0, valign: 'middle',
+  })
+  const tabs = [
+    ['MARKET LANDSCAPE', false],
+    ['USER EVIDENCE', false],
+    ['PERSONA', false],
+    ['JOURNEY', false],
+    ['FRAMING', false],
+    ['WHAT TO TEST', false],
   ]
-  cells.forEach((cell, index) => {
-    const col = index % 2
-    const row = Math.floor(index / 2)
-    const x = 0.4 + col * 6.36
-    const y = 1.48 + row * 1.68
-    card(slide, x, y, 6.2, 1.56)
-    slide.addText(cell.k, {
-      x: x + 0.18,
-      y: y + 0.1,
-      w: 5.84,
-      h: 0.28,
-      fontFace: 'Calibri',
-      fontSize: 14,
-      bold: true,
-      color: C.forest,
-      margin: 0,
-    })
-    slide.addText(cell.v, {
-      x: x + 0.18,
-      y: y + 0.42,
-      w: 5.84,
-      h: 1.02,
-      fontFace: 'Calibri',
-      fontSize: 14,
-      color: C.ink,
-      margin: 0,
+  tabs.forEach((tab, index) => {
+    slide.addText(tab[0], {
+      x: 2.05 + index * 1.82, y: 0.05, w: 1.74, h: 0.22,
+      fontFace: 'Calibri', fontSize: 11, bold: true, color: 'FFFFFF', align: 'center', margin: 0,
     })
   })
+}
 
-  slide.addText(
-    [
-      { text: 'Why look now. ', options: { bold: true, color: C.forest } },
-      { text: 'This is a hypothesis, not a crisis. Contributions were higher in the ', options: { color: C.ink } },
-      link('August 2026 note', URLS.amfiAug),
-      { text: ' than in the ', options: { color: C.ink } },
-      link('July note', URLS.amfiJul),
-      {
-        text: ', so this deck does not describe a redemption emergency. The reason to test the page is that public threads still mix a scare with a cash need, and help centers still explain that stopping a SIP is not the same as getting the money back.',
-        options: { color: C.ink },
-      },
-    ],
-    { x: 0.4, y: 4.92, w: 12.52, h: 1.05, fontFace: 'Calibri', fontSize: 14, margin: 0 },
+function slide5() {
+  const slide = pptx.addSlide()
+  slide5Header(slide)
+
+  const concepts = [
+    {
+      title: 'BROKER INTERRUPT',
+      body: 'The card would sit inside Groww, Coin, Kuvera, or ET Money, between skip and confirm. The platform would supply the amount. FinLit cannot ship this alone, and the partner would own the compliance review. It was not built.',
+    },
+    {
+      title: 'SKIP CHECK',
+      body: 'The live page asks for an optional reason and the amounts. It shows current minus proposed, times the months, and keeps Keep, Reduce, and Pause equal. Pause is a proposed ₹0. The person still acts in their own app.',
+    },
+    {
+      title: 'REVIEW AFTER A PAUSE',
+      body: 'A review after a pause matches a service FinLit already lists, from ₹99 to ₹2,499. It comes after the confirm, so it misses the moment the notes set out to support. It remains a paid conversation, not this check.',
+    },
+  ]
+  concepts.forEach((item, index) => {
+    const y = 0.48 + index * 1.78
+    card(slide, 0.18, y, 7.15, 1.68)
+    t(slide, item.title, 0.32, y + 0.1, 6.86, 0.22, { bold: true, color: C.forest, fontSize: 13 })
+    t(slide, item.body, 0.32, y + 0.38, 6.86, 1.2, { fontSize: 13 })
+  })
+
+  card(slide, 7.45, 0.48, 5.7, 5.24)
+  t(slide, 'SOLUTION PRIORITISATION', 7.59, 0.56, 5.42, 0.22, { bold: true, color: C.forest, fontSize: 13 })
+  t(
+    slide,
+    'The concept choice used a weighted desk score from 1 to 5. It is not a survey, and it is not RICE.',
+    7.59,
+    0.82,
+    5.42,
+    0.4,
+    { fontSize: 12 },
   )
-  slide.addText(
-    [
-      { text: 'Synthesis. ', options: { bold: true, color: C.forest } },
-      {
-        text: 'Customer value and business value are both potential, and neither has been measured. The test is whether a reason-specific explanation, with an honest boundary, is more useful than a bare subtraction. That has not been shown.',
-        options: { color: C.ink },
-      },
-    ],
-    { x: 0.4, y: 6.02, w: 12.52, h: 0.98, fontFace: 'Calibri', fontSize: 14, margin: 0 },
+
+  const weights = [
+    ['Broker interrupt', 0.2 * 5 + 0.15 * 4 + 0.2 * 5 + 0.1 * 3 + 0.15 * 1 + 0.1 * 4 + 0.1 * 2],
+    ['Skip Check', 0.2 * 4 + 0.15 * 4 + 0.2 * 3 + 0.1 * 4 + 0.15 * 5 + 0.1 * 5 + 0.1 * 4],
+    ['Review after a pause', 0.2 * 2 + 0.15 * 3 + 0.2 * 1 + 0.1 * 2 + 0.15 * 4 + 0.1 * 4 + 0.1 * 3],
+  ]
+  t(slide, 'CONCEPT', 7.59, 1.28, 2.5, 0.2, { bold: true, fontSize: 11, color: C.muted })
+  t(slide, 'SCORE', 10.15, 1.28, 0.7, 0.2, { bold: true, fontSize: 11, color: C.muted, align: 'right' })
+  t(slide, 'READING', 10.95, 1.28, 2.0, 0.2, { bold: true, fontSize: 11, color: C.muted })
+  const readings = ['Best moment. Cannot ship.', 'Highest. This is the page.', 'Too late for the confirm.']
+  weights.forEach((row, index) => {
+    const y = 1.52 + index * 0.36
+    const score = (Math.round(row[1] * 100) / 100).toFixed(2)
+    if (index === 1) {
+      slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+        x: 7.55, y: y - 0.04, w: 5.5, h: 0.32,
+        fill: { color: 'E7F0EB' }, line: { color: 'E7F0EB', width: 0 }, rectRadius: 0.03,
+      })
+    }
+    t(slide, row[0], 7.59, y, 2.5, 0.24, { fontSize: 12, bold: index === 1 })
+    t(slide, score, 10.15, y, 0.7, 0.24, { fontSize: 12, bold: true, align: 'right' })
+    t(slide, readings[index], 10.95, y, 2.0, 0.24, { fontSize: 12 })
+  })
+  t(
+    slide,
+    'Weights: value 20, evidence 15, moment 20, differentiation 10, feasibility 15, explainability 10, trust 10.',
+    7.59,
+    2.64,
+    5.42,
+    0.4,
+    { fontSize: 11, color: C.muted },
+  )
+
+  t(slide, 'RICE INSIDE SKIP CHECK', 7.59, 3.1, 5.42, 0.2, { bold: true, color: C.forest, fontSize: 12 })
+  t(slide, 'Score = (Reach × Impact × Confidence) ÷ Effort. Reach of 200 is an assumption.', 7.59, 3.32, 5.42, 0.36, { fontSize: 11 })
+  const riceHeads = [
+    [7.59, 1.7, 'ITEM'],
+    [9.35, 0.42, 'R'],
+    [9.8, 0.38, 'I'],
+    [10.2, 0.48, 'C'],
+    [10.7, 0.4, 'E'],
+    [11.15, 0.85, 'SCORE'],
+  ]
+  riceHeads.forEach((col) => {
+    t(slide, col[2], col[0], 3.72, col[1], 0.18, { bold: true, fontSize: 11, color: C.muted, align: col[2] === 'ITEM' ? 'left' : 'right' })
+  })
+  const rice = [
+    ['Reason and three choices', 200, 2, 0.7, 2],
+    ['Rupee line and units', 200, 2, 0.8, 1],
+    ['Restatement check', 200, 1, 0.6, 1],
+  ]
+  rice.forEach((row, index) => {
+    const y = 3.94 + index * 0.32
+    const score = (row[1] * row[2] * row[3]) / row[4]
+    const cells = [row[0], String(row[1]), String(row[2]), String(row[3]), String(row[4]), String(Math.round(score))]
+    riceHeads.forEach((col, i) => {
+      t(slide, cells[i], col[0], y, col[1], 0.28, {
+        fontSize: 12,
+        align: i === 0 ? 'left' : 'right',
+        bold: i === 5,
+      })
+    })
+  })
+  t(
+    slide,
+    'Impact here is a desk weight on an informed choice, not a measured lift. Effort is person-weeks for a small prototype. A restart month is scored in the notes and is not on the live page.',
+    7.59,
+    4.92,
+    5.42,
+    0.68,
+    { fontSize: 11, color: C.muted },
+  )
+
+  card(slide, 0.18, 5.82, 12.97, 1.56)
+  t(slide, 'MVP: THE LIVE SKIP CHECK PAGE', 0.32, 5.9, 8.2, 0.22, { bold: true, color: C.forest, fontSize: 13 })
+  t(slide, 'FOR THE INVESTOR', 0.32, 6.18, 6.1, 0.18, { bold: true, fontSize: 12, color: C.forest })
+  t(slide, 'FOR FINLIT VENTURES', 6.7, 6.18, 6.1, 0.18, { bold: true, fontSize: 12, color: C.amber })
+  t(
+    slide,
+    'She can restate the rupee difference, keep all three paths open, and leave existing units invested unless she redeems them separately.',
+    0.32,
+    6.4,
+    6.15,
+    0.5,
+    { fontSize: 12 },
+  )
+  t(
+    slide,
+    'The check is free. Listed plans run from ₹99 to ₹2,499. Whether a visitor then buys a plan has not been measured.',
+    6.7,
+    6.4,
+    6.2,
+    0.5,
+    { fontSize: 12 },
+  )
+  t(
+    slide,
+    'Explain the implications. Preserve the choice. Do not execute the SIP change. FinLit states it is not registered with SEBI or AMFI.',
+    0.32,
+    6.96,
+    12.6,
+    0.3,
+    { fontSize: 12, color: C.forest },
   )
 }
 
