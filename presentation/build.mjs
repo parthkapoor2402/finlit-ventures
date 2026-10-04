@@ -207,11 +207,11 @@ function bars(slide, spec) {
 }
 
 function stackedBars(slide, spec) {
-  const { x, y, w, rows, max } = spec
+  const { x, y, w, rows, max, step = 0.95 } = spec
   const valueW = 0.78
   const trackW = w - valueW
   rows.forEach((row, index) => {
-    const yy = y + index * 0.95
+    const yy = y + index * step
     slide.addText(row.label, {
       x,
       y: yy,
@@ -257,86 +257,340 @@ function stackedBars(slide, spec) {
   })
 }
 
-function slide1() {
-  const slide = slideBase('Business context', 1)
-  headline(slide, 'SIP contributions are still rising, and the published stoppage count is not a count of voluntary pauses.')
-  body(
-    slide,
-    [
-      link('AMFI’s August 2026 monthly note', URLS.amfiAug),
-      plain(
-        ' reports SIP contributions of ₹32,297 crore and 10.02 crore contributing accounts. Those are accounts, not people, and one investor often holds more than one SIP.',
-      ),
-    ],
-    { x: 0.4, y: 1.48, w: 7.15, h: 0.88 },
-  )
-  body(
-    slide,
-    [
-      link('The July 2026 note', URLS.amfiJul),
-      plain(
-        ' reports ₹31,961 crore and 9.90 crore contributing accounts. The bars compare that month’s new registrations with SIPs that were discontinued or whose tenure was completed.',
-      ),
-    ],
-    { x: 0.4, y: 2.4, w: 7.15, h: 0.88 },
-  )
-  body(
-    slide,
-    [
-      link('Economic Times, citing AMFI,', URLS.etStoppage),
-      plain(
-        ' puts new registrations at 61.44 lakh and discontinued or tenure-completed SIPs at 50.30 lakh. The ratio is 81.87 percent. This deck did not re-read those two counts from an AMFI spreadsheet. A ceased SIP, under AMFI’s rule, includes three consecutive failed instalments, so a failed debit sits in the same count as a finished plan and a chosen pause.',
-      ),
-    ],
-    { x: 0.4, y: 3.32, w: 7.15, h: 1.48 },
-  )
-  body(
-    slide,
-    [
-      plain('FinLit, founded publicly in 2026 by Nishant Jain, offers Skip Check free. '),
-      link('skip-check.vercel.app', URLS.prototype),
-      plain(
-        ' opens the prototype; that is not usage. ₹99 is listed and unpaid: no payment, and no booking. The footer says FinLit is not registered with SEBI or AMFI. Discretionary wording on the same site is a compliance tension, not a feature.',
-      ),
-    ],
-    { x: 0.4, y: 4.58, w: 7.15, h: 1.05 },
-  )
-  body(
-    slide,
-    [
-      plain(
-        'The job was reconstructed from this desk research, not locked in an interview. When someone is about to change a SIP, they want the next instalments explained in light of their own reason, so they can choose without guessing. The actors are that person, their own app, and FinLit. Skip Check does not change the SIP.',
-      ),
-    ],
-    { x: 0.4, y: 5.72, w: 7.15, h: 1.15 },
-  )
-
-  card(slide, 7.75, 1.48, 5.15, 5.48)
-  slide.addText('July 2026 SIP activity, in lakh', {
-    x: 7.95,
-    y: 1.64,
-    w: 4.75,
-    h: 0.32,
-    fontFace: 'Georgia',
-    fontSize: 16,
-    color: C.ink,
-    margin: 0,
+function panel(slide, x, y, w, h) {
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x,
+    y,
+    w,
+    h,
+    fill: { color: 'FFFFFF' },
+    line: { color: '1C1917', width: 1.25 },
+    rectRadius: 0.04,
   })
-  slide.addText('Bar length follows the count. The shorter bar is not a count of investors who chose to pause.', {
-    x: 7.95,
-    y: 2.0,
-    w: 4.75,
-    h: 0.58,
+}
+
+function panelTitle(slide, title, x, y, w) {
+  slide.addText(title, {
+    x,
+    y,
+    w,
+    h: 0.32,
     fontFace: 'Calibri',
     fontSize: 14,
+    bold: true,
+    underline: { style: 'sng', color: '1C1917' },
+    align: 'center',
+    color: '1C1917',
+    margin: 0,
+  })
+}
+
+function iconPerson(slide, x, y) {
+  slide.addShape(pptx.shapes.OVAL, {
+    x: x + 0.1,
+    y,
+    w: 0.22,
+    h: 0.22,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
+  })
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x,
+    y: y + 0.26,
+    w: 0.42,
+    h: 0.22,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
+    rectRadius: 0.08,
+  })
+}
+
+function iconApp(slide, x, y) {
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x,
+    y,
+    w: 0.34,
+    h: 0.46,
+    fill: { color: 'FFFFFF' },
+    line: { color: C.forest, width: 1.5 },
+    rectRadius: 0.04,
+  })
+  slide.addShape(pptx.shapes.OVAL, {
+    x: x + 0.12,
+    y: y + 0.34,
+    w: 0.1,
+    h: 0.06,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
+  })
+}
+
+function iconMark(slide, x, y) {
+  slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, {
+    x,
+    y,
+    w: 0.42,
+    h: 0.42,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
+    rectRadius: 0.06,
+  })
+  slide.addText('F', {
+    x,
+    y: y + 0.04,
+    w: 0.42,
+    h: 0.34,
+    fontFace: 'Georgia',
+    fontSize: 16,
+    color: 'FFFFFF',
+    align: 'center',
+    margin: 0,
+  })
+}
+
+function iconPages(slide, x, y) {
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: x + 0.08,
+    y,
+    w: 0.3,
+    h: 0.4,
+    fill: { color: 'FFFFFF' },
+    line: { color: C.forest, width: 1.25 },
+  })
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x,
+    y: y + 0.08,
+    w: 0.3,
+    h: 0.4,
+    fill: { color: 'FFFFFF' },
+    line: { color: C.forest, width: 1.25 },
+  })
+}
+
+function slide1() {
+  const slide = pptx.addSlide()
+  slide.background = { color: 'FFFFFF' }
+
+  slide.addShape(pptx.shapes.RECTANGLE, {
+    x: 0,
+    y: 0,
+    w: 13.333,
+    h: 0.58,
+    fill: { color: C.forest },
+    line: { color: C.forest, width: 0 },
+  })
+  slide.addText('SKIP CHECK', {
+    x: 0.22,
+    y: 0.1,
+    w: 1.85,
+    h: 0.38,
+    fontFace: 'Georgia',
+    fontSize: 16,
+    bold: true,
+    color: 'FFFFFF',
+    margin: 0,
+    valign: 'middle',
+  })
+
+  const tabs = [
+    ['MARKET LANDSCAPE', true],
+    ['USER EVIDENCE', false],
+    ['PERSONA', false],
+    ['JOURNEY', false],
+    ['FRAMING', false],
+    ['WHAT TO TEST', false],
+  ]
+  tabs.forEach((tab, index) => {
+    const x = 2.15 + index * 1.82
+    slide.addText(tab[0], {
+      x,
+      y: 0.12,
+      w: 1.72,
+      h: 0.28,
+      fontFace: 'Calibri',
+      fontSize: 12,
+      bold: true,
+      color: 'FFFFFF',
+      align: 'center',
+      margin: 0,
+    })
+    if (tab[1]) {
+      slide.addShape(pptx.shapes.RECTANGLE, {
+        x: x + 0.12,
+        y: 0.42,
+        w: 1.48,
+        h: 0.045,
+        fill: { color: 'FFFFFF' },
+        line: { color: 'FFFFFF', width: 0 },
+      })
+    }
+  })
+
+  panel(slide, 0.22, 0.74, 6.4, 1.62)
+  panelTitle(slide, 'ABOUT SKIP CHECK', 0.36, 0.82, 6.12)
+  slide.addText(
+    'Skip Check compares the next SIP instalments. It does not change the SIP. FinLit Ventures is the research site behind it, and the project notes name Nishant Jain as the founder on that site in 2026. FinLit states that it is not registered with SEBI or AMFI.',
+    {
+      x: 0.4,
+      y: 1.2,
+      w: 6.04,
+      h: 1.02,
+      fontFace: 'Calibri',
+      fontSize: 13,
+      color: C.ink,
+      margin: 0,
+    },
+  )
+
+  panel(slide, 6.74, 0.74, 6.36, 1.62)
+  panelTitle(slide, 'JTBD', 6.88, 0.82, 6.08)
+  slide.addText('Reconstructed from desk research. This is not an interview.', {
+    x: 6.94,
+    y: 1.16,
+    w: 5.96,
+    h: 0.26,
+    fontFace: 'Calibri',
+    fontSize: 12,
+    italic: true,
+    color: C.muted,
+    align: 'center',
+    margin: 0,
+  })
+  slide.addText(
+    'When I am about to change a SIP, I want the next instalments explained in light of my own reason, so I can choose without guessing.',
+    {
+      x: 6.96,
+      y: 1.46,
+      w: 5.92,
+      h: 0.74,
+      fontFace: 'Georgia',
+      fontSize: 15,
+      color: C.ink,
+      align: 'center',
+      margin: 0,
+    },
+  )
+
+  panel(slide, 0.22, 2.5, 4.18, 1.78)
+  panelTitle(slide, 'REVENUE MODEL', 0.34, 2.58, 3.94)
+  slide.addText(
+    [
+      { text: 'Skip Check is free.', options: { breakLine: true } },
+      { text: 'An optional review is listed at ₹99. This prototype does not take payment.', options: { breakLine: true } },
+      { text: 'Other published plans run from ₹99 to ₹2,499. Payment for this check is untested.', options: {} },
+    ],
+    {
+      x: 0.4,
+      y: 2.98,
+      w: 3.82,
+      h: 1.16,
+      fontFace: 'Calibri',
+      fontSize: 13,
+      color: C.ink,
+      margin: 0,
+      paraSpaceAfter: 6,
+    },
+  )
+
+  panel(slide, 4.52, 2.5, 4.28, 1.78)
+  panelTitle(slide, 'WHERE THE CHOICE HAPPENS', 4.64, 2.58, 4.04)
+  slide.addText(
+    [
+      plain('Their investing app is where a change is made. A forum thread is where people already ask. '),
+      link('Kuvera’s help', URLS.kuvera),
+      plain(' says stopping is not a withdrawal. '),
+      link('Groww’s help', URLS.groww),
+      plain(' says a near-dated debit can still go through.'),
+    ],
+    {
+      x: 4.68,
+      y: 2.98,
+      w: 3.96,
+      h: 1.16,
+      fontFace: 'Calibri',
+      fontSize: 13,
+      margin: 0,
+    },
+  )
+
+  panel(slide, 8.92, 2.5, 4.18, 1.78)
+  panelTitle(slide, 'MARKET NOTES', 9.04, 2.58, 3.94)
+  slide.addText(
+    [
+      link('August 2026: ₹32,297 crore.', URLS.amfiAug),
+      { text: '\n', options: { breakLine: true } },
+      link('July 2026: ₹31,961 crore.', URLS.amfiJul),
+      {
+        text: '\n10.02 crore contributing accounts in August. Those are accounts, not people. Commentary splits a cash need from a scare. That is not a count of behaviour.',
+        options: { color: C.ink },
+      },
+    ],
+    {
+      x: 9.08,
+      y: 2.96,
+      w: 3.86,
+      h: 1.18,
+      fontFace: 'Calibri',
+      fontSize: 13,
+      margin: 0,
+    },
+  )
+
+  panel(slide, 0.22, 4.42, 6.4, 2.86)
+  panelTitle(slide, 'ACTORS INVOLVED', 0.36, 4.5, 6.12)
+  const actors = [
+    [iconPerson, 'The person', 'Already runs a SIP and may keep, reduce, or pause the next instalments.'],
+    [iconApp, 'Their app', 'Any change is made there. Skip Check does not execute it.'],
+    [iconMark, 'FinLit', 'Explains the arithmetic. It does not choose, and it does not change the SIP.'],
+    [iconPages, 'Public writing', 'Threads and help articles. No investor has been interviewed.'],
+  ]
+  actors.forEach((actor, index) => {
+    const col = index % 2
+    const row = Math.floor(index / 2)
+    const x = 0.42 + col * 3.1
+    const y = 4.98 + row * 1.08
+    actor[0](slide, x, y + 0.08)
+    slide.addText(actor[1], {
+      x: x + 0.56,
+      y,
+      w: 2.4,
+      h: 0.28,
+      fontFace: 'Calibri',
+      fontSize: 14,
+      bold: true,
+      color: C.forest,
+      margin: 0,
+    })
+    slide.addText(actor[2], {
+      x: x + 0.56,
+      y: y + 0.3,
+      w: 2.4,
+      h: 0.68,
+      fontFace: 'Calibri',
+      fontSize: 13,
+      color: C.ink,
+      margin: 0,
+    })
+  })
+
+  panel(slide, 6.74, 4.42, 6.36, 2.86)
+  panelTitle(slide, 'SIP ACTIVITY, JULY 2026', 6.88, 4.5, 6.08)
+  slide.addText('Counts are in lakh. The shorter bar is not a count of voluntary pauses.', {
+    x: 6.94,
+    y: 4.86,
+    w: 5.96,
+    h: 0.28,
+    fontFace: 'Calibri',
+    fontSize: 13,
     color: C.muted,
     margin: 0,
   })
   stackedBars(slide, {
-    x: 7.95,
-    y: 2.68,
-    w: 4.75,
+    x: 6.94,
+    y: 5.16,
+    w: 5.96,
     max: 70,
+    step: 0.78,
     rows: [
       { label: 'New registrations', value: 61.44, display: '61.44', color: C.forest },
       { label: 'Discontinued or completed', value: 50.3, display: '50.30', color: C.amber },
@@ -344,21 +598,21 @@ function slide1() {
   })
   slide.addText(
     [
-      plain('Source: '),
+      plain('A ceased SIP includes three failed instalments. Source: '),
       link('Economic Times, citing AMFI', URLS.etStoppage),
-      plain('. This is a secondary source. The contribution totals are in the '),
+      plain('. Secondary. Totals: '),
       link('August note', URLS.amfiAug),
-      plain(' and the '),
+      plain(' and '),
       link('July note', URLS.amfiJul),
-      plain('. The scale runs from 0 to 70 lakh, and each number sits beside its bar.'),
+      plain('.'),
     ],
     {
-      x: 7.95,
-      y: 4.7,
-      w: 4.75,
-      h: 1.9,
+      x: 6.94,
+      y: 6.78,
+      w: 5.96,
+      h: 0.42,
       fontFace: 'Calibri',
-      fontSize: 14,
+      fontSize: 12,
       color: C.ink,
       margin: 0,
     },

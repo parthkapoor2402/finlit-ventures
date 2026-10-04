@@ -2,7 +2,7 @@
 
 The deck argues that Skip Check should be tested, and it stops before any wireframe.
 
-1. Business context. Contributions rose from the July 2026 AMFI note to the August note. The chart shows July’s new registrations beside discontinued or tenure-completed SIPs, and the sentence under it says that shorter bar is not a count of voluntary pauses. FinLit was founded publicly in 2026 by Nishant Jain. Skip Check is free. ₹99 is an unpaid list price. The prototype does not take payment or book a review. Discretionary-management wording on the same site is a compliance tension, not a feature. The job is reconstructed, not an interview. The actors are the person, their app, and FinLit.
+1. Market landscape, on a white field. A forest bar names the six sections, and Market landscape is the marked one. Separate blocks cover Skip Check, the reconstructed job, the free check and the unpaid ₹99 list price, where the choice already happens, the August and July contribution notes, four actors, and the July 2026 registration chart. The shorter bar is not a count of voluntary pauses.
 
 2. User evidence. Three Reddit threads are paraphrased and linked. Under them, Kuvera, Groww, and Mint with Economic Times are each read as evidence, then an interpretation marked as a hypothesis, then an implication. Nobody has been interviewed.
 
