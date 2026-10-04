@@ -427,14 +427,14 @@ function slide1() {
   })
 
   panel(slide, 0.22, 0.74, 6.4, 1.62)
-  panelTitle(slide, 'ABOUT SKIP CHECK', 0.36, 0.82, 6.12)
+  panelTitle(slide, 'THE PROBLEM SKIP CHECK MEETS', 0.36, 0.82, 6.12)
   slide.addText(
-    'Skip Check compares the next SIP instalments. It does not change the SIP. FinLit Ventures is the research site behind it, and the project notes name Nishant Jain as the founder on that site in 2026. FinLit states that it is not registered with SEBI or AMFI.',
+    'The need is a confirm that separates a cash gap from a market scare, or the next instalments stay a guess. Skip Check meets that need with an optional reason, equal Keep, Reduce, and Pause, What if, and a rupee line that is not a loss, so the person can choose while the check leaves the SIP unchanged.',
     {
       x: 0.4,
-      y: 1.2,
+      y: 1.18,
       w: 6.04,
-      h: 1.02,
+      h: 1.06,
       fontFace: 'Calibri',
       fontSize: 13,
       color: C.ink,
@@ -474,21 +474,16 @@ function slide1() {
   panel(slide, 0.22, 2.5, 4.18, 1.78)
   panelTitle(slide, 'REVENUE MODEL', 0.34, 2.58, 3.94)
   slide.addText(
-    [
-      { text: 'Skip Check is free.', options: { breakLine: true } },
-      { text: 'An optional review is listed at ₹99. This prototype does not take payment.', options: { breakLine: true } },
-      { text: 'Other published plans run from ₹99 to ₹2,499. Payment for this check is untested.', options: {} },
-    ],
+    'The need is a clear choice before a paid conversation. Skip Check is free so that clarity can raise connects for FinLit. Paid work those connects can become is listed from ₹99 to ₹2,499. This prototype does not take payment, and that lift has not been measured.',
     {
       x: 0.4,
-      y: 2.98,
+      y: 2.96,
       w: 3.82,
-      h: 1.16,
+      h: 1.2,
       fontFace: 'Calibri',
       fontSize: 13,
       color: C.ink,
       margin: 0,
-      paraSpaceAfter: 6,
     },
   )
 
@@ -514,24 +509,22 @@ function slide1() {
   )
 
   panel(slide, 8.92, 2.5, 4.18, 1.78)
-  panelTitle(slide, 'MARKET NOTES', 9.04, 2.58, 3.94)
+  panelTitle(slide, 'MARKET BUZZ', 9.04, 2.58, 3.94)
   slide.addText(
     [
-      link('August 2026: ₹32,297 crore.', URLS.amfiAug),
-      { text: '\n', options: { breakLine: true } },
-      link('July 2026: ₹31,961 crore.', URLS.amfiJul),
-      {
-        text: '\n10.02 crore contributing accounts in August. Those are accounts, not people. Commentary splits a cash need from a scare. That is not a count of behaviour.',
-        options: { color: C.ink },
-      },
+      plain('The need is not a crash: '),
+      link('August contributions were ₹32,297 crore', URLS.amfiAug),
+      plain('. July’s '),
+      link('50.30 lakh discontinued or completed SIPs', URLS.etStoppage),
+      plain(' mix finished plans and failed debits, so that count must not size Skip Check. Threads still mix a scare with a cash need, which is why both have to be explained.'),
     ],
     {
       x: 9.08,
       y: 2.96,
       w: 3.86,
-      h: 1.18,
+      h: 1.2,
       fontFace: 'Calibri',
-      fontSize: 13,
+      fontSize: 12,
       margin: 0,
     },
   )
