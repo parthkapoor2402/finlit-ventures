@@ -8,13 +8,15 @@ import type {
 
 export const WEEK_SHAPE_LABELS: Record<WeekShape, string> = {
   classes: "Classes",
-  food: "Food",
+  food: "Food / groceries",
   shopping: "Shopping",
   travel: "Travel",
   fitness: "Fitness",
   events: "Events",
-  study: "Study",
-  personal: "Personal",
+  study: "Assignments",
+  personal: "Personal tasks",
+  health: "Health",
+  other: "Other",
 };
 
 export const LIVING_LABELS: Record<LivingSituation, string> = {
@@ -55,6 +57,19 @@ export function formatDayLabel(iso: string): string {
     month: "short",
     timeZone: "UTC",
   }).format(date);
+}
+
+export function greeting(now = new Date()): string {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      hour: "numeric",
+      hourCycle: "h23",
+      timeZone: "Asia/Kolkata",
+    }).format(now),
+  );
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
 }
 
 export function formatClock(time: string): string {

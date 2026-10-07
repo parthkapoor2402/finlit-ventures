@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { RequestError } from "@/lib/errors";
+import { seedDrafts } from "@/lib/seed";
 import type {
   AIInsight,
   AnalyticsEvent,
@@ -9,6 +10,7 @@ import type {
   AnalyticsProps,
   Need,
   NeedState,
+  Notice,
   StoreFile,
   User,
   Week,
@@ -25,6 +27,7 @@ import {
   parseNeedDestination,
   parseNeedState,
   parseNeedType,
+  parseNote,
   parseTime,
   parseTitle,
   parseWeekShape,
@@ -48,6 +51,8 @@ function seedUser(): User {
     livingSituation: null,
     weekShapes: [],
     helpWith: [],
+    note: null,
+    lastSeenAt: null,
     onboardingComplete: false,
     onboardingCompletedAt: null,
   };
@@ -55,23 +60,71 @@ function seedUser(): User {
 
 function seedStore(): StoreFile {
   return {
-    version: 1,
+    version: 2,
     user: seedUser(),
     items: [],
     needs: [],
+    notices: [],
     insight: null,
     events: [],
+  };
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+function normalizeStore(raw: unknown): StoreFile {
+  const parsed = asRecord(raw);
+  const userRaw = parsed ? asRecord(parsed.user) : null;
+  if (!parsed || !userRaw || (parsed.version !== 1 && parsed.version !== 2)) {
+    throw new RequestError(500, "We couldn't refresh your week.");
+  }
+  const base = seedUser();
+  const user: User = {
+    ...base,
+    ...userRaw,
+    id: "demo-ananya",
+    displayName: "Ananya",
+    isDemo: true,
+    demoLabel: "DEMO DATA",
+    note: typeof userRaw.note === "string" ? userRaw.note : null,
+    lastSeenAt: typeof userRaw.lastSeenAt === "string" ? userRaw.lastSeenAt : null,
+  };
+  const items = Array.isArray(parsed.items)
+    ? parsed.items.map((entry) => {
+        const item = entry as WeekItem;
+        return { ...item, source: item.source === "seed" ? "seed" : "user" } as WeekItem;
+      })
+    : [];
+  const needs = Array.isArray(parsed.needs)
+    ? parsed.needs.map((entry) => {
+        const need = entry as Need;
+        return {
+          ...need,
+          day: typeof need.day === "string" ? need.day : null,
+          time: typeof need.time === "string" ? need.time : null,
+          source: need.source === "seed" ? "seed" : "user",
+        } as Need;
+      })
+    : [];
+  const notices = Array.isArray(parsed.notices) ? (parsed.notices as Notice[]) : [];
+  return {
+    version: 2,
+    user,
+    items,
+    needs,
+    notices,
+    insight: (parsed.insight as AIInsight | null) ?? null,
+    events: Array.isArray(parsed.events) ? (parsed.events as AnalyticsEvent[]) : [],
   };
 }
 
 async function readStore(dir: string, file: string): Promise<StoreFile> {
   try {
     const raw = await readFile(file, "utf8");
-    const parsed = JSON.parse(raw) as StoreFile;
-    if (parsed.version !== 1 || !parsed.user) {
-      throw new RequestError(500, "We couldn't refresh your week.");
-    }
-    return parsed;
+    return normalizeStore(JSON.parse(raw) as unknown);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
       const seed = seedStore();
@@ -142,6 +195,7 @@ export interface UserUpdate {
   livingSituation?: unknown;
   weekShapes?: unknown;
   helpWith?: unknown;
+  note?: unknown;
   onboardingComplete?: unknown;
 }
 
@@ -159,6 +213,9 @@ export function updateUser(input: UserUpdate, now = new Date()): Promise<User> {
     if ("helpWith" in input) {
       next.helpWith = parseHelpFocuses(input.helpWith);
     }
+    if ("note" in input) {
+      next.note = parseNote(input.note);
+    }
     if ("onboardingComplete" in input) {
       if (typeof input.onboardingComplete !== "boolean") {
         throw new RequestError(400, "Onboarding could not be saved.");
@@ -169,6 +226,42 @@ export function updateUser(input: UserUpdate, now = new Date()): Promise<User> {
         }
         next.onboardingComplete = true;
         next.onboardingCompletedAt = data.user.onboardingCompletedAt ?? now.toISOString();
+        if (!data.user.onboardingComplete && data.items.length === 0 && data.needs.length === 0) {
+          const range = weekRange(now);
+          const seeded = seedDrafts(next.weekShapes, next.note);
+          const stamp = now.toISOString();
+          for (const draft of seeded.items) {
+            const day = range.days[draft.dayIndex] ?? range.days[0];
+            if (!day) continue;
+            data.items.push({
+              id: randomUUID(),
+              type: draft.type,
+              title: draft.title,
+              day,
+              time: draft.time,
+              state: "planned",
+              tataDestination: null,
+              source: "seed",
+              createdAt: stamp,
+              updatedAt: stamp,
+            });
+          }
+          for (const draft of seeded.needs) {
+            const day = range.days[draft.dayIndex] ?? range.days[0] ?? null;
+            data.needs.push({
+              id: randomUUID(),
+              type: draft.type,
+              title: draft.title,
+              day,
+              time: null,
+              state: "open",
+              resolution: null,
+              source: "seed",
+              createdAt: stamp,
+              updatedAt: stamp,
+            });
+          }
+        }
       } else {
         next.onboardingComplete = false;
         next.onboardingCompletedAt = null;
@@ -202,10 +295,17 @@ export function createItem(input: ItemInput, now = new Date()): Promise<WeekItem
       time: parseTime(input.time),
       state: "planned",
       tataDestination: parseItemDestination(input.tataDestination),
+      source: "user",
       createdAt: stamp,
       updatedAt: stamp,
     };
     data.items.push(item);
+    data.notices.unshift({
+      id: randomUUID(),
+      text: `Added: ${item.title}`,
+      at: stamp,
+      seen: false,
+    });
     data.insight = null;
     await writeStore(paths.file, data);
     return item;
@@ -232,7 +332,18 @@ export function updateItem(id: string, patch: ItemPatch, now = new Date()): Prom
     if ("title" in patch) item.title = parseTitle(patch.title);
     if ("day" in patch) item.day = parseDay(patch.day, range.days);
     if ("time" in patch) item.time = parseTime(patch.time);
-    if ("state" in patch) item.state = parseItemState(patch.state);
+    if ("state" in patch) {
+      const nextState = parseItemState(patch.state);
+      if (nextState === "done" && item.state !== "done") {
+        data.notices.unshift({
+          id: randomUUID(),
+          text: `Marked done: ${item.title}`,
+          at: now.toISOString(),
+          seen: false,
+        });
+      }
+      item.state = nextState;
+    }
     if ("tataDestination" in patch) {
       item.tataDestination = parseItemDestination(patch.tataDestination);
     }
@@ -268,6 +379,8 @@ export function listNeeds(): Promise<Need[]> {
 export interface NeedInput {
   type: unknown;
   title: unknown;
+  day?: unknown;
+  time?: unknown;
 }
 
 export function createNeed(input: NeedInput, now = new Date()): Promise<Need> {
@@ -275,16 +388,26 @@ export function createNeed(input: NeedInput, now = new Date()): Promise<Need> {
   return enqueue(async () => {
     const data = await readStore(paths.dir, paths.file);
     const stamp = now.toISOString();
+    const range = weekRange(now);
     const need: Need = {
       id: randomUUID(),
       type: parseNeedType(input.type),
       title: parseTitle(input.title),
+      day: input.day === undefined || input.day === null || input.day === "" ? null : parseDay(input.day, range.days),
+      time: parseTime(input.time),
       state: "open",
       resolution: null,
+      source: "user",
       createdAt: stamp,
       updatedAt: stamp,
     };
     data.needs.push(need);
+    data.notices.unshift({
+      id: randomUUID(),
+      text: `New need: ${need.title}`,
+      at: stamp,
+      seen: false,
+    });
     data.insight = null;
     await writeStore(paths.file, data);
     return need;
@@ -312,10 +435,30 @@ export function updateNeed(id: string, patch: NeedPatch, now = new Date()): Prom
         }
         need.state = "open";
         need.resolution = null;
-      } else {
+      } else if (nextState === "exploring") {
         const destination = "tataDestination" in patch ? patch.tataDestination : need.resolution?.destination ?? null;
+        const resolution = parseNeedDestination(need.type, need.title, destination);
+        if (!resolution) {
+          throw new RequestError(400, "That Tata stop does not fit this need.");
+        }
+        need.state = "exploring";
+        need.resolution = resolution;
+        data.notices.unshift({
+          id: randomUUID(),
+          text: `Exploring ${resolution.label} for ${need.title}`,
+          at: now.toISOString(),
+          seen: false,
+        });
+      } else {
+        const destination = "tataDestination" in patch ? patch.tataDestination : null;
         need.state = "resolved";
-        need.resolution = parseNeedDestination(need.type, destination);
+        need.resolution = parseNeedDestination(need.type, need.title, destination);
+        data.notices.unshift({
+          id: randomUUID(),
+          text: `Done: ${need.title}`,
+          at: now.toISOString(),
+          seen: false,
+        });
       }
     }
     need.updatedAt = now.toISOString();
@@ -384,4 +527,33 @@ export function saveInsight(insight: AIInsight): Promise<AIInsight> {
 export function readStoreSnapshot(): Promise<StoreFile> {
   const paths = storePaths();
   return enqueue(() => readStore(paths.dir, paths.file));
+}
+
+export function listNotices(): Promise<Notice[]> {
+  const paths = storePaths();
+  return enqueue(async () => {
+    const data = await readStore(paths.dir, paths.file);
+    return data.notices.filter((notice) => !notice.seen);
+  });
+}
+
+export function dismissNotices(): Promise<void> {
+  const paths = storePaths();
+  return enqueue(async () => {
+    const data = await readStore(paths.dir, paths.file);
+    for (const notice of data.notices) notice.seen = true;
+    await writeStore(paths.file, data);
+  });
+}
+
+export function acknowledgeVisit(now = new Date()): Promise<{ returning: boolean }> {
+  const paths = storePaths();
+  return enqueue(async () => {
+    const data = await readStore(paths.dir, paths.file);
+    const previous = data.user.lastSeenAt ? Date.parse(data.user.lastSeenAt) : Number.NaN;
+    const returning = Number.isFinite(previous) && now.getTime() - previous > 5 * 60 * 1000;
+    data.user.lastSeenAt = now.toISOString();
+    await writeStore(paths.file, data);
+    return { returning };
+  });
 }

@@ -4,10 +4,11 @@ export const DRAFT_KEY = "neuplan.draft";
 export const USER_KEY = "neuplan.user";
 
 export interface OnboardingDraft {
-  step: 1 | 2 | 3;
+  step: 1 | 2;
   weekShapes: WeekShape[];
   livingSituation: LivingSituation | null;
   helpWith: HelpFocus[];
+  note: string;
 }
 
 export const EMPTY_DRAFT: OnboardingDraft = {
@@ -15,6 +16,7 @@ export const EMPTY_DRAFT: OnboardingDraft = {
   weekShapes: [],
   livingSituation: null,
   helpWith: [],
+  note: "",
 };
 
 function storage(): Storage | null {
@@ -27,12 +29,13 @@ export function readDraft(): OnboardingDraft {
   if (!raw) return { ...EMPTY_DRAFT };
   try {
     const parsed = JSON.parse(raw) as Partial<OnboardingDraft>;
-    const step = parsed.step === 2 || parsed.step === 3 ? parsed.step : 1;
+    const step = parsed.step === 2 ? 2 : 1;
     return {
       step,
       weekShapes: Array.isArray(parsed.weekShapes) ? parsed.weekShapes : [],
       livingSituation: parsed.livingSituation ?? null,
       helpWith: Array.isArray(parsed.helpWith) ? parsed.helpWith : [],
+      note: typeof parsed.note === "string" ? parsed.note.slice(0, 140) : "",
     };
   } catch {
     return { ...EMPTY_DRAFT };

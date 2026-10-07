@@ -14,7 +14,7 @@ The shell keeps the Tata Neu bottom nav: Home, Categories, Scan & Pay, Offers, N
 
 Scan & Pay, search, quick actions, and NeuCard Apply do not move money or start an application.
 
-NeuPlan, after a three-step onboarding, shows the current week, needs, a demo Tata stop, a weekly summary, and an activity list of events this prototype recorded.
+The first open is an introduction, then an example, then a two-step setup. NeuPlan seeds a week from what the person picked. The main screen is what needs attention, a Tata stop only when the title actually fits, and the week underneath. A charger can go to the Croma demo. An assignment cannot. Demo products show ₹—, not a sourced price.
 
 Tata stops are a closed demo catalogue: Croma, Westside, BigBasket, Tata 1mg, Travel, IHCL, Neu UPI. Each one is `isLive: false` and `demoOnly: true`. There is no price and no stock.
 

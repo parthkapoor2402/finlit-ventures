@@ -14,6 +14,8 @@
 | Python PIL | Sample screenshot colours | The shell colour had to come from the reference images, not a guessed brand purple | One local script. Active nav purple clustered near rgb(136, 0, 236), used as `#8800EC` |
 | curl | Check the production server | Confirm the process was actually listening | `GET /` and `GET /api/week` during phase 1 |
 
+V2 used the same tools. Vitest then reported 19 files and 49 tests. Playwright covered the intro, the example, the seeded week, and the Croma demo. No icon package was added. Icons are a small inline set in `components/ui/Glyph.tsx`.
+
 Not used: a Gemini live call, a vendor analytics SDK, Tailwind, Redux, Zustand, a database, and a payment API.
 
 The headless Chrome check outside Playwright was abandoned. A profile lock aborted the first launch, and a second launch with a fresh profile did not return. Playwright later drove Chrome successfully.

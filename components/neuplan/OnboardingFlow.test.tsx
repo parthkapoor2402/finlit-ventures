@@ -23,22 +23,22 @@ describe("OnboardingFlow", () => {
     await user.click(screen.getByRole("button", { name: "Classes" }));
     expect(continueButton).toBeEnabled();
     await user.click(continueButton);
-    expect(await screen.findByRole("heading", { name: "Where are you living?" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Where do you usually stay?" })).toBeInTheDocument();
     first.unmount();
 
     render(<OnboardingFlow />);
-    expect(await screen.findByRole("heading", { name: "Where are you living?" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+    expect(await screen.findByRole("heading", { name: "Where do you usually stay?" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Set up my week" })).toBeDisabled();
   });
 
   it("returns to the week question with the browser back control", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(await screen.findByRole("button", { name: "Study" }));
+    await user.click(await screen.findByRole("button", { name: "Assignments" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
-    await screen.findByRole("heading", { name: "Where are you living?" });
+    await screen.findByRole("heading", { name: "Where do you usually stay?" });
     window.history.back();
-    expect(await screen.findByRole("heading", { name: "What does this week include?" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Study" })).toHaveAttribute("aria-pressed", "true");
+    expect(await screen.findByRole("heading", { name: "What matters this week?" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Assignments" })).toHaveAttribute("aria-pressed", "true");
   });
 });

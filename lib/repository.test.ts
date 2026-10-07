@@ -75,8 +75,12 @@ describe("repository", () => {
   });
 
   it("resolves a buy need only to an allowed demo stop", async () => {
-    const need = await createNeed({ type: "buy", title: "Notebook" }, NOW);
+    const need = await createNeed({ type: "buy", title: "USB charger" }, NOW);
     await expect(updateNeed(need.id, { state: "resolved", tataDestination: "neu_upi" }, NOW)).rejects.toMatchObject({
+      status: 400,
+    });
+    const notebook = await createNeed({ type: "buy", title: "Notebook" }, NOW);
+    await expect(updateNeed(notebook.id, { state: "resolved", tataDestination: "croma" }, NOW)).rejects.toMatchObject({
       status: 400,
     });
     const resolved = await updateNeed(need.id, { state: "resolved", tataDestination: "croma" }, NOW);

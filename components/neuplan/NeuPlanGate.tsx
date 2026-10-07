@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { readCachedUser, writeCachedUser } from "@/lib/local-user";
 import { track } from "@/lib/track";
 import type { User } from "@/lib/types";
-import { WeekScreen } from "./WeekScreen";
+import { CommandCenter } from "./CommandCenter";
 import styles from "./NeuPlanGate.module.css";
 
 export function NeuPlanGate() {
@@ -26,7 +26,7 @@ export function NeuPlanGate() {
         if (cancelled) return;
         writeCachedUser(body.user);
         if (!body.user.onboardingComplete) {
-          router.replace("/neuplan/onboarding");
+          router.replace("/neuplan/intro");
           return;
         }
         setUser(body.user);
@@ -74,5 +74,5 @@ export function NeuPlanGate() {
 
   if (!user) return null;
 
-  return <WeekScreen user={user} />;
+  return <CommandCenter user={user} />;
 }

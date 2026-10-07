@@ -7,10 +7,9 @@ function compute(): OnboardingDraft {
   const stored = readDraft();
   const params = new URLSearchParams(window.location.search);
   const requested = Number(params.get("step"));
-  const step = requested === 2 || requested === 3 ? requested : 1;
+  const step = requested === 2 ? 2 : 1;
   const next: OnboardingDraft = { ...stored, step };
   if (next.step > 1 && next.weekShapes.length === 0) next.step = 1;
-  if (next.step > 2 && !next.livingSituation) next.step = 2;
   return next;
 }
 

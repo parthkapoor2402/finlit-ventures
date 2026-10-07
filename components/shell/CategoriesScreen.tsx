@@ -38,7 +38,7 @@ export function CategoriesScreen() {
           </ul>
         </section>
       ))}
-      <NeuPlanEntry variant="row" />
+      <NeuPlanEntry variant="row" source="categories" />
       <Dialog open={blocked !== null} title={blocked ?? "Category"} onClose={() => setBlocked(null)}>
         <p>This category is not connected in this prototype.</p>
       </Dialog>

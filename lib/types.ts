@@ -7,6 +7,20 @@ export const WEEK_SHAPES = [
   "events",
   "study",
   "personal",
+  "health",
+  "other",
+] as const;
+
+export const SETUP_CHIPS = [
+  "classes",
+  "study",
+  "shopping",
+  "travel",
+  "events",
+  "health",
+  "personal",
+  "food",
+  "other",
 ] as const;
 
 export type WeekShape = (typeof WEEK_SHAPES)[number];
@@ -43,7 +57,7 @@ export const NEED_TYPES = [
 
 export type NeedType = (typeof NEED_TYPES)[number];
 
-export const NEED_STATES = ["open", "resolved"] as const;
+export const NEED_STATES = ["open", "exploring", "resolved"] as const;
 
 export type NeedState = (typeof NEED_STATES)[number];
 
@@ -67,6 +81,8 @@ export interface User {
   livingSituation: LivingSituation | null;
   weekShapes: WeekShape[];
   helpWith: HelpFocus[];
+  note: string | null;
+  lastSeenAt: string | null;
   onboardingComplete: boolean;
   onboardingCompletedAt: string | null;
 }
@@ -88,6 +104,7 @@ export interface WeekItem {
   time: string | null;
   state: WeekItemState;
   tataDestination: TataDestination | null;
+  source: "user" | "seed";
   createdAt: string;
   updatedAt: string;
 }
@@ -103,10 +120,20 @@ export interface Need {
   id: string;
   type: NeedType;
   title: string;
+  day: string | null;
+  time: string | null;
   state: NeedState;
   resolution: TataResolution | null;
+  source: "user" | "seed";
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Notice {
+  id: string;
+  text: string;
+  at: string;
+  seen: boolean;
 }
 
 export interface WeeklyCounts {
@@ -134,17 +161,27 @@ export interface AIInsight {
 }
 
 export const ANALYTICS_EVENTS = [
+  "neuplan_discovered",
   "neuplan_open",
+  "neuplan_intro_viewed",
+  "neuplan_setup_started",
   "neuplan_onboarding_complete",
   "week_view_open",
   "week_item_created",
   "week_item_completed",
   "need_created",
+  "need_viewed",
+  "need_updated",
   "need_resolved",
+  "tata_resolution_shown",
   "tata_resolution_viewed",
   "tata_resolution_clicked",
+  "commerce_intent",
+  "commerce_demo_opened",
+  "ai_summary_requested",
   "ai_summary_generated",
   "ai_summary_fallback",
+  "return_session",
   "session_meaningful",
 ] as const;
 
@@ -166,10 +203,11 @@ export interface AnalyticsEvent {
 }
 
 export interface StoreFile {
-  version: 1;
+  version: 2;
   user: User;
   items: WeekItem[];
   needs: Need[];
+  notices: Notice[];
   insight: AIInsight | null;
   events: AnalyticsEvent[];
 }

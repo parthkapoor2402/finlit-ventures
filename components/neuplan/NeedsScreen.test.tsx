@@ -8,8 +8,11 @@ const needs: Need[] = [
     id: "buy-1",
     type: "buy",
     title: "Notebook",
+    day: null,
+    time: null,
     state: "open",
     resolution: null,
+    source: "user",
     createdAt: "2026-10-07T00:00:00.000Z",
     updatedAt: "2026-10-07T00:00:00.000Z",
   },
@@ -17,8 +20,11 @@ const needs: Need[] = [
     id: "remember-1",
     type: "remember",
     title: "Call home",
+    day: null,
+    time: null,
     state: "open",
     resolution: null,
+    source: "user",
     createdAt: "2026-10-07T00:00:01.000Z",
     updatedAt: "2026-10-07T00:00:01.000Z",
   },
@@ -35,13 +41,12 @@ describe("NeedsScreen", () => {
       vi.fn(async () => new Response(JSON.stringify({ needs }), { status: 200 })),
     );
     render(<NeedsScreen />);
-    expect(await screen.findByRole("button", { name: "Croma" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Westside" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "BigBasket" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Neu UPI" })).toBeNull();
-    expect(screen.queryByRole("button", { name: "IHCL" })).toBeNull();
+    expect(await screen.findByText("Notebook")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Croma" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "BigBasket" })).toBeNull();
     const remembered = screen.getByText("Call home").closest("li");
     expect(remembered).toBeTruthy();
     expect(remembered?.textContent).not.toContain("Croma");
+    expect(screen.getByText("Notebook").closest("li")?.textContent).not.toContain("Croma");
   });
 });

@@ -22,7 +22,7 @@ async function axe(page: Page, name: string) {
   expect(results.violations, name).toEqual([]);
 }
 
-test("first visit, onboarding, week, need, and summary", async ({ page }) => {
+test("intro, seeded week, charger to Croma, and summary fallback", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -40,14 +40,21 @@ test("first visit, onboarding, week, need, and summary", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /NeuPlan/ })).toHaveCount(1);
+  const entry = page.getByRole("link", { name: /NeuPlan/ });
+  await expect(entry).toHaveCount(1);
+  await expect(entry).toContainText("Stay on top of plans, needs and things you do not want to forget.");
+  await expect(entry).toContainText("Open NeuPlan");
   await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: /NeuPlan/ })).toHaveCount(0);
   await page.screenshot({ path: `${shots}/home-mobile.png`, fullPage: true });
   await axe(page, "home");
 
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.screenshot({ path: `${shots}/home-375.png`, fullPage: true });
+  await page.setViewportSize({ width: 414, height: 896 });
+  await page.screenshot({ path: `${shots}/home-414.png`, fullPage: true });
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.screenshot({ path: `${shots}/home-tablet.png`, fullPage: true });
-  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.screenshot({ path: `${shots}/home-desktop.png`, fullPage: true });
   const phone = await page.locator(".phone").boundingBox();
   expect(phone?.width).toBeLessThanOrEqual(430);
@@ -66,49 +73,54 @@ test("first visit, onboarding, week, need, and summary", async ({ page }) => {
   await page.screenshot({ path: `${shots}/scan-mobile.png`, fullPage: true });
 
   await page.goto("/");
-  await page.getByRole("link", { name: /NeuPlan/ }).click();
-  await expect(page.getByRole("heading", { name: "What does this week include?" })).toBeVisible();
-  await page.screenshot({ path: `${shots}/onboarding-mobile.png`, fullPage: true });
-  await axe(page, "onboarding");
-  await page.getByRole("button", { name: "Classes" }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "Hostel" }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "See this week in one place" }).click();
-  await page.getByRole("button", { name: "Finish", exact: true }).click();
+  await page.getByRole("link", { name: /Open NeuPlan/ }).click();
+  await expect(page.getByRole("heading", { name: "Stay on top of what matters this week." })).toBeVisible();
+  await page.screenshot({ path: `${shots}/intro-mobile.png`, fullPage: true });
+  await axe(page, "intro");
+  await page.getByRole("link", { name: "See an example" }).click();
+  await expect(page.getByText("Replace charger")).toBeVisible();
+  await expect(page.getByText("EXAMPLE · NOT YOUR WEEK")).toBeVisible();
+  await page.screenshot({ path: `${shots}/example-mobile.png`, fullPage: true });
+  await page.getByRole("link", { name: "Set up my week" }).click();
 
-  await expect(page.getByText("Your week is clear.")).toBeVisible();
-  await page.screenshot({ path: `${shots}/week-empty-mobile.png`, fullPage: true });
+  await page.getByRole("button", { name: "Classes" }).click();
+  await page.getByRole("button", { name: "Assignments" }).click();
+  await page.getByRole("button", { name: "Shopping" }).click();
+  await page.getByRole("button", { name: "Travel" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "With family" }).click();
+  await page.getByRole("button", { name: "Set up my week" }).click();
+
+  await expect(page.getByRole("heading", { name: /Ananya/ })).toBeVisible();
+  await expect(page.getByText("Classes").first()).toBeVisible();
+  await expect(page.getByText("Assignment due")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Replace charger/ }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /Travel home/ }).first()).toBeVisible();
+  await expect(page.getByText("Your week is clear.")).toHaveCount(0);
+  await page.screenshot({ path: `${shots}/week-mobile.png`, fullPage: true });
   await axe(page, "week");
 
-  await page.getByLabel("Title").fill("Morning block");
-  await page.getByRole("button", { name: "Add something" }).click();
-  await expect(page.getByText("Morning block")).toBeVisible();
-  await page.getByRole("button", { name: "Edit" }).click();
-  await page.getByLabel("Title").fill("Edited block");
-  await page.getByRole("button", { name: "Save" }).click();
-  await expect(page.getByText("Edited block")).toBeVisible();
-  await page.getByRole("button", { name: "Mark done" }).click();
-  await expect(page.getByText(/Done/)).toBeVisible();
-  await page.screenshot({ path: `${shots}/week-item-mobile.png`, fullPage: true });
-
-  await page.getByRole("link", { name: "Needs" }).click();
-  await page.getByLabel("Need").fill("Notebook");
-  await page.getByRole("button", { name: "Add a need" }).click();
-  await expect(page.getByText("Notebook")).toBeVisible();
-  await page.screenshot({ path: `${shots}/needs-mobile.png`, fullPage: true });
-  await page.getByRole("button", { name: "Croma" }).click();
+  await page.getByRole("link", { name: /Replace charger/ }).first().click();
+  await expect(page.getByRole("heading", { name: "Replace charger" })).toBeVisible();
+  await expect(page.getByText(/Croma may help/)).toBeVisible();
+  await page.screenshot({ path: `${shots}/need-charger-mobile.png`, fullPage: true });
+  await page.getByRole("button", { name: "Explore on Tata Neu" }).click();
   await expect(page.getByRole("heading", { name: "Croma" })).toBeVisible();
-  await expect(page.getByText(/isLive is false/)).toBeVisible();
+  await expect(page.getByText("USB-C charger")).toBeVisible();
+  await expect(page.getByText("₹—")).toBeVisible();
+  await expect(page.getByText(/Not live/)).toBeVisible();
   await page.screenshot({ path: `${shots}/demo-croma-mobile.png`, fullPage: true });
-  await page.goBack();
-  await expect(page.getByRole("heading", { name: "Needs" })).toBeVisible();
-  await expect(page.getByText("Notebook")).toBeVisible();
+  await page.getByRole("button", { name: "View on Croma" }).click();
+  await expect(page.getByText("This would open Croma.")).toBeVisible();
+
+  await page.goto("/neuplan");
+  await expect(page.getByText("Exploring").first()).toBeVisible();
+  await page.getByText("Assignment due", { exact: true }).locator("..").getByRole("button", { name: "Mark done" }).click();
+  await expect(page.getByText("Marked done: Assignment due")).toBeVisible();
 
   await page.goto("/neuplan/summary");
   await page.getByRole("button", { name: "Summarise this week" }).click();
   await expect(page.getByText("Written by the app", { exact: true })).toBeVisible();
-  await expect(page.getByText(/This week has 1 item/)).toBeVisible();
   await page.screenshot({ path: `${shots}/summary-mobile.png`, fullPage: true });
 
   expect(errors, errors.join("\n")).toEqual([]);
@@ -123,11 +135,12 @@ test("first visit, onboarding, week, need, and summary", async ({ page }) => {
   await expect(page.getByText("Written by the app", { exact: true })).toBeVisible();
 
   await page.goto("/neuplan");
-  await expect(page.getByText("Edited block")).toBeVisible();
+  await expect(page.getByText("Classes").first()).toBeVisible();
   await page.reload();
-  await expect(page.getByText("Edited block")).toBeVisible();
-  await page.getByRole("link", { name: "Week" }).click();
-  await expect(page.getByText("Edited block")).toBeVisible();
+  await expect(page.getByText("Classes").first()).toBeVisible();
+  await page.goBack();
+  await page.goForward();
+  await expect(page.getByText("Classes").first()).toBeVisible();
 
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.screenshot({ path: `${shots}/week-tablet.png`, fullPage: true });

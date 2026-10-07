@@ -9,17 +9,27 @@ import { SectionNav } from "./SectionNav";
 import styles from "./WeekScreen.module.css";
 
 const LINES: Record<AnalyticsEventName, string> = {
+  neuplan_discovered: "Saw NeuPlan",
   neuplan_open: "Opened NeuPlan",
-  neuplan_onboarding_complete: "Finished onboarding",
+  neuplan_intro_viewed: "Read the intro",
+  neuplan_setup_started: "Started setup",
+  neuplan_onboarding_complete: "Finished setup",
   week_view_open: "Looked at the week",
-  week_item_created: "Added a week item",
-  week_item_completed: "Marked a week item done",
+  week_item_created: "Added a plan",
+  week_item_completed: "Marked a plan done",
   need_created: "Added a need",
+  need_viewed: "Opened a need",
+  need_updated: "Updated a need",
   need_resolved: "Resolved a need",
+  tata_resolution_shown: "Saw a Tata stop that fits",
   tata_resolution_viewed: "Opened a demo Tata stop",
   tata_resolution_clicked: "Chose a demo Tata stop",
+  commerce_intent: "Started a demo Tata stop",
+  commerce_demo_opened: "Viewed a demo catalogue",
+  ai_summary_requested: "Asked for a summary",
   ai_summary_generated: "Wrote a weekly summary",
   ai_summary_fallback: "Used the app summary",
+  return_session: "Came back",
   session_meaningful: "Did something they started",
 };
 

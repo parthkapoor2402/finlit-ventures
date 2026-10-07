@@ -12,12 +12,14 @@ describe("onboarding draft", () => {
       weekShapes: ["classes", "study"],
       livingSituation: null,
       helpWith: [],
+      note: "",
     });
     expect(readDraft()).toEqual({
       step: 2,
       weekShapes: ["classes", "study"],
       livingSituation: null,
       helpWith: [],
+      note: "",
     });
     clearDraft();
     expect(readDraft().step).toBe(1);

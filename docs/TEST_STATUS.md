@@ -120,3 +120,17 @@ The browser test covered first visit, onboarding, an empty week, add, edit, mark
 
 No Gemini key was configured. The summary assertion was "Written by the app."
 
+## V2 — command center
+
+Date: 2026-10-07. Same branch, after the audit in `docs/NEUPLAN_V2_AUDIT.md`.
+
+| Command | Exit | Result |
+| --- | --- | --- |
+| `npm test` | 0 | Vitest 5.0.3. 19 files, 49 tests passed. Duration 13.98s. |
+| `npm run typecheck` | 0 | Included in `npm run build`. `tsc` reported no errors before the build. |
+| `npm run lint` | 0 | `eslint .` reported no errors. |
+| `npm run build` | 0 | Next.js 16.4.0. Routes include `/neuplan/intro`, `/neuplan/example`, `/neuplan/plan`, `/neuplan/needs/new`, `/neuplan/needs/[id]`, `/api/notices`, `/api/visit`. |
+| `npm run e2e` | 0 | Playwright 1.63. 1 test passed. Test time 4.3s, run 5.8s. Production server on port 4180 with `NEUPLAN_DATA_DIR=/tmp/neuplan-e2e`. |
+
+The browser test opened Home, confirmed NeuPlan is not in the tab bar, read the intro, opened the example week, finished setup for classes, assignments, shopping, and travel, saw the seeded week, opened Replace charger, explored the Croma demo (USB-C charger, ₹—), returned to an Exploring state, marked Assignment due done, loaded the app-written summary, forced a summary HTTP 500, retried, reloaded, and checked 390, 375, 414, 768, 1280, and 1440. Axe reported no violations on Home, the intro, and the week. No Gemini key was set.
+

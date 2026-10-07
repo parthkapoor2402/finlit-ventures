@@ -1,4 +1,5 @@
-import { resolutionFor, destinationAllowedForNeed, isTataDestination } from "@/lib/catalogue";
+import { isTataDestination, resolutionFor } from "@/lib/catalogue";
+import { suggestResolution } from "@/lib/resolve";
 import { RequestError } from "@/lib/errors";
 import {
   ANALYTICS_EVENTS,
@@ -63,7 +64,7 @@ export function parseItemState(value: unknown): WeekItemState {
 
 export function parseNeedState(value: unknown): NeedState {
   if (typeof value !== "string" || !includes(NEED_STATES, value)) {
-    throw new RequestError(400, "Choose open or resolved.");
+    throw new RequestError(400, "Choose open, exploring, or resolved.");
   }
   return value;
 }
@@ -91,15 +92,30 @@ export function parseItemDestination(value: unknown): TataDestination | null {
   return value;
 }
 
+export function parseNote(value: unknown): string | null {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string") {
+    throw new RequestError(400, "Keep that note short.");
+  }
+  const note = value.trim();
+  if (!note) return null;
+  if (note.length > 140) {
+    throw new RequestError(400, "Keep that note under 140 characters.");
+  }
+  return note;
+}
+
 export function parseNeedDestination(
   type: NeedType,
+  title: string,
   value: unknown,
 ): ReturnType<typeof resolutionFor> | null {
   if (value === undefined || value === null || value === "") return null;
   if (typeof value !== "string" || !isTataDestination(value)) {
     throw new RequestError(400, "That Tata stop is not in the demo catalogue.");
   }
-  if (!destinationAllowedForNeed(type, value)) {
+  const suggested = suggestResolution(type, title);
+  if (suggested !== value) {
     throw new RequestError(400, "That Tata stop does not fit this need.");
   }
   return resolutionFor(value);

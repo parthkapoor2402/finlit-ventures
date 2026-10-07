@@ -35,7 +35,7 @@ const ENTRIES: Record<TataDestination, Omit<CatalogueEntry, "destination">> = {
     demoOnly: true,
   },
   travel: {
-    label: "Travel",
+    label: "Air India",
     note: "Travel on Tata Neu. This demo does not show a fare or a seat.",
     isLive: false,
     demoOnly: true,

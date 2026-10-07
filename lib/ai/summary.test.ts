@@ -15,6 +15,8 @@ const user: User = {
   livingSituation: "hostel",
   weekShapes: ["study"],
   helpWith: ["see_the_week"],
+  note: null,
+  lastSeenAt: null,
   onboardingComplete: true,
   onboardingCompletedAt: null,
 };
@@ -34,6 +36,7 @@ const week: Week = {
       time: "18:00",
       state: "planned",
       tataDestination: null,
+      source: "user",
       createdAt: "2026-10-07T00:00:00.000Z",
       updatedAt: "2026-10-07T00:00:00.000Z",
     },
