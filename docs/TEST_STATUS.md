@@ -37,6 +37,17 @@ Date: 2026-10-07.
 
 `GET http://127.0.0.1:4180/` after restarting the production server returned the Home document with one NeuPlan link, the descriptor "Your week. Planned around what matters.", and the primary nav labels Home, Categories, Scan & Pay, Offers, NeuCard. A headless Chrome console pass did not finish: Chrome aborted because another profile lock existed, and a second launch with a fresh profile did not return. The Home render test asserts `console.error` was not called.
 
-## Phase 3 — onboarding
+## Phase 3 — onboarding and persistence
 
-Not run yet. Phases 4–8 have not been run.
+Date: 2026-10-07.
+
+| Command | Exit | Result |
+| --- | --- | --- |
+| `npm test` | 0 | Vitest 5.0.3. 10 files, 27 tests passed. Duration 6.80s. |
+| `npm run typecheck` | 0 | `tsc --noEmit` reported no errors. |
+| `npm run lint` | 0 | `eslint .` reported no errors. |
+| `npm run build` | 0 | Next.js 16.4.0 compiled. New routes: `/api/user`, `/api/analytics`, `/neuplan/onboarding`. |
+
+The onboarding tests cover a disabled Continue until a week shape is chosen, a remount that keeps step 2, and the browser Back control returning to the week question with Study still pressed. `PUT /api/user` rejects completion until living situation, week shapes, and help focus are present, then `GET /api/user` reads them back.
+
+Phases 4–8 have not been run.

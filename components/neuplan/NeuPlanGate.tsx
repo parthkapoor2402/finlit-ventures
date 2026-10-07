@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { HYPOTHESIS_LINE, LIVING_LABELS, WEEK_SHAPE_LABELS } from "@/lib/labels";
 import { readCachedUser, writeCachedUser } from "@/lib/local-user";
 import { track } from "@/lib/track";
 import type { User } from "@/lib/types";
+import { WeekScreen } from "./WeekScreen";
 import styles from "./NeuPlanGate.module.css";
 
 export function NeuPlanGate() {
@@ -75,21 +74,5 @@ export function NeuPlanGate() {
 
   if (!user) return null;
 
-  const living = user.livingSituation ? LIVING_LABELS[user.livingSituation] : "Not set";
-  const shapes = user.weekShapes.map((shape) => WEEK_SHAPE_LABELS[shape]).join(", ");
-
-  return (
-    <main className={styles.page}>
-      <p className={styles.banner}>DEMO DATA</p>
-      <h1 className={styles.title}>NeuPlan</h1>
-      <p className={styles.descriptor}>Your week. Planned around what matters.</p>
-      <p className={styles.hypothesis}>{HYPOTHESIS_LINE} Not measured. Not achieved.</p>
-      <p className={styles.meta}>
-        {user.displayName} · {living}. This week includes {shapes || "nothing selected"}.
-      </p>
-      <Link className={styles.home} href="/">
-        Home
-      </Link>
-    </main>
-  );
+  return <WeekScreen user={user} />;
 }
