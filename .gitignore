@@ -31,3 +31,6 @@ blob-report
 .idea
 .DS_Store
 *.sw?
+
+# TypeScript incremental cache
+tsconfig.tsbuildinfo
