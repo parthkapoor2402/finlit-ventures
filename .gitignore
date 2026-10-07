@@ -1,0 +1,33 @@
+# Dependencies and build output
+node_modules
+.next
+dist
+dist-ssr
+out
+video
+presentation
+.vercel
+
+# Local secrets. Copy .env.example and fill keys there. Never commit .env.
+.env
+.env.*
+!.env.example
+
+# Prototype store. The file repository writes here at runtime.
+.data
+*.local
+
+# Logs and test output
+logs
+*.log
+npm-debug.log*
+playwright-report
+test-results
+blob-report
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.sw?
