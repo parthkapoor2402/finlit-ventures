@@ -1,10 +1,11 @@
 import { isTataDestination, resolutionFor } from "@/lib/catalogue";
-import { suggestResolution } from "@/lib/resolve";
+import { destinationFor } from "@/lib/tata/resolutionEngine";
 import { RequestError } from "@/lib/errors";
 import {
   ANALYTICS_EVENTS,
   HELP_FOCUSES,
   LIVING_SITUATIONS,
+  MOMENT_KINDS,
   NEED_STATES,
   NEED_TYPES,
   WEEK_ITEM_STATES,
@@ -13,6 +14,7 @@ import {
   type AnalyticsProps,
   type HelpFocus,
   type LivingSituation,
+  type MomentKind,
   type NeedState,
   type NeedType,
   type TataDestination,
@@ -114,7 +116,7 @@ export function parseNeedDestination(
   if (typeof value !== "string" || !isTataDestination(value)) {
     throw new RequestError(400, "That Tata stop is not in the demo catalogue.");
   }
-  const suggested = suggestResolution(type, title);
+  const suggested = destinationFor(type, title);
   if (suggested !== value) {
     throw new RequestError(400, "That Tata stop does not fit this need.");
   }
@@ -155,6 +157,13 @@ export function parseHelpFocuses(value: unknown): HelpFocus[] {
     if (!focuses.includes(entry)) focuses.push(entry);
   }
   return focuses;
+}
+
+export function parseMomentKind(value: unknown): MomentKind {
+  if (typeof value !== "string" || !includes(MOMENT_KINDS, value)) {
+    throw new RequestError(400, "Choose a moment from the list.");
+  }
+  return value;
 }
 
 export function parseEventName(value: unknown): AnalyticsEventName {

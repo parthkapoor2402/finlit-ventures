@@ -11,3 +11,17 @@ export function buildPrompt(counts: WeeklyCounts): string {
     JSON.stringify(counts),
   ].join("\n");
 }
+
+export function buildIntentPrompt(sentence: string): string {
+  return [
+    "Turn the sentence below into JSON only.",
+    "Use keys title, kind, and suggestions.",
+    "kind is one of: going, buy, fix, exam, friends, weekend, birthday, other.",
+    "suggestions is an array of up to 4 objects with keys title and type.",
+    "type is one of: buy, book, prepare, remember, replace, plan.",
+    "Do not name a shop, a brand, a destination, a product, a price, inventory, or an offer.",
+    "Do not use a rupee sign or a percent sign.",
+    "Do not add keys other than title, kind, and suggestions.",
+    sentence,
+  ].join("\n");
+}

@@ -8,6 +8,7 @@ import type {
   AnalyticsEvent,
   AnalyticsEventName,
   AnalyticsProps,
+  Moment,
   Need,
   NeedState,
   Notice,
@@ -24,6 +25,7 @@ import {
   parseItemDestination,
   parseItemState,
   parseLivingSituation,
+  parseMomentKind,
   parseNeedDestination,
   parseNeedState,
   parseNeedType,
@@ -63,6 +65,7 @@ function seedStore(): StoreFile {
     version: 2,
     user: seedUser(),
     items: [],
+    moments: [],
     needs: [],
     notices: [],
     insight: null,
@@ -73,6 +76,33 @@ function seedStore(): StoreFile {
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   return value as Record<string, unknown>;
+}
+
+function normalizeMoment(entry: unknown): Moment | null {
+  const raw = asRecord(entry);
+  if (!raw || typeof raw.id !== "string" || typeof raw.title !== "string") return null;
+  const kind = parseMomentKindSafe(raw.kind);
+  const day = typeof raw.day === "string" ? raw.day : null;
+  const start = typeof raw.start === "string" ? raw.start : day;
+  const createdAt = typeof raw.createdAt === "string" ? raw.createdAt : new Date(0).toISOString();
+  return {
+    id: raw.id,
+    title: raw.title,
+    kind,
+    day,
+    start,
+    status: raw.status === "done" ? "done" : "open",
+    createdAt,
+    updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : createdAt,
+  };
+}
+
+function parseMomentKindSafe(value: unknown): Moment["kind"] {
+  try {
+    return parseMomentKind(value);
+  } catch {
+    return "other";
+  }
 }
 
 function normalizeStore(raw: unknown): StoreFile {
@@ -103,10 +133,17 @@ function normalizeStore(raw: unknown): StoreFile {
         const need = entry as Need;
         return {
           ...need,
+          momentId: typeof need.momentId === "string" ? need.momentId : null,
           day: typeof need.day === "string" ? need.day : null,
           time: typeof need.time === "string" ? need.time : null,
           source: need.source === "seed" ? "seed" : "user",
         } as Need;
+      })
+    : [];
+  const moments = Array.isArray(parsed.moments)
+    ? parsed.moments.flatMap((entry) => {
+        const moment = normalizeMoment(entry);
+        return moment ? [moment] : [];
       })
     : [];
   const notices = Array.isArray(parsed.notices) ? (parsed.notices as Notice[]) : [];
@@ -114,6 +151,7 @@ function normalizeStore(raw: unknown): StoreFile {
     version: 2,
     user,
     items,
+    moments,
     needs,
     notices,
     insight: (parsed.insight as AIInsight | null) ?? null,
@@ -250,6 +288,7 @@ export function updateUser(input: UserUpdate, now = new Date()): Promise<User> {
             const day = range.days[draft.dayIndex] ?? range.days[0] ?? null;
             data.needs.push({
               id: randomUUID(),
+              momentId: null,
               type: draft.type,
               title: draft.title,
               day,
@@ -391,6 +430,7 @@ export function createNeed(input: NeedInput, now = new Date()): Promise<Need> {
     const range = weekRange(now);
     const need: Need = {
       id: randomUUID(),
+      momentId: null,
       type: parseNeedType(input.type),
       title: parseTitle(input.title),
       day: input.day === undefined || input.day === null || input.day === "" ? null : parseDay(input.day, range.days),
@@ -462,9 +502,97 @@ export function updateNeed(id: string, patch: NeedPatch, now = new Date()): Prom
       }
     }
     need.updatedAt = now.toISOString();
+    if (need.momentId) {
+      const moment = data.moments.find((entry) => entry.id === need.momentId);
+      const related = data.needs.filter((entry) => entry.momentId === need.momentId);
+      if (moment && related.length > 0) {
+        const finished = related.every((entry) => entry.state === "resolved");
+        moment.status = finished ? "done" : "open";
+        moment.updatedAt = now.toISOString();
+      }
+    }
     data.insight = null;
     await writeStore(paths.file, data);
     return need;
+  });
+}
+
+export interface MomentLineInput {
+  title: unknown;
+  type: unknown;
+}
+
+export interface MomentInput {
+  title: unknown;
+  kind: unknown;
+  day?: unknown;
+  lines: unknown;
+}
+
+export function listMoments(): Promise<Moment[]> {
+  const paths = storePaths();
+  return enqueue(async () => {
+    const data = await readStore(paths.dir, paths.file);
+    return [...data.moments].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  });
+}
+
+export function createMoment(
+  input: MomentInput,
+  now = new Date(),
+): Promise<{ moment: Moment; needs: Need[] }> {
+  const paths = storePaths();
+  return enqueue(async () => {
+    const data = await readStore(paths.dir, paths.file);
+    if (!Array.isArray(input.lines) || input.lines.length === 0 || input.lines.length > 4) {
+      throw new RequestError(400, "Confirm at least one line.");
+    }
+    const range = weekRange(now);
+    const stamp = now.toISOString();
+    const day =
+      input.day === undefined || input.day === null || input.day === ""
+        ? null
+        : parseDay(input.day, range.days);
+    const moment: Moment = {
+      id: randomUUID(),
+      title: parseTitle(input.title),
+      kind: parseMomentKind(input.kind),
+      day,
+      start: day,
+      status: "open",
+      createdAt: stamp,
+      updatedAt: stamp,
+    };
+    const created: Need[] = [];
+    for (const line of input.lines) {
+      const record = asRecord(line);
+      if (!record) throw new RequestError(400, "Confirm at least one line.");
+      const need: Need = {
+        id: randomUUID(),
+        momentId: moment.id,
+        type: parseNeedType(record.type),
+        title: parseTitle(record.title),
+        day,
+        time: null,
+        state: "open",
+        resolution: null,
+        source: "user",
+        createdAt: stamp,
+        updatedAt: stamp,
+      };
+      created.push(need);
+    }
+    data.moments.push(moment);
+    data.needs.push(...created);
+    data.notices.unshift({
+      id: randomUUID(),
+      text: `Added: ${moment.title}`,
+      at: stamp,
+      seen: false,
+    });
+    data.insight = null;
+    await writeStore(paths.file, data);
+    return { moment, needs: created };
   });
 }
 

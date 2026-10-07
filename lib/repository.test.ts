@@ -1,14 +1,18 @@
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { RequestError } from "@/lib/errors";
 import {
   createItem,
+  createMoment,
   createNeed,
   deleteItem,
   getUser,
   getWeek,
+  listMoments,
+  listNeeds,
+  listNotices,
   recordEvent,
   updateItem,
   updateNeed,
@@ -117,6 +121,77 @@ describe("repository", () => {
     expect(user.weekShapes).toEqual(["classes", "study"]);
     expect(user.onboardingComplete).toBe(true);
     expect(user.onboardingCompletedAt).toBe(NOW.toISOString());
+  });
+
+  it("stores a moment and only the lines the client confirmed", async () => {
+    const created = await createMoment(
+      {
+        title: "Going home",
+        kind: "going",
+        day: "2026-10-09",
+        lines: [{ title: "Travel home", type: "book" }],
+      },
+      NOW,
+    );
+    expect(created.needs).toHaveLength(1);
+    expect(created.needs[0]?.momentId).toBe(created.moment.id);
+    expect(created.needs[0]?.title).toBe("Travel home");
+    expect(created.moment.day).toBe("2026-10-09");
+    expect(created.moment.start).toBe("2026-10-09");
+    expect(created.moment.status).toBe("open");
+    const titles = (await listNeeds()).map((need) => need.title);
+    expect(titles).toEqual(["Travel home"]);
+    expect(titles).not.toContain("Pack");
+    expect((await listNotices()).map((notice) => notice.text)).toContain("Added: Going home");
+    await expect(createMoment({ title: "Empty", kind: "other", lines: [] }, NOW)).rejects.toMatchObject({
+      status: 400,
+    });
+    const resolved = await updateNeed(created.needs[0]!.id, { state: "resolved" }, NOW);
+    expect(resolved.state).toBe("resolved");
+    expect(resolved.resolution).toBeNull();
+    expect((await listMoments())[0]?.status).toBe("done");
+  });
+
+  it("reads an older store without moments as empty moments and null moment ids", async () => {
+    await writeFile(
+      path.join(directory, "store.json"),
+      JSON.stringify({
+        version: 2,
+        user: {
+          id: "demo-ananya",
+          displayName: "Ananya",
+          isDemo: true,
+          demoLabel: "DEMO DATA",
+          livingSituation: null,
+          weekShapes: [],
+          helpWith: [],
+          note: null,
+          lastSeenAt: null,
+          onboardingComplete: false,
+          onboardingCompletedAt: null,
+        },
+        items: [],
+        needs: [
+          {
+            id: "old-need",
+            type: "remember",
+            title: "Old note",
+            day: null,
+            time: null,
+            state: "open",
+            resolution: null,
+            source: "user",
+            createdAt: "2026-10-01T00:00:00.000Z",
+            updatedAt: "2026-10-01T00:00:00.000Z",
+          },
+        ],
+        notices: [],
+        insight: null,
+        events: [],
+      }),
+    );
+    expect(await listMoments()).toEqual([]);
+    expect((await listNeeds())[0]?.momentId).toBeNull();
   });
 
   it("rejects an unknown analytics event", async () => {

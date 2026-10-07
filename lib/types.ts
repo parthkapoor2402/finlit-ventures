@@ -116,8 +116,37 @@ export interface TataResolution {
   demoOnly: true;
 }
 
+export const MOMENT_KINDS = [
+  "going",
+  "buy",
+  "fix",
+  "exam",
+  "friends",
+  "weekend",
+  "birthday",
+  "other",
+] as const;
+
+export type MomentKind = (typeof MOMENT_KINDS)[number];
+
+export const MOMENT_STATUSES = ["open", "done"] as const;
+
+export type MomentStatus = (typeof MOMENT_STATUSES)[number];
+
+export interface Moment {
+  id: string;
+  title: string;
+  kind: MomentKind;
+  day: string | null;
+  start: string | null;
+  status: MomentStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Need {
   id: string;
+  momentId: string | null;
   type: NeedType;
   title: string;
   day: string | null;
@@ -183,6 +212,16 @@ export const ANALYTICS_EVENTS = [
   "ai_summary_fallback",
   "return_session",
   "session_meaningful",
+  "intent_started",
+  "intent_submitted",
+  "moment_created",
+  "moment_viewed",
+  "plan_created",
+  "moment_updated",
+  "moment_resolved",
+  "commerce_action",
+  "ai_intent_success",
+  "ai_intent_fallback",
 ] as const;
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENTS)[number];
@@ -206,6 +245,7 @@ export interface StoreFile {
   version: 2;
   user: User;
   items: WeekItem[];
+  moments: Moment[];
   needs: Need[];
   notices: Notice[];
   insight: AIInsight | null;
