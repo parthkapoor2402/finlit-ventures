@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Tata Neu",
-  description: "NeuPlan is a qualitative prototype. Your week. Planned around what matters.",
+  description: "Tell us what's happening. We'll line up what you need.",
 };
 
 export const viewport: Viewport = {

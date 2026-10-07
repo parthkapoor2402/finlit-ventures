@@ -21,10 +21,7 @@ export function NeuPlanEntry({ variant = "card", source = "home" }: { variant?: 
           <span className={styles.name}>NeuPlan</span>
           {variant === "card" ? <span className={styles.badge}>New</span> : null}
         </span>
-        <span className={styles.headline}>Your week. Planned around what matters.</span>
-        {variant === "card" ? (
-          <span className={styles.body}>Stay on top of plans, needs and things you do not want to forget.</span>
-        ) : null}
+        <span className={styles.headline}>{"Tell us what's happening. We'll line up what you need."}</span>
         <span className={styles.open}>Open NeuPlan</span>
       </span>
     </a>

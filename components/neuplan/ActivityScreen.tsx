@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { HYPOTHESIS_LINE } from "@/lib/labels";
 import type { AnalyticsEvent, AnalyticsEventName } from "@/lib/types";
 import { SectionNav } from "./SectionNav";
 import styles from "./WeekScreen.module.css";
@@ -31,6 +30,16 @@ const LINES: Record<AnalyticsEventName, string> = {
   ai_summary_fallback: "Used the app summary",
   return_session: "Came back",
   session_meaningful: "Did something they started",
+  intent_started: "Started an intent",
+  intent_submitted: "Sent an intent",
+  moment_created: "Created a moment",
+  moment_viewed: "Looked at a moment",
+  plan_created: "Kept a plan",
+  moment_updated: "Updated a moment",
+  moment_resolved: "Finished a moment",
+  commerce_action: "Used a demo stop",
+  ai_intent_success: "Read the intent with the model",
+  ai_intent_fallback: "Read the intent in the app",
 };
 
 export function ActivityScreen() {
@@ -63,7 +72,6 @@ export function ActivityScreen() {
       <p className={styles.banner}>DEMO DATA</p>
       <h1 className={styles.title}>Activity</h1>
       <p className={styles.descriptor}>What happened in this prototype. Not a score.</p>
-      <p className={styles.hypothesis}>{HYPOTHESIS_LINE} Not measured. Not achieved.</p>
       <SectionNav current="activity" />
       {loading ? <Skeleton label="Loading activity" /> : null}
       {error ? (

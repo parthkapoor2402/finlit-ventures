@@ -2,10 +2,10 @@ import Link from "next/link";
 import styles from "./SectionNav.module.css";
 
 const LINKS = [
-  { href: "/neuplan", id: "week", label: "Week" },
+  { href: "/neuplan", id: "now", label: "Now" },
   { href: "/neuplan/needs", id: "needs", label: "Needs" },
-  { href: "/neuplan/summary", id: "summary", label: "Summary" },
   { href: "/neuplan/activity", id: "activity", label: "Activity" },
+  { href: "/neuplan/summary", id: "summary", label: "Summary" },
 ] as const;
 
 export function SectionNav({ current }: { current: (typeof LINKS)[number]["id"] }) {

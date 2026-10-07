@@ -3,8 +3,8 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { NEED_TYPE_LABELS, formatDayLabel } from "@/lib/labels";
-import { catalogueEntry } from "@/lib/catalogue";
-import { resolutionReason, suggestResolution } from "@/lib/resolve";
+import { resolutionReason } from "@/lib/resolve";
+import { resolveNeed } from "@/lib/tata/resolutionEngine";
 import { markMeaningfulSession, track } from "@/lib/track";
 import { NEED_TYPES, type NeedType, type Week } from "@/lib/types";
 import styles from "./Plan.module.css";
@@ -38,7 +38,7 @@ export function AddNeedScreen() {
       });
   }, []);
 
-  const suggestion = title.trim() ? suggestResolution(type, title) : null;
+  const suggestion = title.trim() ? resolveNeed(type, title) : null;
   const chosenDay = resolveDay(when, day, week);
 
   async function submit(event: FormEvent) {
@@ -134,10 +134,10 @@ export function AddNeedScreen() {
           <h2 id="help-line">TATA NEU CAN HELP WITH THIS</h2>
           {suggestion ? (
             <p className={styles.lead}>
-              {catalogueEntry(suggestion).label}. {resolutionReason(suggestion)}. This is a demo stop, not live stock.
+              {suggestion.label}. {resolutionReason(suggestion.destination)}. This is a demo stop, not live stock.
             </p>
           ) : (
-            <p className={styles.lead}>This stays on your list. Tata Neu does not need to sell you anything for it.</p>
+            <p className={styles.lead}>Tata Neu cannot finish this.</p>
           )}
         </section>
         {error ? (

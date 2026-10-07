@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { catalogueEntry } from "@/lib/catalogue";
 import { NEED_TYPE_LABELS, formatDayLabel } from "@/lib/labels";
-import { resolutionReason, suggestResolution } from "@/lib/resolve";
+import { resolutionReason } from "@/lib/resolve";
+import { resolveNeed } from "@/lib/tata/resolutionEngine";
 import { markMeaningfulSession, track } from "@/lib/track";
-import type { Need } from "@/lib/types";
+import type { Moment, Need } from "@/lib/types";
 import styles from "./Plan.module.css";
 
 export function NeedDetail({ id }: { id: string }) {
@@ -29,9 +29,9 @@ export function NeedDetail({ id }: { id: string }) {
         if (cancelled) return;
         setNeed(found);
         await track("need_viewed", { type: found.type });
-        const destination = suggestResolution(found.type, found.title);
-        if (destination && found.state === "open") {
-          await track("tata_resolution_shown", { destination, type: found.type });
+        const resolution = resolveNeed(found.type, found.title);
+        if (resolution && found.state === "open") {
+          await track("tata_resolution_shown", { destination: resolution.destination, type: found.type });
         }
       } catch {
         if (!cancelled) setError("We could not open that need.");
@@ -47,21 +47,23 @@ export function NeedDetail({ id }: { id: string }) {
 
   async function explore() {
     if (!need) return;
-    const destination = suggestResolution(need.type, need.title);
-    if (!destination) return;
+    const resolution = resolveNeed(need.type, need.title);
+    if (!resolution) return;
     const response = await fetch(`/api/needs/${need.id}`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ state: "exploring", tataDestination: destination }),
+      body: JSON.stringify({ state: "exploring", tataDestination: resolution.destination }),
     });
     if (!response.ok) {
       setError("That Tata stop does not fit this need.");
       return;
     }
-    await track("commerce_intent", { destination, type: need.type });
-    await track("tata_resolution_clicked", { destination, type: need.type });
+    await track("commerce_intent", { destination: resolution.destination, type: need.type });
+    await track("commerce_action", { destination: resolution.destination, type: need.type });
+    await track("tata_resolution_clicked", { destination: resolution.destination, type: need.type });
+    if (need.momentId) await track("moment_updated", { type: need.type, state: "exploring" });
     await markMeaningfulSession();
-    router.push(`/neuplan/demo/${destination}?need=${need.id}`);
+    router.push(`/neuplan/demo/${resolution.destination}?need=${need.id}`);
   }
 
   async function finish() {
@@ -71,11 +73,15 @@ export function NeedDetail({ id }: { id: string }) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ state: "resolved", tataDestination: null }),
     });
+    const body = (await response.json()) as { moment?: Moment | null };
     if (!response.ok) {
       setError("We could not update that need.");
       return;
     }
     await track("need_resolved", { type: need.type, destination: "none" });
+    if (body.moment?.status === "done") {
+      await track("moment_resolved", { type: body.moment.kind });
+    }
     await markMeaningfulSession();
     router.push("/neuplan");
   }
@@ -101,7 +107,7 @@ export function NeedDetail({ id }: { id: string }) {
     );
   }
 
-  const destination = suggestResolution(need.type, need.title);
+  const resolution = resolveNeed(need.type, need.title);
   const status = need.state === "exploring" ? "Exploring" : need.state === "resolved" ? "Done" : "Still open";
 
   return (
@@ -112,13 +118,15 @@ export function NeedDetail({ id }: { id: string }) {
         {NEED_TYPE_LABELS[need.type]} · {status}
         {need.day ? ` · ${formatDayLabel(need.day)}` : ""}
       </p>
-      {need.state !== "resolved" && destination ? (
+      {need.state === "resolved" ? (
+        <p className={styles.lead}>Done.</p>
+      ) : resolution ? (
         <section className={styles.section}>
           <h2>GET IT DONE</h2>
           <p className={styles.lead}>
-            {catalogueEntry(destination).label} may help with this. {resolutionReason(destination)}.
+            {resolution.label} may help with this. {resolutionReason(resolution.destination)}.
           </p>
-          <p className={styles.meta}>Demo catalogue. Not live availability.</p>
+          <p className={styles.meta}>Demo catalogue. Price is ₹—. Not live availability.</p>
           <div className={styles.actions}>
             <button type="button" className={styles.primaryLink} onClick={() => void explore()}>
               Explore on Tata Neu
@@ -126,7 +134,7 @@ export function NeedDetail({ id }: { id: string }) {
           </div>
         </section>
       ) : (
-        <p className={styles.lead}>This stays on your list. Tata Neu does not need to sell you anything for it.</p>
+        <p className={styles.lead}>Tata Neu cannot finish this.</p>
       )}
       {error ? (
         <p className={styles.error} role="alert">
@@ -136,7 +144,7 @@ export function NeedDetail({ id }: { id: string }) {
       {need.state !== "resolved" ? (
         <div className={styles.actions}>
           <Button variant="secondary" onClick={() => void finish()}>
-            I will handle this myself
+            Mark done
           </Button>
         </div>
       ) : null}

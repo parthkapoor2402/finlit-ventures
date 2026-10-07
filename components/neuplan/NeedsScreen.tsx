@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { HYPOTHESIS_LINE, NEED_TYPE_LABELS } from "@/lib/labels";
-import { suggestResolution } from "@/lib/resolve";
-import { catalogueEntry } from "@/lib/catalogue";
+import { NEED_TYPE_LABELS } from "@/lib/labels";
+import { resolveNeed } from "@/lib/tata/resolutionEngine";
 import type { Need } from "@/lib/types";
 import { SectionNav } from "./SectionNav";
 import styles from "./Plan.module.css";
@@ -40,7 +39,6 @@ export function NeedsScreen() {
       <p className={styles.kicker}>NEUPLAN</p>
       <h1 className={styles.title}>Needs</h1>
       <p className={styles.lead}>Things you do not want to forget.</p>
-      <p className={styles.hypothesis}>{HYPOTHESIS_LINE} Not measured. Not achieved.</p>
       <SectionNav current="needs" />
       {loading && !needs ? <Skeleton label="Loading needs" /> : null}
       {error ? (
@@ -56,7 +54,7 @@ export function NeedsScreen() {
       {needs ? (
         <ul className={styles.list}>
           {needs.map((need) => {
-            const destination = suggestResolution(need.type, need.title);
+            const resolution = resolveNeed(need.type, need.title);
             return (
               <li key={need.id}>
                 <Link className={styles.rowLink} href={`/neuplan/needs/${need.id}`}>
@@ -64,7 +62,7 @@ export function NeedsScreen() {
                     <p className={styles.itemTitle}>{need.title}</p>
                     <p className={styles.metaLine}>
                       {NEED_TYPE_LABELS[need.type]} · {need.state === "open" ? "Still open" : need.state === "exploring" ? "Exploring" : "Done"}
-                      {destination ? ` · ${catalogueEntry(destination).label}` : ""}
+                      {resolution ? ` · ${resolution.label}` : ""}
                     </p>
                   </span>
                 </Link>

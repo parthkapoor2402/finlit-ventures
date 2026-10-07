@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { HYPOTHESIS_LINE } from "@/lib/labels";
 import type { AIInsight } from "@/lib/types";
 import { SectionNav } from "./SectionNav";
 import styles from "./WeekScreen.module.css";
@@ -34,7 +33,6 @@ export function SummaryScreen() {
       <p className={styles.banner}>DEMO DATA</p>
       <h1 className={styles.title}>Summary</h1>
       <p className={styles.descriptor}>A note from the counts already on this week. Not a new plan.</p>
-      <p className={styles.hypothesis}>{HYPOTHESIS_LINE} Not measured. Not achieved.</p>
       <SectionNav current="summary" />
       <Button onClick={() => void summarise()} disabled={pending}>
         Summarise this week
