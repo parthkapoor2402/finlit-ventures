@@ -104,5 +104,19 @@ Date: 2026-10-07.
 
 Changes in this phase: category glyphs are no longer one repeated card icon, offer tiles no longer use empty colour blocks as stand-in photographs, and the week is a day list rather than a stack of cards.
 
-Phase 8 has not been run.
+## Phase 8 — Playwright
+
+Date: 2026-10-07. Commands were run in this order on the same tree.
+
+| Command | Exit | Result |
+| --- | --- | --- |
+| `npm test` | 0 | Vitest 5.0.3. 17 files, 45 tests passed. Duration 11.68s. |
+| `npm run typecheck` | 0 | `tsc --noEmit` reported no errors. |
+| `npm run lint` | 0 | `eslint .` reported no errors. |
+| `npm run build` | 0 | Next.js 16.4.0 compiled 20 routes, including `/icon.svg`. |
+| `npm run e2e` | 0 | Playwright 1.63. 1 test passed. Test time 4.0s, run 5.1s. Chrome channel. Production server on port 4180 with `NEUPLAN_DATA_DIR=/tmp/neuplan-e2e`. |
+
+The browser test covered first visit, onboarding, an empty week, add, edit, mark done, a need resolved to Croma, the demo page, the app-written summary, a forced summary HTTP 500, refresh, back from the demo page, mobile 390, tablet 768, and desktop 1280. Axe reported no violations on Home, onboarding, and the week. The desktop phone column was at most 430px wide. Screenshots are in `/opt/cursor/artifacts/neuplan/`.
+
+No Gemini key was configured. The summary assertion was "Written by the app."
 
