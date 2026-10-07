@@ -1,0 +1,72 @@
+.page {
+  padding: var(--space-5) var(--space-4) calc(var(--nav-height) + var(--space-8));
+}
+
+.kicker {
+  margin: 0;
+  color: var(--color-purple);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.step {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.title {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+}
+
+.hint,
+.error {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.hint {
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-danger);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+}
+
+.choices button {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.choices button[aria-pressed="true"] {
+  border-color: var(--color-purple);
+  background: var(--color-purple-soft);
+  color: var(--color-purple);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.actions a,
+.actions button {
+  min-height: 44px;
+}
