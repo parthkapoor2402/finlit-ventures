@@ -24,4 +24,19 @@ Production server: `npm start` on http://127.0.0.1:4180 (port 4173 was already t
 | `GET /` | 200 | HTML document returned. |
 | `GET /api/week` | 200 | `week.startsOn` `2026-10-05`, `endsOn` `2026-10-11`, `timeZone` `Asia/Kolkata`, `items` `[]`. |
 
-Phases 2–8 have not been run.
+## Phase 2 — Tata Neu shell and NeuPlan entry
+
+Date: 2026-10-07.
+
+| Command | Exit | Result |
+| --- | --- | --- |
+| `npm test` | 0 | Vitest 5.0.3. 7 files, 22 tests passed. Duration 5.10s. |
+| `npm run typecheck` | 0 | `tsc --noEmit` reported no errors. |
+| `npm run lint` | 0 | `eslint .` reported no errors. |
+| `npm run build` | 0 | Next.js 16.4.0 compiled. Routes include `/`, `/categories`, `/scan`, `/offers`, `/neucard`, `/neuplan`. |
+
+`GET http://127.0.0.1:4180/` after restarting the production server returned the Home document with one NeuPlan link, the descriptor "Your week. Planned around what matters.", and the primary nav labels Home, Categories, Scan & Pay, Offers, NeuCard. A headless Chrome console pass did not finish: Chrome aborted because another profile lock existed, and a second launch with a fresh profile did not return. The Home render test asserts `console.error` was not called.
+
+## Phase 3 — onboarding
+
+Not run yet. Phases 4–8 have not been run.

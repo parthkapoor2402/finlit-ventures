@@ -1,7 +1,5 @@
+import { CategoriesScreen } from "@/components/shell/CategoriesScreen";
+
 export default function CategoriesPage() {
-  return (
-    <main className="screen">
-      <h1>Categories</h1>
-    </main>
-  );
+  return <CategoriesScreen />;
 }
