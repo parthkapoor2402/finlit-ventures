@@ -76,4 +76,19 @@ Date: 2026-10-07.
 
 A remember need patched to Croma returns 400, "That Tata stop does not fit this need." The needs screen offers Croma, Westside, and BigBasket for a buy need, and does not offer Neu UPI or IHCL. The remember row does not offer Croma.
 
-Phases 6–8 have not been run.
+## Phase 6 — Gemini summary and fallback
+
+Date: 2026-10-07.
+
+| Command | Exit | Result |
+| --- | --- | --- |
+| `npm test` | 0 | Vitest 5.0.3. 17 files, 45 tests passed. Duration 11.94s. |
+| `npm run typecheck` | 0 | `tsc --noEmit` reported no errors. |
+| `npm run lint` | 0 | `eslint .` reported no errors. |
+| `npm run build` | 0 | Next.js 16.4.0 compiled. New route: `POST /api/ai/weekly-summary`. |
+
+Summary tests cover a missing key, a missing model, a successful SDK reply, a timeout, a thrown request, an empty reply, a reply containing a rupee price, a number that is not in the counts, and a second call that does not call the model again. The key string in the log test was not printed by the test name. `GEMINI_API_KEY` was not found in `.next/static`.
+
+No `GEMINI_API_KEY` is set in this environment, so the running app uses the deterministic fallback. That is not a live model call.
+
+Phases 7–8 have not been run.
