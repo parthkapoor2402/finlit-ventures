@@ -191,7 +191,8 @@ test("flow F fallback still creates a plan", async ({ page }) => {
   expect(body.intent?.suggestions?.some((line) => line.title === "A plan")).toBe(true);
   await page.getByRole("checkbox", { name: "A plan" }).check();
   await page.getByRole("button", { name: "Confirm" }).click();
-  await expect(page.getByText("Weekend")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Ananya/ })).toBeVisible();
+  await expect(page.getByText("Weekend", { exact: true }).first()).toBeVisible();
   expect(errors, errors.join("\n")).toEqual([]);
 });
 
@@ -201,7 +202,7 @@ test("flow G refresh keeps the plan", async ({ page }) => {
   await expect(page.getByRole("link", { name: /Travel home/ }).first()).toBeVisible();
   await page.reload();
   await expect(page.getByRole("link", { name: /Travel home/ }).first()).toBeVisible();
-  await expect(page.getByText("Weekend")).toBeVisible();
+  await expect(page.getByText("Weekend", { exact: true }).first()).toBeVisible();
   expect(errors, errors.join("\n")).toEqual([]);
 });
 
