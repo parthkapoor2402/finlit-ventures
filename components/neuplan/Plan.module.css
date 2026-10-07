@@ -1,5 +1,5 @@
 .page {
-  padding: var(--space-5) var(--space-4) calc(var(--nav-height) + var(--space-10));
+  padding: var(--space-5) var(--space-4) calc(var(--nav-height) + var(--space-10) + var(--space-6));
 }
 
 .kicker {

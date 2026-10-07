@@ -158,26 +158,6 @@ export function IntentScreen({ onCreated }: { onCreated?: () => void }) {
           }}
         />
       </label>
-      <div className={styles.actions}>
-        <button type="button" className={styles.textButton} aria-expanded={how} onClick={() => setHow((value) => !value)}>
-          See how it works
-        </button>
-      </div>
-      {how ? (
-        <ol className={styles.how}>
-          {HOW.map((line) => (
-            <li key={line.title}>
-              <span className={styles.icon}>
-                <Glyph name={line.icon} />
-              </span>
-              <span>
-                <strong>{line.title}</strong>
-                <span>{line.body}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
-      ) : null}
       {intent ? (
         <section className={styles.section} aria-labelledby="lines">
           <h2 id="lines">KEEP WHAT YOU WANT</h2>
@@ -221,6 +201,26 @@ export function IntentScreen({ onCreated }: { onCreated?: () => void }) {
           </button>
         )}
       </div>
+      <div className={styles.actions}>
+        <button type="button" className={styles.textButton} aria-expanded={how} onClick={() => setHow((value) => !value)}>
+          See how it works
+        </button>
+      </div>
+      {how ? (
+        <ol className={styles.how}>
+          {HOW.map((line) => (
+            <li key={line.title}>
+              <span className={styles.icon}>
+                <Glyph name={line.icon} />
+              </span>
+              <span>
+                <strong>{line.title}</strong>
+                <span>{line.body}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      ) : null}
     </main>
   );
 }
