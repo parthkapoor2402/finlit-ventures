@@ -48,7 +48,7 @@ export function SummaryScreen() {
         </div>
       ) : null}
       {insight ? (
-        <article className={styles.day}>
+        <article className={styles.note}>
           <p>{insight.text}</p>
           <p className={styles.metaLine}>{insight.source === "gemini" ? "Model" : "Written by the app"}</p>
           {cached ? <p className={styles.metaLine}>The week has not changed.</p> : null}

@@ -4,8 +4,16 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/Dialog";
 import { CATEGORY_GROUPS } from "@/lib/shell-content";
 import { NeuPlanEntry } from "./NeuPlanEntry";
-import { IconCard } from "./icons";
+import { IconBill, IconCard, IconPhone, IconRupee, IconTag } from "./icons";
 import styles from "./CategoriesScreen.module.css";
+
+function CategoryIcon({ name }: { name: string }) {
+  if (name.includes("Card") || name.includes("Loan") || name.includes("Warranty")) return <IconCard />;
+  if (name.includes("Pay") || name.includes("Investment") || name.includes("EMI")) return <IconRupee />;
+  if (name.includes("Pharm") || name.includes("Appliance")) return <IconBill />;
+  if (name.includes("Food") || name.includes("Grocery") || name.includes("Hotel")) return <IconTag />;
+  return <IconPhone />;
+}
 
 export function CategoriesScreen() {
   const [blocked, setBlocked] = useState<string | null>(null);
@@ -21,7 +29,7 @@ export function CategoriesScreen() {
               <li key={item}>
                 <button type="button" onClick={() => setBlocked(item)}>
                   <span className={styles.circle}>
-                    <IconCard />
+                    <CategoryIcon name={item} />
                   </span>
                   <span>{item}</span>
                 </button>

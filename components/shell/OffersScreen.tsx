@@ -30,12 +30,12 @@ export function OffersScreen() {
         <h2 id="electronics-zone">Electronics Zone</h2>
         <div className={styles.split}>
           <button type="button" className={styles.product} onClick={() => setBlocked("Croma")}>
-            <span className={styles.swatch} aria-hidden="true" />
+            <span>Croma</span>
             <strong>Bring home more with No Cost EMI</strong>
-            <span>Inc all offers. Croma.</span>
+            <span>Inc all offers</span>
           </button>
           <button type="button" className={styles.product} onClick={() => setBlocked("iPhone 17 Pro")}>
-            <span className={styles.swatch} aria-hidden="true" />
+            <span>Electronics</span>
             <strong>iPhone 17 Pro and iPhone 17 Pro Max</strong>
             <span>Prices Like Never Before</span>
           </button>

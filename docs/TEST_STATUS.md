@@ -91,4 +91,18 @@ Summary tests cover a missing key, a missing model, a successful SDK reply, a ti
 
 No `GEMINI_API_KEY` is set in this environment, so the running app uses the deterministic fallback. That is not a live model call.
 
-Phases 7–8 have not been run.
+## Phase 7 — visual polish
+
+Date: 2026-10-07.
+
+| Command | Exit | Result |
+| --- | --- | --- |
+| `npm test` | 0 | Vitest 5.0.3. 17 files, 45 tests passed. Duration 11.86s. |
+| `npm run typecheck` | 0 | `tsc --noEmit` reported no errors. |
+| `npm run lint` | 0 | `eslint .` reported no errors. |
+| `npm run build` | 0 | Next.js 16.4.0 compiled. |
+
+Changes in this phase: category glyphs are no longer one repeated card icon, offer tiles no longer use empty colour blocks as stand-in photographs, and the week is a day list rather than a stack of cards.
+
+Phase 8 has not been run.
+
