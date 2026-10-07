@@ -11,6 +11,7 @@ import { markMeaningfulSession, track } from "@/lib/track";
 import type { TataDestination, User, Week, WeekItem, WeekShape } from "@/lib/types";
 import { WEEK_SHAPES } from "@/lib/types";
 import { weekRange, zonedParts } from "@/lib/week";
+import { SectionNav } from "./SectionNav";
 import styles from "./WeekScreen.module.css";
 
 interface ItemDraft {
@@ -159,6 +160,7 @@ export function WeekScreen({ user }: { user: User }) {
       <p className={styles.meta}>
         {user.displayName} · {living}
       </p>
+      <SectionNav current="week" />
       {loading && !week ? <Skeleton label="Loading your week" /> : null}
       {error ? (
         <div>
