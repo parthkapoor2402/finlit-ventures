@@ -14,7 +14,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "rm -rf /tmp/neuplan-e2e && mkdir -p /tmp/neuplan-e2e && NEUPLAN_DATA_DIR=/tmp/neuplan-e2e npm start",
+    command: "rm -rf /tmp/neuplan-e2e && mkdir -p /tmp/neuplan-e2e && env -u GEMINI_API_KEY -u GEMINI_MODEL NEUPLAN_DATA_DIR=/tmp/neuplan-e2e npm start",
     url: "http://127.0.0.1:4180",
     reuseExistingServer: false,
     timeout: 120_000,

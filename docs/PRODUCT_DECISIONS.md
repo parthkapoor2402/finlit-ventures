@@ -1,55 +1,42 @@
 # Product decisions
 
-NeuPlan is a hypothesis for qualitative testing. The strategy note `tata-neu-weekly-job-strategy.md` recommends not building a weekly-open feature. This prototype does not claim that recommendation was wrong. It exists so a person can react to one concrete shape. It does not claim product-market fit, habit formation, or a change in youth weekly active users.
+NeuPlan V3 is a hypothesis for qualitative testing. It is intent to action, constrained. It is not a validated habit, not product-market fit, and not a weekly-active-user result.
 
-Youth WAU +15% is labelled on screen as a target. Status: not measured. Not achieved.
+The case target of youth WAU +15% stays in `HYPOTHESIS_LINE` for the research note and the label test. It is not rendered on any screen. It is not claimed as achieved. Baseline youth WAU is `TBD — REQUIRES TATA INTERNAL DATA`.
 
-## Why the nav stays
+## What shipped
 
-The Tata Neu bottom nav is Home, Categories, Scan & Pay, Offers, and NeuCard. Replacing any of those with NeuPlan would pretend the hypothesis is already a primary destination. Entry is one row on Home and one row in Categories. When the path is under `/neuplan`, no shell tab is current, because NeuPlan is not one of those destinations.
+The first screen is "What are you up to?" when there are no moments and no needs. Home still has one NeuPlan entry: "Tell us what's happening. We'll line up what you need." It keeps the dark border, the New badge, and Open NeuPlan. NeuPlan is not in the bottom nav. The nav stays Home, Categories, Scan & Pay, Offers, NeuCard.
 
-## Demo versus live
+Chips fill an editable sentence. "See how it works" is three lines: Tell us, Build your plan, Get it done. It does not install a sample week. A single obvious line, such as a charger, starts checked. Several lines start unchecked. Nothing is saved until the student confirms at least one line. Classes, Assignment due, and a fake week are not seeded on this path.
 
-The shell repeats commercial lines that were visible in the reference screenshots: NeuPass, NeuCard, Croma's "3 hour delivery", the Spotify and iPhone offer lines, and the NeuCard issuer sheet. Those lines are attributed on Offers and NeuCard. They are not priced further, not personalised, and not connected to checkout.
+Each confirmed line is a need on a moment. The week is a secondary list of days that already have a date. An empty return says "Nothing is waiting on you." "What changed" lists only added lines, a stop being explored, and a line marked done.
 
-Inside NeuPlan, a Tata stop is chosen from a closed list: Croma, Westside, BigBasket, Tata 1mg, Travel, IHCL, Neu UPI. Every entry has `isLive: false` and `demoOnly: true`. A need type can only resolve to a stop the list allows, or to no stop. Remember cannot be pointed at Croma. The demo page says nothing is for sale, in stock, or bookable.
+## Tata stops
 
-Ananya is DEMO DATA. The record has a display name and, after onboarding, a living situation the person picked. It does not have a college, a roommate, a spend, or a city.
+The resolution engine in `lib/tata/resolutionEngine.ts` is the only mapping from a kept line to a stop. It wraps the existing keyword rules. Screens do not pick a brand. Destinations stay Croma, Westside, BigBasket, Tata 1mg, Air India (`travel`), IHCL, and Neu UPI. Cult, Qmin, and unverified fitness are not used.
+
+Exam, study, remember, and pack do not become a shop. A vague buy has no brand until the student names the thing. Demo pages stay `isLive: false` and `demoOnly: true`. The price is ₹—. Nothing is sold.
 
 ## Gemini boundary
 
-The model sees `WeeklyCounts` only: living situation, selected week shapes, help focuses, and counts of items and needs. It does not see titles. The prompt forbids new events, products, prices, inventory, discounts, colleges, roommates, history, and financial advice.
+Intent extraction may send the sentence the student just typed. The reply must be JSON with a title, a kind, and suggestion titles and types. It is rejected if it names a destination, a rupee amount, a percent, a price, inventory, an offer, more than four suggestions, or a kind or type outside the lists. The deterministic parser supplies the date. A missing key, a bad reply, or any model failure uses that same parser. The app still works.
 
-The reply is rejected if it is empty, longer than 600 characters, contains a rupee sign, a percent, or words such as discount, price, stock, coin, or streak, or contains a number that is not already in the counts. Rejection, a missing key, a missing model, a timeout, or a thrown request all return the same deterministic paragraph. That paragraph says the app wrote it from the counts.
-
-The model name comes from `GEMINI_MODEL`. It is not in source. The key is not in the client bundle and is not written to logs by this app.
-
-The summary is cached by a hash of the counts. An unchanged week does not call the model again.
+The weekly summary path is unchanged: counts only, no titles.
 
 ## What was rejected
 
-- A NeuPlan tab, and the names Neu Daily, Feed, Club, Student, Circle, Social, Rewards, Streak, and Hub.
-- Streaks, coins for opening, push copy, fake urgency, scarcity, and gamification.
-- Seeded classes, meals, roommates, or a college timetable. An empty week says "Your week is clear."
-- Live prices, stock, "because you love electronics," and invented recommendations.
-- Tailwind, Redux, and Zustand. The repo on `main` had no styling system. CSS modules were enough.
-- TypeScript 7. `typescript-eslint` could not parse it. TypeScript 6.0.3 stays in strict mode.
-- A payments implementation. Scan & Pay and the quick actions say they are not connected.
+- Routing a new student through the week intro or seeding a timetable.
+- Auto-creating every suggested line.
+- Manufactured return copy such as "your trip is tomorrow" or "still open on Wednesday".
+- Streaks, coins for opening, and fake urgency.
+- Showing youth WAU +15% on the screen, or claiming it was achieved.
+- A NeuPlan tab.
+- Live prices, stock, and checkout.
+- TypeScript 7. TypeScript 6.0.3 stays.
 
-## Panel questions
+The onboarding route can still be opened directly. It is not the product path.
 
-**GPM. Why would someone open this?** The only honest first open is "I want to look at the week I just described." A second open exists only if something they typed is still unresolved. A third open is not designed and is not promised. The strategy note already says the jobs that recur belong to the mess, the timetable, Swiggy, Zomato, Google Pay, and WhatsApp. This prototype does not create a reason those opens move to Tata Neu.
+## What this prototype can record
 
-**UX. What is unnecessary?** The optional demo Tata stop on a week item is the first thing to cut if people treat it as a shop. Onboarding is three questions because the prototype must not invent a hostel or a timetable. The shell's "not connected" dialogs are there so a tap does not look like a payment.
-
-**Eng. What breaks?** The JSON file is one demo user in one Node process. Two people writing at once can overwrite each other. The week boundary is `Asia/Kolkata` even if the laptop is not. Gemini can still write a bland sentence that passes the filter and sounds more certain than the counts. There is no login. Deleting `.data/` wipes the prototype.
-
-**Data. What is measurable?** The events in the activity list: open, onboarding complete, week viewed, item created, item completed, need created, need resolved, demo stop clicked, demo stop viewed, summary generated, summary fallback, and one `session_meaningful` flag per browser tab after a real action. None of these is youth WAU. No percentage is computed.
-
-**Tata. What is Tata's to own?** The brands on the demo list are Tata or Tata Neu destinations. The week itself is not. A class, a meal, a chat, and a UPI payment already have owners. The prototype does not fulfil an order, so it does not exercise the loyalty moat the strategy describes, which shows up at checkout.
-
-**Gen Z. Why not WhatsApp, Calendar, Amazon, Swiggy, or Google Pay?** NeuPlan is not those products and does not argue that a student will leave them. Calendar already holds a timetable. WhatsApp already holds the circle. Swiggy already holds the meal. Google Pay already holds the campus payment in the only student sample the strategy cites. Amazon already holds a product search. NeuPlan does not read any of them.
-
-**Security. Can a secret leak?** `GEMINI_API_KEY` is read in server code only. It is not a `NEXT_PUBLIC_` variable. A search of `.next/static` after the production build found no `GEMINI_API_KEY`. The log test uses a fake key and asserts that key is not passed to `console`. `.env` is gitignored. Scan & Pay does not collect a card or a UPI pin. Item titles are not sent to Gemini.
-
-**Design. Where is the AI slop?** Gradient wordmarks, glass, neon, empty picture blocks, a repeated category icon, metric tiles, and a fake user count were rejected. Offer tiles are type, because this prototype does not have the photographs. The finance tile is sparse for the same reason. The week is a list of days, not a stack of cards. The remaining risk is that the add form is long. It is a form because the prototype must not invent the week.
+Intent started, intent submitted, moment created, moment viewed, plan created, moment updated, moment resolved, commerce action, and whether intent parsing used the model or the fallback. Opening the screen is not a meaningful session. No rate is computed.

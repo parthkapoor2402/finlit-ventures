@@ -43,14 +43,16 @@ describe("CommandCenter", () => {
         const url = String(input);
         if (url.endsWith("/api/week")) return json({ week: emptyWeek });
         if (url.endsWith("/api/needs")) return json({ needs: [] });
+        if (url.endsWith("/api/moments")) return json({ moments: [] });
         if (url.endsWith("/api/notices")) return json({ notices: [] });
         return json({ returning: false });
       }),
     );
     render(<CommandCenter user={user} />);
     expect(await screen.findByText("Nothing is waiting on you.")).toBeInTheDocument();
-    expect(screen.getByText("Start with one thing you want to take care of this week.")).toBeInTheDocument();
     expect(screen.queryByText("Your week is clear.")).toBeNull();
+    expect(screen.queryByText(/\+15%/)).toBeNull();
+    expect(screen.queryByText(/Youth WAU/)).toBeNull();
   });
 
   it("shows the refresh error and tries again", async () => {
@@ -62,13 +64,14 @@ describe("CommandCenter", () => {
         const url = String(input);
         if (url.endsWith("/api/week")) return json({ week: emptyWeek });
         if (url.endsWith("/api/needs")) return json({ needs: [] });
+        if (url.endsWith("/api/moments")) return json({ moments: [] });
         if (url.endsWith("/api/notices")) return json({ notices: [] });
         return json({ returning: false });
       }),
     );
     const person = userEvent.setup();
     render(<CommandCenter user={user} />);
-    expect(await screen.findByRole("alert")).toHaveTextContent("We could not refresh your week.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("We could not refresh what is open.");
     fail = false;
     await person.click(screen.getByRole("button", { name: "Try again" }));
     expect(await screen.findByText("Nothing is waiting on you.")).toBeInTheDocument();

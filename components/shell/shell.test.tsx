@@ -50,7 +50,9 @@ describe("shell navigation", () => {
     render(<HomeScreen />);
     const entry = screen.getByRole("link", { name: /NeuPlan/i });
     expect(entry).toHaveAttribute("href", "/neuplan");
-    expect(entry).toHaveTextContent("Your week. Planned around what matters.");
+    expect(entry).toHaveTextContent("Tell us what's happening. We'll line up what you need.");
+    expect(entry).toHaveTextContent("Open NeuPlan");
+    expect(entry).toHaveTextContent("New");
     expect(screen.getAllByRole("link", { name: /NeuPlan/i })).toHaveLength(1);
     await user.click(screen.getByRole("button", { name: "Send Money" }));
     expect(screen.getByRole("dialog", { name: "Send Money" })).toHaveTextContent("No money will be sent.");

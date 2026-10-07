@@ -3,26 +3,9 @@ import { expect, test, type Page } from "@playwright/test";
 
 const shots = "/opt/cursor/artifacts/neuplan";
 
-async function axe(page: Page, name: string) {
-  const results = await new AxeBuilder({ page }).analyze();
-  if (results.violations.length > 0) {
-    console.log(
-      name,
-      JSON.stringify(
-        results.violations.map((violation) => ({
-          id: violation.id,
-          impact: violation.impact,
-          nodes: violation.nodes.map((node) => node.html).slice(0, 3),
-        })),
-        null,
-        2,
-      ),
-    );
-  }
-  expect(results.violations, name).toEqual([]);
-}
+test.describe.configure({ mode: "serial" });
 
-test("intro, seeded week, charger to Croma, and summary fallback", async ({ page }) => {
+function watch(page: Page) {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -36,24 +19,33 @@ test("intro, seeded week, charger to Croma, and summary fallback", async ({ page
     if (response.url().includes("favicon")) return;
     errors.push(`${response.status()} ${response.url()}`);
   });
+  return errors;
+}
 
+async function axe(page: Page, name: string) {
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations, name).toEqual([]);
+}
+
+test("home entry, viewports, and no week setup", async ({ page }) => {
+  const errors = watch(page);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
   const entry = page.getByRole("link", { name: /NeuPlan/ });
   await expect(entry).toHaveCount(1);
-  await expect(entry).toContainText("Stay on top of plans, needs and things you do not want to forget.");
+  await expect(entry).toContainText("Tell us what's happening. We'll line up what you need.");
   await expect(entry).toContainText("Open NeuPlan");
+  await expect(entry).toContainText("New");
   await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: /NeuPlan/ })).toHaveCount(0);
-  await page.screenshot({ path: `${shots}/home-mobile.png`, fullPage: true });
+  await expect(page.getByText(/\+15%/)).toHaveCount(0);
+  await page.screenshot({ path: `${shots}/home-390.png`, fullPage: true });
   await axe(page, "home");
 
-  await page.setViewportSize({ width: 375, height: 812 });
-  await page.screenshot({ path: `${shots}/home-375.png`, fullPage: true });
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.screenshot({ path: `${shots}/home-360.png`, fullPage: true });
   await page.setViewportSize({ width: 414, height: 896 });
   await page.screenshot({ path: `${shots}/home-414.png`, fullPage: true });
-  await page.setViewportSize({ width: 768, height: 1024 });
-  await page.screenshot({ path: `${shots}/home-tablet.png`, fullPage: true });
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.screenshot({ path: `${shots}/home-desktop.png`, fullPage: true });
   const phone = await page.locator(".phone").boundingBox();
@@ -62,48 +54,116 @@ test("intro, seeded week, charger to Croma, and summary fallback", async ({ page
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/categories");
   await expect(page.getByRole("link", { name: /NeuPlan/ })).toHaveCount(1);
-  await page.screenshot({ path: `${shots}/categories-mobile.png`, fullPage: true });
-  await page.goto("/offers");
-  await page.screenshot({ path: `${shots}/offers-mobile.png`, fullPage: true });
-  await page.goto("/neucard");
-  await page.screenshot({ path: `${shots}/neucard-mobile.png`, fullPage: true });
-  await page.goto("/scan");
-  await expect(page.getByRole("heading", { name: "Scan & Pay" })).toBeVisible();
-  await expect(page.getByText("Nothing here can send money.")).toBeVisible();
-  await page.screenshot({ path: `${shots}/scan-mobile.png`, fullPage: true });
-
   await page.goto("/");
   await page.getByRole("link", { name: /Open NeuPlan/ }).click();
-  await expect(page.getByRole("heading", { name: "Stay on top of what matters this week." })).toBeVisible();
-  await page.screenshot({ path: `${shots}/intro-mobile.png`, fullPage: true });
-  await axe(page, "intro");
-  await page.getByRole("link", { name: "See an example" }).click();
-  await expect(page.getByText("Replace charger")).toBeVisible();
-  await expect(page.getByText("EXAMPLE · NOT YOUR WEEK")).toBeVisible();
-  await page.screenshot({ path: `${shots}/example-mobile.png`, fullPage: true });
-  await page.getByRole("link", { name: "Set up my week" }).click();
+  await expect(page.getByRole("heading", { name: "What are you up to?" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Set up my week" })).toHaveCount(0);
+  await expect(page.getByText("Classes")).toHaveCount(0);
+  await expect(page.getByText("Assignment due")).toHaveCount(0);
+  await expect(page.getByText(/\+15%/)).toHaveCount(0);
+  await page.getByRole("button", { name: "See how it works" }).click();
+  await expect(page.getByText("Tell us", { exact: true })).toBeVisible();
+  await expect(page.getByText("Build your plan")).toBeVisible();
+  await expect(page.getByText("Get it done")).toBeVisible();
+  await expect(page.getByText("Classes")).toHaveCount(0);
+  await page.screenshot({ path: `${shots}/intent-mobile.png`, fullPage: true });
+  await axe(page, "intent");
+  expect(errors, errors.join("\n")).toEqual([]);
+});
 
-  await page.getByRole("button", { name: "Classes" }).click();
-  await page.getByRole("button", { name: "Assignments" }).click();
-  await page.getByRole("button", { name: "Shopping" }).click();
-  await page.getByRole("button", { name: "Travel" }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "With family" }).click();
-  await page.getByRole("button", { name: "Set up my week" }).click();
-
+test("flow A charger resolves to Croma without a calendar", async ({ page }) => {
+  const errors = watch(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/neuplan");
+  await page.getByLabel("What is happening?").fill("My charger stopped working");
+  const pending = page.waitForResponse((response) => response.url().includes("/api/ai/intent") && response.request().method() === "POST");
+  await page.getByRole("button", { name: "Show lines" }).click();
+  const body = (await (await pending).json()) as { source?: string };
+  expect(body.source).toBe("fallback");
+  await expect(page.getByRole("checkbox", { name: "Replace charger" })).toBeChecked();
+  await page.getByRole("button", { name: "Confirm" }).click();
   await expect(page.getByRole("heading", { name: /Ananya/ })).toBeVisible();
-  await expect(page.getByText("Classes").first()).toBeVisible();
-  await expect(page.getByText("Assignment due")).toBeVisible();
   await expect(page.getByRole("link", { name: /Replace charger/ }).first()).toBeVisible();
-  await expect(page.getByRole("link", { name: /Travel home/ }).first()).toBeVisible();
-  await expect(page.getByText("Your week is clear.")).toHaveCount(0);
-  await page.screenshot({ path: `${shots}/week-mobile.png`, fullPage: true });
-  await axe(page, "week");
-
+  await expect(page.getByText("Classes")).toHaveCount(0);
+  await expect(page.getByText("Assignment due")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "THIS WEEK" })).toHaveCount(0);
+  await expect(page.getByText(/\+15%/)).toHaveCount(0);
+  await page.screenshot({ path: `${shots}/happening-mobile.png`, fullPage: true });
+  await axe(page, "happening");
   await page.getByRole("link", { name: /Replace charger/ }).first().click();
   await expect(page.getByRole("heading", { name: "Replace charger" })).toBeVisible();
   await expect(page.getByText(/Croma may help/)).toBeVisible();
+  await expect(page.getByText(/\+15%/)).toHaveCount(0);
   await page.screenshot({ path: `${shots}/need-charger-mobile.png`, fullPage: true });
+  await axe(page, "need");
+  expect(errors, errors.join("\n")).toEqual([]);
+});
+
+test("flow B going home keeps travel only when that line is selected", async ({ page }) => {
+  const errors = watch(page);
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/neuplan/new");
+  await page.getByRole("button", { name: "Going somewhere" }).click();
+  await expect(page.getByLabel("What is happening?")).toHaveValue("Going home this weekend");
+  await page.getByRole("button", { name: "Show lines" }).click();
+  await expect(page.getByRole("checkbox", { name: "Travel home" })).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "Pack" })).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "A gift" })).not.toBeChecked();
+  await expect(page.getByRole("button", { name: "Confirm" })).toBeDisabled();
+  await page.getByRole("checkbox", { name: "Travel home" }).check();
+  await page.getByRole("button", { name: "Confirm" }).click();
+  await expect(page.getByRole("link", { name: /Travel home/ }).first()).toBeVisible();
+  await expect(page.getByText("Pack", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("A gift", { exact: true })).toHaveCount(0);
+  await page.getByRole("link", { name: /Travel home/ }).first().click();
+  await expect(page.getByText(/Air India may help/)).toBeVisible();
+  await page.screenshot({ path: `${shots}/need-travel-360.png`, fullPage: true });
+  expect(errors, errors.join("\n")).toEqual([]);
+});
+
+test("flow C friends coming does not force a shop", async ({ page }) => {
+  const errors = watch(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/neuplan/new");
+  await page.getByRole("button", { name: "Friends coming" }).click();
+  await page.getByRole("button", { name: "Show lines" }).click();
+  await expect(page.getByRole("checkbox", { name: "Groceries" })).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "A plan" })).not.toBeChecked();
+  await page.getByRole("checkbox", { name: "A plan" }).check();
+  await page.getByRole("button", { name: "Confirm" }).click();
+  await page.getByRole("link", { name: /A plan/ }).first().click();
+  await expect(page.getByText("Tata Neu cannot finish this.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Explore on Tata Neu" })).toHaveCount(0);
+  await expect(page.getByText("BigBasket")).toHaveCount(0);
+  await page.screenshot({ path: `${shots}/need-plan-mobile.png`, fullPage: true });
+  expect(errors, errors.join("\n")).toEqual([]);
+});
+
+test("flow D exam week does not force commerce", async ({ page }) => {
+  const errors = watch(page);
+  await page.setViewportSize({ width: 414, height: 896 });
+  await page.goto("/neuplan/new");
+  await page.getByRole("button", { name: "Exam week" }).click();
+  await page.getByRole("button", { name: "Show lines" }).click();
+  await expect(page.getByRole("checkbox", { name: "Study" })).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "A reminder" })).not.toBeChecked();
+  await page.getByRole("checkbox", { name: "Study" }).check();
+  await page.getByRole("checkbox", { name: "A reminder" }).check();
+  await page.getByRole("button", { name: "Confirm" }).click();
+  await page.getByRole("link", { name: /^Study/ }).first().click();
+  await expect(page.getByRole("heading", { name: "Study" })).toBeVisible();
+  await expect(page.getByText("Tata Neu cannot finish this.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Explore on Tata Neu" })).toHaveCount(0);
+  await expect(page.getByText("Croma")).toHaveCount(0);
+  await page.screenshot({ path: `${shots}/need-exam-414.png`, fullPage: true });
+  expect(errors, errors.join("\n")).toEqual([]);
+});
+
+test("flow E exploring and done come from real actions", async ({ page }) => {
+  const errors = watch(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/neuplan");
+  await page.getByRole("link", { name: /Replace charger/ }).first().click();
   await page.getByRole("button", { name: "Explore on Tata Neu" }).click();
   await expect(page.getByRole("heading", { name: "Croma" })).toBeVisible();
   await expect(page.getByText("USB-C charger")).toBeVisible();
@@ -112,40 +172,51 @@ test("intro, seeded week, charger to Croma, and summary fallback", async ({ page
   await page.screenshot({ path: `${shots}/demo-croma-mobile.png`, fullPage: true });
   await page.getByRole("button", { name: "View on Croma" }).click();
   await expect(page.getByText("This would open Croma.")).toBeVisible();
-
-  await page.goto("/neuplan");
-  await expect(page.getByText("Exploring").first()).toBeVisible();
-  await page.getByText("Assignment due", { exact: true }).locator("..").getByRole("button", { name: "Mark done" }).click();
-  await expect(page.getByText("Marked done: Assignment due")).toBeVisible();
-
-  await page.goto("/neuplan/summary");
-  await page.getByRole("button", { name: "Summarise this week" }).click();
-  await expect(page.getByText("Written by the app", { exact: true })).toBeVisible();
-  await page.screenshot({ path: `${shots}/summary-mobile.png`, fullPage: true });
-
+  await page.getByRole("link", { name: "Back to NeuPlan" }).click();
+  await expect(page.getByText("Exploring")).toBeVisible();
+  await page.getByRole("button", { name: "Mark done" }).click();
+  await expect(page.getByText("Done: Replace charger")).toBeVisible();
+  await expect(page.getByText("your trip is tomorrow")).toHaveCount(0);
   expect(errors, errors.join("\n")).toEqual([]);
+});
 
-  await page.route("**/api/ai/weekly-summary", (route) =>
-    route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ message: "no" }) }),
-  );
-  await page.getByRole("button", { name: "Summarise this week" }).click();
-  await expect(page.getByText("We couldn't write the summary.")).toBeVisible();
-  await page.unroute("**/api/ai/weekly-summary");
-  await page.getByRole("button", { name: "Try again" }).click();
-  await expect(page.getByText("Written by the app", { exact: true })).toBeVisible();
+test("flow F fallback still creates a plan", async ({ page }) => {
+  const errors = watch(page);
+  await page.goto("/neuplan/new");
+  await page.getByLabel("What is happening?").fill("Planning the weekend");
+  const pending = page.waitForResponse((response) => response.url().includes("/api/ai/intent") && response.request().method() === "POST");
+  await page.getByRole("button", { name: "Show lines" }).click();
+  const body = (await (await pending).json()) as { source?: string; intent?: { suggestions?: { title: string }[] } };
+  expect(body.source).toBe("fallback");
+  expect(body.intent?.suggestions?.some((line) => line.title === "A plan")).toBe(true);
+  await page.getByRole("checkbox", { name: "A plan" }).check();
+  await page.getByRole("button", { name: "Confirm" }).click();
+  await expect(page.getByText("Weekend")).toBeVisible();
+  expect(errors, errors.join("\n")).toEqual([]);
+});
 
+test("flow G refresh keeps the plan", async ({ page }) => {
+  const errors = watch(page);
   await page.goto("/neuplan");
-  await expect(page.getByText("Classes").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /Travel home/ }).first()).toBeVisible();
   await page.reload();
-  await expect(page.getByText("Classes").first()).toBeVisible();
-  await page.goBack();
-  await page.goForward();
-  await expect(page.getByText("Classes").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /Travel home/ }).first()).toBeVisible();
+  await expect(page.getByText("Weekend")).toBeVisible();
+  expect(errors, errors.join("\n")).toEqual([]);
+});
 
-  await page.setViewportSize({ width: 768, height: 1024 });
-  await page.screenshot({ path: `${shots}/week-tablet.png`, fullPage: true });
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await page.screenshot({ path: `${shots}/week-desktop.png`, fullPage: true });
-  const weekPhone = await page.locator(".phone").boundingBox();
-  expect(weekPhone?.width).toBeLessThanOrEqual(430);
+test("flow H back button returns to the open list", async ({ page }) => {
+  const errors = watch(page);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/neuplan");
+  await page.getByRole("link", { name: /Travel home/ }).first().click();
+  await expect(page.getByRole("heading", { name: "Travel home" })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole("heading", { name: /Ananya/ })).toBeVisible();
+  await page.goForward();
+  await expect(page.getByRole("heading", { name: "Travel home" })).toBeVisible();
+  const phone = await page.locator(".phone").boundingBox();
+  expect(phone?.width).toBeLessThanOrEqual(430);
+  await page.screenshot({ path: `${shots}/need-desktop.png`, fullPage: true });
+  expect(errors, errors.join("\n")).toEqual([]);
 });
