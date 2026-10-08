@@ -75,22 +75,24 @@ export function AddNeedScreen() {
       moment?: { id: string };
       message?: string;
     };
-    if (!response.ok || (!body.need && !body.moment)) {
+    const saved = body.needs && body.needs.length > 0 ? body.needs : body.need ? [body.need] : [];
+    if (!response.ok || saved.length === 0) {
       setError(body.message ?? "We could not add that need.");
       setPending(false);
       return;
     }
-    if (body.needs && body.needs.length > 1) {
-      for (const line of body.needs) {
+    if (saved.length > 1) {
+      for (const line of saved) {
         await track("need_created", { type: line.type });
       }
       await markMeaningfulSession();
       router.push("/neuplan");
       return;
     }
-    await track("need_created", { type: body.need?.type ?? type });
+    const only = saved[0];
+    await track("need_created", { type: only?.type ?? type });
     await markMeaningfulSession();
-    router.push(`/neuplan/needs/${body.need?.id}`);
+    router.push(`/neuplan/needs/${only?.id}`);
   }
 
   return (

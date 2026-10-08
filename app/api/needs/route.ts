@@ -57,7 +57,13 @@ export async function POST(request: Request) {
         : input,
     );
     return Response.json(
-      { need, decomposed: false, source: interpreted.source, reason: interpreted.reason },
+      {
+        need,
+        needs: [need],
+        decomposed: false,
+        source: interpreted.source,
+        reason: interpreted.reason,
+      },
       { status: 201 },
     );
   } catch (error) {

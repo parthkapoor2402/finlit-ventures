@@ -50,9 +50,16 @@ describe("need routes", () => {
       }),
     );
     expect(created.status).toBe(201);
-    const saved = (await created.json()) as { decomposed?: boolean; source?: string; needs?: Need[] };
+    const saved = (await created.json()) as {
+      decomposed?: boolean;
+      source?: string;
+      moment?: { title: string };
+      needs?: Need[];
+    };
     expect(saved.decomposed).toBe(true);
     expect(saved.source).toBe("fallback");
+    expect(Array.isArray(saved.needs)).toBe(true);
+    expect(saved.moment?.title).toBe("Trip to Mumbai");
     expect(saved.needs?.map((need) => [need.title, need.type, resolveNeed(need.type, need.title)?.label])).toEqual([
       ["Flight", "book", "Air India"],
       ["Charger", "buy", "Croma"],
@@ -75,11 +82,12 @@ describe("need routes", () => {
   });
 
   it("saves each tested sentence as its own needs", async () => {
-    const cases: { title: string; type: string; decomposed: boolean; lines: string[][] }[] = [
+    const cases: { title: string; type: string; decomposed: boolean; parent?: string; lines: string[][] }[] = [
       {
         title: "I'm travelling to Mumbai this weekend. I need a flight, a charger, some clothes and a hotel",
         type: "replace",
         decomposed: true,
+        parent: "Trip to Mumbai",
         lines: [
           ["Flight", "book", "Air India"],
           ["Charger", "buy", "Croma"],
@@ -91,6 +99,7 @@ describe("need routes", () => {
         title: "My sister's birthday is next week. I need a dress, a watch and a gift.",
         type: "replace",
         decomposed: true,
+        parent: "Sister's birthday",
         lines: [
           ["Dress", "buy", "Westside"],
           ["Watch", "buy", "Titan"],
@@ -113,6 +122,7 @@ describe("need routes", () => {
         title: "I need a flight and a hotel for Mumbai.",
         type: "replace",
         decomposed: true,
+        parent: "Trip to Mumbai",
         lines: [
           ["Flight", "book", "Air India"],
           ["Hotel", "book", "Taj"],
@@ -128,12 +138,20 @@ describe("need routes", () => {
         }),
       );
       expect(created.status).toBe(201);
-      const saved = (await created.json()) as { decomposed?: boolean; needs?: Need[]; need?: Need };
+      const saved = (await created.json()) as {
+        decomposed?: boolean;
+        source?: string;
+        moment?: { title: string };
+        needs?: Need[];
+      };
       expect(saved.decomposed).toBe(sample.decomposed);
-      const needs = saved.needs ?? (saved.need ? [saved.need] : []);
+      expect(saved.source).toBe("fallback");
+      expect(Array.isArray(saved.needs)).toBe(true);
+      const needs = saved.needs ?? [];
       expect(needs.map((need) => [need.title, need.type, resolveNeed(need.type, need.title)?.label])).toEqual(
         sample.lines,
       );
+      if (sample.parent) expect(saved.moment?.title).toBe(sample.parent);
       expect(needs.some((need) => need.title === sample.title)).toBe(false);
     }
   });
