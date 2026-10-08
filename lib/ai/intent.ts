@@ -11,11 +11,27 @@ export interface IntentResult {
 
 export async function interpretIntent(text: string, now = new Date()): Promise<IntentResult> {
   const fallback = parseIntent(text, now);
+  const named = fallback.suggestions.filter((line) => line.selectedByDefault);
   try {
-    const raw = await generateModelText(buildIntentPrompt(text), 400);
+    const raw = await generateModelText(buildIntentPrompt(text), 800);
     const draft = acceptIntentJson(raw);
+    if (named.length >= 2 && (!draft || draft.suggestions.length < named.length)) {
+      return { intent: fallback, source: "fallback", reason: draft ? "collapsed" : "malformed" };
+    }
     if (!draft) {
       return { intent: fallback, source: "fallback", reason: "malformed" };
+    }
+    if (named.length >= 2) {
+      return {
+        intent: {
+          title: draft.title,
+          kind: fallback.kind,
+          day: fallback.day,
+          suggestions: draft.suggestions.map((line) => ({ ...line, selectedByDefault: true })),
+        },
+        source: "gemini",
+        reason: null,
+      };
     }
     return {
       intent: {
@@ -23,6 +39,7 @@ export async function interpretIntent(text: string, now = new Date()): Promise<I
         kind: draft.kind,
         day: dayFromSentence(text, now),
         suggestions: selectionFor(draft.kind, draft.suggestions),
+        clarify: fallback.clarify,
       },
       source: "gemini",
       reason: null,

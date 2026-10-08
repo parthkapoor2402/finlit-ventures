@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Glyph } from "@/components/ui/Glyph";
 import type { ParsedIntent } from "@/lib/intent/parse";
+import { resolveNeed } from "@/lib/tata/resolutionEngine";
 import { markMeaningfulSession, track } from "@/lib/track";
 import styles from "./Plan.module.css";
 
@@ -72,7 +73,7 @@ export function IntentScreen({ onCreated }: { onCreated?: () => void }) {
         setError(body.message ?? "We could not read that.");
         return;
       }
-      if (body.intent.suggestions.length === 0) {
+      if (body.intent.suggestions.length === 0 && !body.intent.clarify) {
         setError("Add a sentence.");
         return;
       }
@@ -158,12 +159,39 @@ export function IntentScreen({ onCreated }: { onCreated?: () => void }) {
           }}
         />
       </label>
-      {intent ? (
+      {intent?.clarify ? (
+        <section className={styles.section} aria-labelledby="clarify">
+          <h2 id="clarify">What are you looking for?</h2>
+          <ul className={styles.chips}>
+            {[
+              ["Jewellery", "I need jewellery"],
+              ["Fashion", "I need clothes"],
+              ["Electronics", "I need a charger"],
+              ["Experience", "I need a hotel"],
+            ].map(([label, next]) => (
+              <li key={label}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSentence(next ?? "");
+                    setIntent(null);
+                  }}
+                >
+                  {label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+      {intent && !intent.clarify ? (
         <section className={styles.section} aria-labelledby="lines">
           <h2 id="lines">KEEP WHAT YOU WANT</h2>
           <p className={styles.meta}>{intent.title}</p>
           <ul className={styles.checkList}>
-            {intent.suggestions.map((line, index) => (
+            {intent.suggestions.map((line, index) => {
+              const resolution = resolveNeed(line.type, line.title);
+              return (
               <li key={`${line.title}-${index}`}>
                 <label>
                   <input
@@ -173,10 +201,14 @@ export function IntentScreen({ onCreated }: { onCreated?: () => void }) {
                       setChecked((current) => current.map((value, item) => (item === index ? !value : value)));
                     }}
                   />
-                  <span>{line.title}</span>
+                  <span>
+                    {line.title}
+                    {resolution ? ` → ${resolution.label}` : ""}
+                  </span>
                 </label>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </section>
       ) : null}

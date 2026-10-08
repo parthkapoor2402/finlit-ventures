@@ -15,5 +15,8 @@ describe("suggestResolution", () => {
     expect(suggestResolution("book", "Travel home")).toBe("travel");
     expect(suggestResolution("buy", "Birthday gift")).toBe("westside");
     expect(suggestResolution("remember", "Call home")).toBeNull();
+    expect(suggestResolution("buy", "Gold necklace")).toBe("tanishq");
+    expect(suggestResolution("buy", "Watch")).toBe("titan");
+    expect(suggestResolution("buy", "Cake")).toBe("qmin");
   });
 });

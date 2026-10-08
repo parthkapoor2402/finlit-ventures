@@ -32,6 +32,7 @@ export async function generateModelText(prompt: string, maxOutputTokens = 200): 
       config: {
         temperature: 0,
         maxOutputTokens,
+        thinkingConfig: { thinkingBudget: 0 },
         abortSignal: AbortSignal.timeout(8000),
       },
     });

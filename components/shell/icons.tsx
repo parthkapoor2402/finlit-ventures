@@ -108,6 +108,15 @@ export function IconBill(props: IconProps) {
   );
 }
 
+export function IconNeeds(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M8 6h11M8 12h11M8 18h11" />
+      <path d="M4 6h.01M4 12h.01M4 18h.01" />
+    </svg>
+  );
+}
+
 export function IconRupee(props: IconProps) {
   return (
     <svg {...base(props)}>

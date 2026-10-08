@@ -27,14 +27,14 @@ describe("shell navigation", () => {
       "Home",
       "Categories",
       "Scan & Pay",
-      "Offers",
+      "Needs",
       "NeuCard",
     ]);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/",
       "/categories",
       "/scan",
-      "/offers",
+      "/neuplan/needs",
       "/neucard",
     ]);
     expect(within(nav).getByRole("link", { name: "Home" })).toHaveAttribute("aria-current", "page");

@@ -79,6 +79,38 @@ describe("parseIntent", () => {
     expect(parseIntent("Friends are coming Saturday", SATURDAY).day).toBe("2026-10-10");
   });
 
+  it("splits a Mumbai weekend into separate needs instead of one shop", () => {
+    const intent = parseIntent(
+      "I'm travelling to Mumbai this weekend. I need a flight, a charger, some clothes and a hotel.",
+      WEDNESDAY,
+    );
+    expect(intent.title).toBe("Trip to Mumbai");
+    expect(intent.kind).toBe("going");
+    expect(intent.suggestions.map((line) => [line.title, line.type, line.selectedByDefault])).toEqual([
+      ["Flight", "book", true],
+      ["Charger", "replace", true],
+      ["Clothes", "buy", true],
+      ["Hotel", "book", true],
+    ]);
+    expect(resolveNeed("book", "Flight")?.label).toBe("Air India");
+    expect(resolveNeed("replace", "Charger")?.destination).toBe("croma");
+    expect(resolveNeed("buy", "Clothes")?.label).toBe("Westside");
+    expect(resolveNeed("book", "Hotel")?.label).toBe("Taj");
+    expect(JSON.stringify(intent)).not.toMatch(/croma|westside/i);
+  });
+
+  it("keeps a gold necklace on Tanishq", () => {
+    const intent = parseIntent("I need to buy my mother a gold necklace for her anniversary", WEDNESDAY);
+    expect(intent.suggestions[0]?.title).toBe("Gold necklace");
+    expect(resolveNeed("buy", "Gold necklace")?.destination).toBe("tanishq");
+  });
+
+  it("asks for clarification when the gift is unnamed", () => {
+    const intent = parseIntent("I need something nice for my sister", WEDNESDAY);
+    expect(intent.clarify).toBe(true);
+    expect(intent.suggestions).toEqual([]);
+  });
+
   it("caps suggestions at four", () => {
     const lines = selectionFor("other", [
       { title: "One", type: "remember" },

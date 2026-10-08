@@ -12,6 +12,7 @@ export interface ParsedIntent {
   kind: MomentKind;
   day: string | null;
   suggestions: IntentSuggestion[];
+  clarify?: boolean;
 }
 
 const DAY_NAMES = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] as const;
@@ -47,8 +48,15 @@ function deviceIn(text: string): string | null {
 
 export function dayFromSentence(text: string, now = new Date()): string | null {
   const range = weekRange(now);
-  const todayIndex = (zonedParts(now).weekday + 6) % 7;
+  const zoned = zonedParts(now);
+  const todayIndex = (zoned.weekday + 6) % 7;
   const lower = text.toLowerCase();
+  if (includesWord(lower, "today")) {
+    const month = String(zoned.month).padStart(2, "0");
+    const day = String(zoned.day).padStart(2, "0");
+    const iso = `${zoned.year}-${month}-${day}`;
+    return range.days.includes(iso) ? iso : null;
+  }
   let target: number | null = null;
   for (let index = 0; index < DAY_NAMES.length; index += 1) {
     const name = DAY_NAMES[index];
@@ -92,6 +100,59 @@ function fixLines(text: string): { title: string; suggestions: { title: string; 
   return { title: "Fix", suggestions: [{ title: "Fix it", type: "replace" }] };
 }
 
+const NAMED_LINES: readonly { test: RegExp; title: string; type: NeedType }[] = [
+  { test: /\bflights?\b/i, title: "Flight", type: "book" },
+  { test: /\bhotels?\b/i, title: "Hotel", type: "book" },
+  { test: /\bchargers?\b/i, title: "Charger", type: "replace" },
+  { test: /\b(clothes|clothing|outfit|outfits)\b/i, title: "Clothes", type: "buy" },
+  { test: /\bdresses?\b/i, title: "Dress", type: "buy" },
+  { test: /\bwatch(?:es)?\b/i, title: "Watch", type: "buy" },
+  { test: /\b(necklace|jewellery|jewelry)\b|\bgold\b/i, title: "Gold necklace", type: "buy" },
+  { test: /\bring\b/i, title: "Ring", type: "buy" },
+  { test: /\bcake\b/i, title: "Cake", type: "buy" },
+  { test: /\bgroceries\b/i, title: "Groceries", type: "buy" },
+  { test: /\bmedicines?\b/i, title: "Medicine", type: "buy" },
+  { test: /\btravel essentials\b/i, title: "Travel essentials", type: "buy" },
+  { test: /\bgift\b/i, title: "Gift", type: "buy" },
+];
+
+function namedLines(text: string): { title: string; type: NeedType }[] {
+  const found: { title: string; type: NeedType; at: number }[] = [];
+  for (const item of NAMED_LINES) {
+    const match = item.test.exec(text);
+    if (!match || match.index === undefined) continue;
+    if (found.some((line) => line.title === item.title)) continue;
+    found.push({ title: item.title, type: item.type, at: match.index });
+  }
+  return found
+    .sort((left, right) => left.at - right.at)
+    .slice(0, 6)
+    .map(({ title, type }) => ({ title, type }));
+}
+
+function parentTitle(text: string): string {
+  if (/\bbirthday\b/i.test(text)) {
+    if (/\bsister\b/i.test(text)) return "Sister's birthday";
+    if (/\bmother\b/i.test(text)) return "Mother's birthday";
+    return "Birthday";
+  }
+  if (/\banniversary\b/i.test(text)) return "Anniversary";
+  if (/\bvacation\b/i.test(text)) return "Vacation";
+  const place = text.match(/\bto\s+([A-Za-z]+)/i);
+  const skip = new Set(["a", "an", "the", "my", "this", "buy", "get", "some", "me"]);
+  if (place?.[1] && !skip.has(place[1].toLowerCase())) {
+    return `Trip to ${capitalise(place[1].toLowerCase())}`;
+  }
+  if (/\b(travell?ing|trip|flight)\b/i.test(text)) return "Trip";
+  return "What you need";
+}
+
+function parentKind(text: string): MomentKind {
+  if (/\bbirthday\b/i.test(text)) return "birthday";
+  if (/\b(flight|hotel|travel|travell?ing|trip|vacation)\b/i.test(text)) return "going";
+  return "buy";
+}
+
 function purchaseName(text: string): string | null {
   const cleaned = text
     .replace(/[^a-z0-9\s]/gi, " ")
@@ -109,6 +170,26 @@ export function parseIntent(text: string, now = new Date()): ParsedIntent {
 
   if (!sentence) {
     return { title: "Something else", kind: "other", day: null, suggestions: [] };
+  }
+
+  const named = namedLines(sentence);
+  if (named.length >= 2) {
+    return {
+      title: parentTitle(sentence),
+      kind: parentKind(sentence),
+      day,
+      suggestions: named.map((line) => ({ ...line, selectedByDefault: true })),
+    };
+  }
+
+  if (/\bsomething nice\b/i.test(lower) && named.length === 0) {
+    return {
+      title: "Something for them",
+      kind: "other",
+      day,
+      suggestions: [],
+      clarify: true,
+    };
   }
 
   if (/\bexams?\b/i.test(lower)) {
@@ -135,6 +216,25 @@ export function parseIntent(text: string, now = new Date()): ParsedIntent {
     };
   }
 
+  if (/\b(necklace|jewellery|jewelry|gold|ring)\b/i.test(lower)) {
+    const title = /\bring\b/i.test(lower) && !/\b(necklace|gold)\b/i.test(lower) ? "Ring" : "Gold necklace";
+    return {
+      title: /\banniversary\b/i.test(lower) ? "Anniversary" : title,
+      kind: "buy",
+      day,
+      suggestions: [{ title, type: "buy", selectedByDefault: true }],
+    };
+  }
+
+  if (/\bwatch(?:es)?\b/i.test(lower)) {
+    return {
+      title: "Watch",
+      kind: "buy",
+      day,
+      suggestions: [{ title: "Watch", type: "buy", selectedByDefault: true }],
+    };
+  }
+
   if (/\bbirthday\b/i.test(lower)) {
     return {
       title: "Birthday",
@@ -151,6 +251,24 @@ export function parseIntent(text: string, now = new Date()): ParsedIntent {
       kind: "fix",
       day,
       suggestions: selectionFor("fix", fix.suggestions),
+    };
+  }
+
+  if (named.length === 1 && named[0]?.title === "Flight") {
+    return {
+      title: "Flight",
+      kind: "going",
+      day,
+      suggestions: [{ title: "Flight", type: "book", selectedByDefault: true }],
+    };
+  }
+
+  if (named.length === 1 && named[0]?.title === "Hotel") {
+    return {
+      title: "Hotel",
+      kind: "going",
+      day,
+      suggestions: [{ title: "Hotel", type: "book", selectedByDefault: true }],
     };
   }
 

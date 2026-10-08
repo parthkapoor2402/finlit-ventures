@@ -46,14 +46,19 @@ export function NeedsScreen() {
           We could not load needs.
         </p>
       ) : null}
-      {needs && needs.length === 0 ? (
+      {needs && needs.filter((need) => need.state !== "resolved").length === 0 ? (
         <p className={styles.empty}>
           Nothing is waiting on you. <Link href="/neuplan/needs/new">Add a need</Link>
         </p>
       ) : null}
+      {needs && needs.some((need) => need.state !== "resolved") ? (
+        <p className={styles.meta}>
+          {needs.filter((need) => need.state !== "resolved").length} still to take care of
+        </p>
+      ) : null}
       {needs ? (
         <ul className={styles.list}>
-          {needs.map((need) => {
+          {needs.filter((need) => need.state !== "resolved").map((need) => {
             const resolution = resolveNeed(need.type, need.title);
             return (
               <li key={need.id}>

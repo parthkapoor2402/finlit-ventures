@@ -92,7 +92,7 @@ test("flow A charger resolves to Croma without a calendar", async ({ page }) => 
   await axe(page, "happening");
   await page.getByRole("link", { name: /Replace charger/ }).first().click();
   await expect(page.getByRole("heading", { name: "Replace charger" })).toBeVisible();
-  await expect(page.getByText(/Croma may help/)).toBeVisible();
+  await expect(page.getByText(/Croma\./)).toBeVisible();
   await expect(page.getByText(/\+15%/)).toHaveCount(0);
   await page.screenshot({ path: `${shots}/need-charger-mobile.png`, fullPage: true });
   await axe(page, "need");
@@ -116,7 +116,7 @@ test("flow B going home keeps travel only when that line is selected", async ({ 
   await expect(page.getByText("Pack", { exact: true })).toHaveCount(0);
   await expect(page.getByText("A gift", { exact: true })).toHaveCount(0);
   await page.getByRole("link", { name: /Travel home/ }).first().click();
-  await expect(page.getByText(/Air India may help/)).toBeVisible();
+  await expect(page.getByText(/Air India\./)).toBeVisible();
   await page.screenshot({ path: `${shots}/need-travel-360.png`, fullPage: true });
   expect(errors, errors.join("\n")).toEqual([]);
 });
@@ -150,7 +150,7 @@ test("flow D exam week does not force commerce", async ({ page }) => {
   await page.getByRole("checkbox", { name: "Study" }).check();
   await page.getByRole("checkbox", { name: "A reminder" }).check();
   await page.getByRole("button", { name: "Confirm" }).click();
-  await page.getByRole("link", { name: /^Study/ }).first().click();
+  await page.getByRole("link", { name: /Study/ }).first().click();
   await expect(page.getByRole("heading", { name: "Study" })).toBeVisible();
   await expect(page.getByText("Tata Neu cannot finish this.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Explore on Tata Neu" })).toHaveCount(0);
@@ -219,5 +219,41 @@ test("flow H back button returns to the open list", async ({ page }) => {
   const phone = await page.locator(".phone").boundingBox();
   expect(phone?.width).toBeLessThanOrEqual(430);
   await page.screenshot({ path: `${shots}/need-desktop.png`, fullPage: true });
+  expect(errors, errors.join("\n")).toEqual([]);
+});
+
+test("flow M a trip stays four needs and flight done leaves the rest open", async ({ page }) => {
+  const errors = watch(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/neuplan/new");
+  await page.getByLabel("What is happening?").fill(
+    "I'm travelling to Mumbai this weekend. I need a flight, a charger, some clothes and a hotel.",
+  );
+  await page.getByRole("button", { name: "Show lines" }).click();
+  await expect(page.getByRole("checkbox", { name: /Flight/ })).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: /Charger/ })).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: /Clothes/ })).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: /Hotel/ })).toBeChecked();
+  await page.getByRole("button", { name: "Confirm" }).click();
+  await expect(page.getByRole("heading", { name: /Ananya/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Flight/ }).first()).toContainText("Air India");
+  await expect(page.getByRole("link", { name: /Charger/ }).first()).toContainText("Croma");
+  await expect(page.getByRole("link", { name: /Clothes/ }).first()).toContainText("Westside");
+  await expect(page.getByRole("link", { name: /Hotel/ }).first()).toContainText("Taj");
+  await expect(page.getByRole("link", { name: "Activity" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Summary" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "On Track" })).toBeVisible();
+  const before = await page.getByRole("link", { name: /Needs \d+/ }).textContent();
+  await page.getByRole("link", { name: /Flight/ }).first().click();
+  await page.getByRole("button", { name: "Mark done" }).click();
+  await expect(page.getByRole("link", { name: /Flight/ }).first()).toContainText("NEED FULFILLED");
+  await expect(page.getByRole("link", { name: /Charger/ }).first()).toContainText("STILL OPEN");
+  await expect(page.getByRole("link", { name: /Clothes/ }).first()).toContainText("STILL OPEN");
+  await expect(page.getByRole("link", { name: /Hotel/ }).first()).toContainText("STILL OPEN");
+  const after = await page.getByRole("link", { name: /Needs \d+/ }).textContent();
+  const beforeCount = Number(before?.match(/\d+/)?.[0]);
+  const afterCount = Number(after?.match(/\d+/)?.[0]);
+  expect(afterCount).toBe(beforeCount - 1);
+  await page.screenshot({ path: `${shots}/mumbai-on-track.png`, fullPage: true });
   expect(errors, errors.join("\n")).toEqual([]);
 });

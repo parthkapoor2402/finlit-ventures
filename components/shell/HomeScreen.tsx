@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/Dialog";
 import { QUICK_ACTIONS } from "@/lib/shell-content";
 import { NeuPlanEntry } from "./NeuPlanEntry";
+import { OpenNeeds } from "./OpenNeeds";
 import { IconBill, IconPerson, IconPhone, IconRupee, IconSearch, IconSend, IconTag } from "./icons";
 import styles from "./HomeScreen.module.css";
 
@@ -96,6 +97,7 @@ export function HomeScreen() {
       </div>
 
       <NeuPlanEntry />
+      <OpenNeeds />
 
       <h2 className={styles.offersHead}>
         <span className={styles.badge}>

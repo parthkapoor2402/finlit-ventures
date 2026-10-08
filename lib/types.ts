@@ -69,6 +69,9 @@ export const TATA_DESTINATIONS = [
   "travel",
   "ihcl",
   "neu_upi",
+  "tanishq",
+  "titan",
+  "qmin",
 ] as const;
 
 export type TataDestination = (typeof TATA_DESTINATIONS)[number];

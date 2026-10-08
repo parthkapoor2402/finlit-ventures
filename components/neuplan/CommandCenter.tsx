@@ -12,6 +12,12 @@ import type { Moment, Need, Notice, User, Week, WeekItem } from "@/lib/types";
 import { SectionNav } from "./SectionNav";
 import styles from "./Plan.module.css";
 
+function progressLabel(need: Need): string {
+  if (need.state === "resolved") return need.type === "book" ? "BOOKED · NEED FULFILLED" : "NEED FULFILLED";
+  if (need.state === "exploring") return "EXPLORING";
+  return "STILL OPEN";
+}
+
 export function CommandCenter({ user }: { user: User }) {
   const [week, setWeek] = useState<Week | null>(null);
   const [needs, setNeeds] = useState<Need[] | null>(null);
@@ -93,12 +99,12 @@ export function CommandCenter({ user }: { user: User }) {
   }
 
   const openNeeds = (needs ?? []).filter((need) => need.state !== "resolved");
-  const openMoments = (moments ?? []).filter((moment) => moment.status === "open");
+  const openMoments = moments ?? [];
   const help = openNeeds.flatMap((need) => {
     const resolution = resolveNeed(need.type, need.title);
     return resolution ? [{ need, resolution }] : [];
   });
-  const waiting = openNeeds.length > 0 || openMoments.length > 0;
+  const waiting = (needs ?? []).length > 0 || openMoments.length > 0;
 
   return (
     <main className={styles.page}>
@@ -106,7 +112,11 @@ export function CommandCenter({ user }: { user: User }) {
       <h1 className={styles.title}>
         {greeting()}, {user.displayName}
       </h1>
-      <p className={styles.lead}>What is still open.</p>
+      <p className={styles.lead}>
+        {openNeeds.length > 0
+          ? `${openNeeds.length} still to take care of`
+          : "What you have taken care of, and what is left."}
+      </p>
       <p className={styles.demo}>DEMO DATA</p>
       <SectionNav current="now" />
       {loading && !week ? <Skeleton label="Opening what is happening" /> : null}
@@ -121,23 +131,28 @@ export function CommandCenter({ user }: { user: User }) {
       {week && needs && moments && !error ? (
         <>
           <section className={styles.section} aria-labelledby="attention">
-            <h2 id="attention">WHAT IS OPEN</h2>
+            <h2 id="attention">ON TRACK</h2>
             {waiting ? (
               <ul className={styles.list}>
                 {openMoments.map((moment) => {
-                  const lines = openNeeds.filter((need) => need.momentId === moment.id);
+                  const lines = (needs ?? []).filter((need) => need.momentId === moment.id);
                   return (
                     <li key={moment.id}>
                       <p className={styles.itemTitle}>{moment.title}</p>
                       <p className={styles.metaLine}>{moment.day ? formatDayLabel(moment.day) : "No date"}</p>
-                      {lines.map((need) => (
-                        <p key={need.id} className={styles.metaLine}>
-                          <Link href={`/neuplan/needs/${need.id}`}>
-                            {need.title}
-                            {need.state === "exploring" ? " · Exploring" : ""}
-                          </Link>
-                        </p>
-                      ))}
+                      {lines.map((need) => {
+                        const resolution = resolveNeed(need.type, need.title);
+                        const mark = need.state === "resolved" ? "✓" : "○";
+                        return (
+                          <p key={need.id} className={styles.metaLine}>
+                            <Link href={`/neuplan/needs/${need.id}`}>
+                              {mark} {need.title}
+                              {resolution ? ` · ${resolution.label}` : ""}
+                              {` · ${progressLabel(need)}`}
+                            </Link>
+                          </p>
+                        );
+                      })}
                     </li>
                   );
                 })}

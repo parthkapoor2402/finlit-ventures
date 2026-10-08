@@ -537,6 +537,10 @@ export function listMoments(): Promise<Moment[]> {
   });
 }
 
+function sameNeed(left: string, right: string): boolean {
+  return left.trim().toLowerCase() === right.trim().toLowerCase();
+}
+
 export function createMoment(
   input: MomentInput,
   now = new Date(),
@@ -544,7 +548,7 @@ export function createMoment(
   const paths = storePaths();
   return enqueue(async () => {
     const data = await readStore(paths.dir, paths.file);
-    if (!Array.isArray(input.lines) || input.lines.length === 0 || input.lines.length > 4) {
+    if (!Array.isArray(input.lines) || input.lines.length === 0 || input.lines.length > 6) {
       throw new RequestError(400, "Confirm at least one line.");
     }
     const range = weekRange(now);
@@ -564,14 +568,25 @@ export function createMoment(
       updatedAt: stamp,
     };
     const created: Need[] = [];
+    const reused: Need[] = [];
     for (const line of input.lines) {
       const record = asRecord(line);
       if (!record) throw new RequestError(400, "Confirm at least one line.");
+      const title = parseTitle(record.title);
+      const existing = data.needs.find((entry) => {
+        if (entry.state === "resolved" || !sameNeed(entry.title, title)) return false;
+        const owner = data.moments.find((momentEntry) => momentEntry.id === entry.momentId);
+        return owner ? sameNeed(owner.title, moment.title) : false;
+      });
+      if (existing) {
+        reused.push(existing);
+        continue;
+      }
       const need: Need = {
         id: randomUUID(),
         momentId: moment.id,
         type: parseNeedType(record.type),
-        title: parseTitle(record.title),
+        title,
         day,
         time: null,
         state: "open",
@@ -581,6 +596,11 @@ export function createMoment(
         updatedAt: stamp,
       };
       created.push(need);
+    }
+    if (created.length === 0) {
+      const owner = data.moments.find((entry) => entry.id === reused[0]?.momentId);
+      if (!owner) throw new RequestError(409, "That need is already open.");
+      return { moment: owner, needs: reused };
     }
     data.moments.push(moment);
     data.needs.push(...created);
@@ -592,7 +612,7 @@ export function createMoment(
     });
     data.insight = null;
     await writeStore(paths.file, data);
-    return { moment, needs: created };
+    return { moment, needs: [...created, ...reused] };
   });
 }
 

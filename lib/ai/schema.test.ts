@@ -33,6 +33,8 @@ describe("acceptIntentJson", () => {
             { title: "Three", type: "remember" },
             { title: "Four", type: "remember" },
             { title: "Five", type: "remember" },
+            { title: "Six", type: "remember" },
+            { title: "Seven", type: "remember" },
           ],
         }),
       ),

@@ -18,7 +18,7 @@ const ENTRIES: Record<TataDestination, Omit<CatalogueEntry, "destination">> = {
   },
   westside: {
     label: "Westside",
-    note: "Fashion. This demo does not show a price or a size.",
+    note: "Fashion. Westside and Tata CLiQ Fashion. This demo does not show a price or a size.",
     isLive: false,
     demoOnly: true,
   },
@@ -41,8 +41,8 @@ const ENTRIES: Record<TataDestination, Omit<CatalogueEntry, "destination">> = {
     demoOnly: true,
   },
   ihcl: {
-    label: "IHCL",
-    note: "Hotels. Taj, Ginger and the other IHCL brands. This demo does not show a room or a rate.",
+    label: "Taj",
+    note: "Hotels. Taj, IHCL and Ginger. This demo does not show a room or a rate.",
     isLive: false,
     demoOnly: true,
   },
@@ -52,10 +52,28 @@ const ENTRIES: Record<TataDestination, Omit<CatalogueEntry, "destination">> = {
     isLive: false,
     demoOnly: true,
   },
+  tanishq: {
+    label: "Tanishq",
+    note: "Jewellery. Tanishq, Mia and CaratLane. This demo does not show a price or a design.",
+    isLive: false,
+    demoOnly: true,
+  },
+  titan: {
+    label: "Titan",
+    note: "Watches. Titan, Fastrack and Helios. This demo does not show a price.",
+    isLive: false,
+    demoOnly: true,
+  },
+  qmin: {
+    label: "Qmin",
+    note: "Food. This demo does not show a menu or a delivery time.",
+    isLive: false,
+    demoOnly: true,
+  },
 };
 
 export const NEED_DESTINATIONS: Record<NeedType, readonly TataDestination[]> = {
-  buy: ["croma", "westside", "bigbasket"],
+  buy: ["croma", "westside", "bigbasket", "tanishq", "titan", "qmin", "tata_1mg"],
   book: ["travel", "ihcl"],
   prepare: ["bigbasket", "tata_1mg"],
   remember: [],

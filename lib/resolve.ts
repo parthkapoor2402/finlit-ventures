@@ -1,27 +1,8 @@
 import type { NeedType, TataDestination } from "@/lib/types";
-
-const ACADEMIC =
-  /\b(assignment|assignments|homework|class|classes|lecture|exam|submit|deadline|reading)\b/i;
-const MEDICINE = /\b(medicine|medicines|pharmacy|vitamin|bandage)\b/i;
-const ELECTRONICS =
-  /\b(charger|cable|earphone|earphones|headphone|headphones|adapter|laptop|phone|mouse|keyboard|usb)\b/i;
-const GROCERY = /\b(grocery|groceries|milk|snack|snacks|vegetable|vegetables|ration)\b/i;
-const HOTEL = /\b(hotel|stay|taj|ginger)\b/i;
-const FASHION = /\b(gift|outfit|clothes|shirt|dress|birthday)\b/i;
-const TRAVEL = /\b(flight|flights|train|ticket|travel|airport)\b/i;
+import { routeNeed } from "@/lib/tata/ecosystem";
 
 export function suggestResolution(type: NeedType, title: string): TataDestination | null {
-  const text = title.trim();
-  if (!text) return null;
-  if (ACADEMIC.test(text)) return null;
-  if (MEDICINE.test(text)) return "tata_1mg";
-  if (ELECTRONICS.test(text)) return "croma";
-  if (GROCERY.test(text)) return "bigbasket";
-  if (HOTEL.test(text)) return "ihcl";
-  if (FASHION.test(text)) return "westside";
-  if (type === "remember") return null;
-  if (TRAVEL.test(text) || /\bhome\b/i.test(text)) return "travel";
-  return null;
+  return routeNeed(type, title);
 }
 
 export function resolutionReason(destination: TataDestination): string {
@@ -37,8 +18,14 @@ export function resolutionReason(destination: TataDestination): string {
     case "travel":
       return "For a trip, including Air India";
     case "ihcl":
-      return "For a stay";
+      return "For a stay. Taj, IHCL or Ginger.";
     case "neu_upi":
       return "For a payment. This demo does not move money.";
+    case "tanishq":
+      return "For jewellery. Tanishq, Mia or CaratLane.";
+    case "titan":
+      return "For a watch. Titan, Fastrack or Helios.";
+    case "qmin":
+      return "For food.";
   }
 }

@@ -1,14 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { IconCard, IconCategories, IconHome, IconScan, IconTag } from "./icons";
+import { IconCard, IconCategories, IconHome, IconNeeds, IconScan } from "./icons";
 import styles from "./BottomNav.module.css";
 
 const ITEMS = [
   { href: "/", label: "Home", icon: IconHome },
   { href: "/categories", label: "Categories", icon: IconCategories },
   { href: "/scan", label: "Scan & Pay", icon: IconScan, scan: true },
-  { href: "/offers", label: "Offers", icon: IconTag },
+  { href: "/neuplan/needs", label: "Needs", icon: IconNeeds, count: true },
   { href: "/neucard", label: "NeuCard", icon: IconCard },
 ] as const;
 
@@ -19,6 +20,26 @@ function isCurrent(pathname: string, href: string): boolean {
 
 export function BottomNav() {
   const pathname = usePathname();
+  const [openCount, setOpenCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const response = await fetch("/api/needs");
+        const body = (await response.json()) as { needs?: { state: string }[] };
+        if (!response.ok || !body.needs || cancelled) return;
+        setOpenCount(body.needs.filter((need) => need.state !== "resolved").length);
+      } catch {
+        if (!cancelled) setOpenCount(0);
+      }
+    }
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
+
   return (
     <nav className={styles.nav} aria-label="Primary">
       {ITEMS.map((item) => {
@@ -39,7 +60,7 @@ export function BottomNav() {
             ) : (
               <Icon />
             )}
-            {item.label}
+            {"count" in item && item.count && openCount > 0 ? `Needs ${openCount}` : item.label}
           </a>
         );
       })}

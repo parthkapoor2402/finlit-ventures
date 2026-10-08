@@ -1,4 +1,5 @@
 import type { WeeklyCounts } from "@/lib/types";
+import { brandListForPrompt } from "@/lib/tata/ecosystem";
 
 export function buildPrompt(counts: WeeklyCounts): string {
   return [
@@ -14,14 +15,22 @@ export function buildPrompt(counts: WeeklyCounts): string {
 
 export function buildIntentPrompt(sentence: string): string {
   return [
-    "Turn the sentence below into JSON only.",
-    "Use keys title, kind, and suggestions.",
-    "kind is one of: going, buy, fix, exam, friends, weekend, birthday, other.",
-    "suggestions is an array of up to 4 objects with keys title and type.",
-    "type is one of: buy, book, prepare, remember, replace, plan.",
-    "Do not name a shop, a brand, a destination, a product, a price, inventory, or an offer.",
+    "You are the intent orchestration engine for Tata NeuPlan.",
+    "Convert the life situation into independent actionable needs.",
+    "Never collapse multiple distinct needs into one.",
+    "Return JSON only, with keys occasion and needs.",
+    "needs is an array of 1 to 6 objects.",
+    "Each need has title, action, and category.",
+    "action is one of: buy, book, prepare, remember, replace, plan.",
+    "category is one of: travel, electronics, fashion, jewellery, watches, groceries, healthcare, hospitality, food, other.",
+    "You may add recommendedBrand only when it is in the allowed catalogue below.",
+    "Never invent a Tata brand outside that catalogue.",
+    "Do not invent a price, an earn rate, inventory, or an offer.",
     "Do not use a rupee sign or a percent sign.",
-    "Do not add keys other than title, kind, and suggestions.",
+    "The parent occasion is not a merchant.",
+    "Allowed catalogue:",
+    brandListForPrompt(),
+    "Sentence:",
     sentence,
   ].join("\n");
 }

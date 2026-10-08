@@ -108,7 +108,14 @@ export function NeedDetail({ id }: { id: string }) {
   }
 
   const resolution = resolveNeed(need.type, need.title);
-  const status = need.state === "exploring" ? "Exploring" : need.state === "resolved" ? "Done" : "Still open";
+  const status =
+    need.state === "exploring"
+      ? "EXPLORING"
+      : need.state === "resolved"
+        ? need.type === "book"
+          ? "BOOKED · NEED FULFILLED"
+          : "NEED FULFILLED"
+        : "STILL OPEN";
 
   return (
     <main className={styles.page}>
@@ -124,9 +131,12 @@ export function NeedDetail({ id }: { id: string }) {
         <section className={styles.section}>
           <h2>GET IT DONE</h2>
           <p className={styles.lead}>
-            {resolution.label} may help with this. {resolutionReason(resolution.destination)}.
+            {resolution.label}. {resolutionReason(resolution.destination)}
           </p>
           <p className={styles.meta}>Demo catalogue. Price is ₹—. Not live availability.</p>
+          <p className={styles.meta}>
+            Demo NeuCoins. Not a live balance or a live earn rate. Eligible Tata Neu purchases can earn NeuCoins, and NeuCoins can be used at checkout. Where a brand is eligible, 1 NeuCoin is ₹1. Demo balance on this profile: 250 NeuCoins.
+          </p>
           <div className={styles.actions}>
             <button type="button" className={styles.primaryLink} onClick={() => void explore()}>
               Explore on Tata Neu
