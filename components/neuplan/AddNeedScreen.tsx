@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { parseIntent } from "@/lib/intent/parse";
 import { NEED_TYPE_LABELS, formatDayLabel } from "@/lib/labels";
 import { resolutionReason } from "@/lib/resolve";
 import { resolveNeed } from "@/lib/tata/resolutionEngine";
@@ -38,7 +39,20 @@ export function AddNeedScreen() {
       });
   }, []);
 
-  const suggestion = title.trim() ? resolveNeed(type, title) : null;
+  const split = title.trim() ? parseIntent(title) : null;
+  const several = (split?.suggestions.length ?? 0) >= 2;
+  const previewLine =
+    split &&
+    split.suggestions.length === 1 &&
+    split.suggestions[0] &&
+    split.suggestions[0].title.trim().toLowerCase() !== title.trim().toLowerCase()
+      ? split.suggestions[0]
+      : null;
+  const suggestion = previewLine
+    ? resolveNeed(previewLine.type, previewLine.title)
+    : title.trim() && !several
+      ? resolveNeed(type, title)
+      : null;
   const chosenDay = resolveDay(when, day, week);
 
   async function submit(event: FormEvent) {
@@ -55,15 +69,28 @@ export function AddNeedScreen() {
         time: time || null,
       }),
     });
-    const body = (await response.json()) as { need?: { id: string }; message?: string };
-    if (!response.ok || !body.need) {
+    const body = (await response.json()) as {
+      need?: { id: string; type?: string };
+      needs?: { id: string; type: string }[];
+      moment?: { id: string };
+      message?: string;
+    };
+    if (!response.ok || (!body.need && !body.moment)) {
       setError(body.message ?? "We could not add that need.");
       setPending(false);
       return;
     }
-    await track("need_created", { type });
+    if (body.needs && body.needs.length > 1) {
+      for (const line of body.needs) {
+        await track("need_created", { type: line.type });
+      }
+      await markMeaningfulSession();
+      router.push("/neuplan");
+      return;
+    }
+    await track("need_created", { type: body.need?.type ?? type });
     await markMeaningfulSession();
-    router.push(`/neuplan/needs/${body.need.id}`);
+    router.push(`/neuplan/needs/${body.need?.id}`);
   }
 
   return (
@@ -87,7 +114,7 @@ export function AddNeedScreen() {
           <textarea
             value={title}
             required
-            maxLength={80}
+            maxLength={240}
             placeholder="e.g. Replace my charger"
             onChange={(event) => setTitle(event.target.value)}
           />
@@ -132,9 +159,22 @@ export function AddNeedScreen() {
         </ul>
         <section className={styles.section} aria-labelledby="help-line">
           <h2 id="help-line">TATA NEU CAN HELP WITH THIS</h2>
-          {suggestion ? (
+          {several && split ? (
+            <ul className={styles.list}>
+              {split.suggestions.map((line) => {
+                const stop = resolveNeed(line.type, line.title);
+                return (
+                  <li key={line.title}>
+                    {line.title}
+                    {stop ? ` → ${stop.label}` : ""}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : suggestion ? (
             <p className={styles.lead}>
-              {suggestion.label}. {resolutionReason(suggestion.destination)}. This is a demo stop, not live stock.
+              {previewLine ? `${previewLine.title} → ${suggestion.label}. ` : `${suggestion.label}. `}
+              {resolutionReason(suggestion.destination)}. This is a demo stop, not live stock.
             </p>
           ) : (
             <p className={styles.lead}>Tata Neu cannot finish this.</p>

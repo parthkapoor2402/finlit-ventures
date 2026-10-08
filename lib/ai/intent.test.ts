@@ -64,6 +64,50 @@ describe("interpretIntent", () => {
     expect(result.intent.suggestions.map((line) => line.title)).toEqual(["Flight", "Charger", "Clothes", "Hotel"]);
   });
 
+  it("keeps a model reply that lists one need per requirement", async () => {
+    generateModelText.mockResolvedValue(
+      JSON.stringify({
+        occasion: "Trip to Mumbai",
+        needs: [
+          { title: "Flight", action: "book", category: "travel", recommendedBrand: "Air India" },
+          { title: "Charger", action: "buy", category: "electronics", recommendedBrand: "Croma" },
+          { title: "Clothes", action: "buy", category: "fashion", recommendedBrand: "Westside" },
+        ],
+      }),
+    );
+    const result = await interpretIntent(
+      "I'm travelling to Mumbai this weekend. I need a flight, a charger, some clothes",
+      NOW,
+    );
+    expect(result.source).toBe("gemini");
+    expect(result.intent.title).toBe("Trip to Mumbai");
+    expect(result.intent.suggestions.map((line) => [line.title, line.type])).toEqual([
+      ["Flight", "book"],
+      ["Charger", "buy"],
+      ["Clothes", "buy"],
+    ]);
+  });
+
+  it("rejects a model reply that repeats the whole sentence as one charger need", async () => {
+    generateModelText.mockResolvedValue(
+      JSON.stringify({
+        occasion: "Charger",
+        needs: [
+          {
+            title: "I need to buy a charger today.",
+            action: "replace",
+            category: "electronics",
+            recommendedBrand: "Croma",
+          },
+        ],
+      }),
+    );
+    const result = await interpretIntent("I need to buy a charger today.", NOW);
+    expect(result.source).toBe("fallback");
+    expect(result.reason).toBe("collapsed");
+    expect(result.intent.suggestions).toEqual([{ title: "Charger", type: "buy", selectedByDefault: true }]);
+  });
+
   it("accepts a valid structure and still dates the line locally", async () => {
     generateModelText.mockResolvedValue(
       JSON.stringify({

@@ -18,7 +18,7 @@ function isTimeout(error: unknown): boolean {
   return name === "TimeoutError" || name === "AbortError";
 }
 
-export async function generateModelText(prompt: string, maxOutputTokens = 200): Promise<string> {
+export async function generateModelText(prompt: string, maxOutputTokens = 200, json = false): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY?.trim() ?? "";
   const model = process.env.GEMINI_MODEL?.trim() ?? "";
   if (!apiKey) throw new GeminiError("missing_key");
@@ -34,6 +34,7 @@ export async function generateModelText(prompt: string, maxOutputTokens = 200): 
         maxOutputTokens,
         thinkingConfig: { thinkingBudget: 0 },
         abortSignal: AbortSignal.timeout(8000),
+        ...(json ? { responseMimeType: "application/json" } : {}),
       },
     });
     const text = response.text?.trim() ?? "";

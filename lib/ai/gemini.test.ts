@@ -8,7 +8,7 @@ vi.mock("@google/genai", () => ({
   },
 }));
 
-import { GeminiError, generateSummary } from "@/lib/ai/gemini";
+import { GeminiError, generateModelText, generateSummary } from "@/lib/ai/gemini";
 
 describe("generateSummary", () => {
   const previousKey = process.env.GEMINI_API_KEY;
@@ -51,6 +51,15 @@ describe("generateSummary", () => {
         contents: "prompt",
       }),
     );
+    expect(generateContent.mock.calls[0]?.[0].config.responseMimeType).toBeUndefined();
+  });
+
+  it("asks the model for JSON when the caller needs a structure", async () => {
+    process.env.GEMINI_API_KEY = "test-key";
+    process.env.GEMINI_MODEL = "configured-by-env";
+    generateContent.mockResolvedValue({ text: "{}" });
+    await generateModelText("prompt", 800, true);
+    expect(generateContent.mock.calls[0]?.[0].config.responseMimeType).toBe("application/json");
   });
 
   it("maps a timeout and a thrown request to fallback reasons", async () => {

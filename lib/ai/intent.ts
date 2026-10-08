@@ -13,7 +13,7 @@ export async function interpretIntent(text: string, now = new Date()): Promise<I
   const fallback = parseIntent(text, now);
   const named = fallback.suggestions.filter((line) => line.selectedByDefault);
   try {
-    const raw = await generateModelText(buildIntentPrompt(text), 800);
+    const raw = await generateModelText(buildIntentPrompt(text), 1200, true);
     const draft = acceptIntentJson(raw);
     if (named.length >= 2 && (!draft || draft.suggestions.length < named.length)) {
       return { intent: fallback, source: "fallback", reason: draft ? "collapsed" : "malformed" };
@@ -32,6 +32,19 @@ export async function interpretIntent(text: string, now = new Date()): Promise<I
         source: "gemini",
         reason: null,
       };
+    }
+    const local = fallback.suggestions[0];
+    const modelLine = draft.suggestions[0];
+    const echoed =
+      local !== undefined &&
+      modelLine !== undefined &&
+      local.selectedByDefault &&
+      local.title.length <= 24 &&
+      modelLine.title.trim().toLowerCase() !== local.title.trim().toLowerCase() &&
+      (modelLine.title.trim().toLowerCase() === text.trim().toLowerCase() ||
+        modelLine.title.length > local.title.length + 12);
+    if (echoed) {
+      return { intent: fallback, source: "fallback", reason: "collapsed" };
     }
     return {
       intent: {

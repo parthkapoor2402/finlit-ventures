@@ -105,7 +105,7 @@ const NAMED_LINES: readonly { test: RegExp; title: string; type: NeedType }[] = 
   { test: /\bhotels?\b/i, title: "Hotel", type: "book" },
   { test: /\bchargers?\b/i, title: "Charger", type: "replace" },
   { test: /\b(clothes|clothing|outfit|outfits)\b/i, title: "Clothes", type: "buy" },
-  { test: /\bdresses?\b/i, title: "Dress", type: "buy" },
+  { test: /\bdress(?:es)?\b/i, title: "Dress", type: "buy" },
   { test: /\bwatch(?:es)?\b/i, title: "Watch", type: "buy" },
   { test: /\b(necklace|jewellery|jewelry)\b|\bgold\b/i, title: "Gold necklace", type: "buy" },
   { test: /\bring\b/i, title: "Ring", type: "buy" },
@@ -116,13 +116,24 @@ const NAMED_LINES: readonly { test: RegExp; title: string; type: NeedType }[] = 
   { test: /\bgift\b/i, title: "Gift", type: "buy" },
 ];
 
+function clauseContaining(text: string, pattern: RegExp): string {
+  const parts = text.split(/,|\band\b|[.;]/i);
+  return parts.find((part) => pattern.test(part)) ?? text;
+}
+
+function chargerAction(text: string): NeedType {
+  const clause = clauseContaining(text, /\bchargers?\b/i);
+  return /\b(replace|replaced|broken|broke|stopped|repair|fix)\b/i.test(clause) ? "replace" : "buy";
+}
+
 function namedLines(text: string): { title: string; type: NeedType }[] {
   const found: { title: string; type: NeedType; at: number }[] = [];
   for (const item of NAMED_LINES) {
     const match = item.test.exec(text);
     if (!match || match.index === undefined) continue;
     if (found.some((line) => line.title === item.title)) continue;
-    found.push({ title: item.title, type: item.type, at: match.index });
+    const type = item.title === "Charger" ? chargerAction(text) : item.type;
+    found.push({ title: item.title, type, at: match.index });
   }
   return found
     .sort((left, right) => left.at - right.at)
@@ -138,8 +149,8 @@ function parentTitle(text: string): string {
   }
   if (/\banniversary\b/i.test(text)) return "Anniversary";
   if (/\bvacation\b/i.test(text)) return "Vacation";
-  const place = text.match(/\bto\s+([A-Za-z]+)/i);
-  const skip = new Set(["a", "an", "the", "my", "this", "buy", "get", "some", "me"]);
+  const place = text.match(/\b(?:to|for|in)\s+([A-Za-z]+)/i);
+  const skip = new Set(["a", "an", "the", "my", "this", "buy", "get", "some", "me", "her", "him", "them"]);
   if (place?.[1] && !skip.has(place[1].toLowerCase())) {
     return `Trip to ${capitalise(place[1].toLowerCase())}`;
   }
@@ -179,6 +190,22 @@ export function parseIntent(text: string, now = new Date()): ParsedIntent {
       kind: parentKind(sentence),
       day,
       suggestions: named.map((line) => ({ ...line, selectedByDefault: true })),
+    };
+  }
+
+  if (named.length === 1 && named[0]?.title === "Charger") {
+    const replacing = named[0].type === "replace";
+    return {
+      title: "Charger",
+      kind: replacing ? "fix" : "buy",
+      day,
+      suggestions: [
+        {
+          title: replacing ? "Replace charger" : "Charger",
+          type: named[0].type,
+          selectedByDefault: true,
+        },
+      ],
     };
   }
 
@@ -323,12 +350,13 @@ export function parseIntent(text: string, now = new Date()): ParsedIntent {
       };
     }
     const device = deviceIn(named);
+    const replacing = /\b(replace|replaced|broken|broke|stopped|repair|fix)\b/i.test(lower);
     return {
       title: capitalise(named),
       kind: "buy",
       day,
       suggestions: selectionFor("buy", [
-        { title: capitalise(named), type: device ? "replace" : "buy" },
+        { title: capitalise(named), type: device && replacing ? "replace" : "buy" },
       ]),
     };
   }

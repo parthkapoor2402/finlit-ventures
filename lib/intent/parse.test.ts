@@ -88,7 +88,7 @@ describe("parseIntent", () => {
     expect(intent.kind).toBe("going");
     expect(intent.suggestions.map((line) => [line.title, line.type, line.selectedByDefault])).toEqual([
       ["Flight", "book", true],
-      ["Charger", "replace", true],
+      ["Charger", "buy", true],
       ["Clothes", "buy", true],
       ["Hotel", "book", true],
     ]);
@@ -109,6 +109,58 @@ describe("parseIntent", () => {
     const intent = parseIntent("I need something nice for my sister", WEDNESDAY);
     expect(intent.clarify).toBe(true);
     expect(intent.suggestions).toEqual([]);
+  });
+
+  it("keeps one bought charger as a single buy", () => {
+    const intent = parseIntent("I need to buy a charger today.", WEDNESDAY);
+    expect(intent.suggestions).toEqual([{ title: "Charger", type: "buy", selectedByDefault: true }]);
+    expect(intent.day).toBe("2026-10-07");
+    expect(resolveNeed("buy", "Charger")?.label).toBe("Croma");
+  });
+
+  it("keeps one replaced charger as a single replace", () => {
+    const intent = parseIntent("I need to replace my old charger.", WEDNESDAY);
+    expect(intent.suggestions).toEqual([
+      { title: "Replace charger", type: "replace", selectedByDefault: true },
+    ]);
+    expect(resolveNeed("replace", "Replace charger")?.label).toBe("Croma");
+  });
+
+  it("splits a flight and a hotel into two bookings", () => {
+    const intent = parseIntent("I need a flight and a hotel for Mumbai.", WEDNESDAY);
+    expect(intent.title).toBe("Trip to Mumbai");
+    expect(intent.suggestions.map((line) => [line.title, line.type])).toEqual([
+      ["Flight", "book"],
+      ["Hotel", "book"],
+    ]);
+    expect(resolveNeed("book", "Flight")?.label).toBe("Air India");
+    expect(resolveNeed("book", "Hotel")?.label).toBe("Taj");
+  });
+
+  it("splits a birthday into a dress, a watch, and a gift", () => {
+    const intent = parseIntent("My sister's birthday is next week. I need a dress, a watch and a gift.", WEDNESDAY);
+    expect(intent.title).toBe("Sister's birthday");
+    expect(intent.suggestions.map((line) => [line.title, line.type])).toEqual([
+      ["Dress", "buy"],
+      ["Watch", "buy"],
+      ["Gift", "buy"],
+    ]);
+    expect(resolveNeed("buy", "Dress")?.label).toBe("Westside");
+    expect(resolveNeed("buy", "Watch")?.label).toBe("Titan");
+    expect(resolveNeed("buy", "Gift")?.label).toBe("Westside");
+  });
+
+  it("does not let the word charger decide the other needs", () => {
+    const intent = parseIntent(
+      "I'm travelling to Mumbai this weekend. I need a flight, a charger, some clothes",
+      WEDNESDAY,
+    );
+    expect(intent.suggestions.map((line) => [line.title, line.type])).toEqual([
+      ["Flight", "book"],
+      ["Charger", "buy"],
+      ["Clothes", "buy"],
+    ]);
+    expect(intent.suggestions.some((line) => line.type === "replace")).toBe(false);
   });
 
   it("caps suggestions at four", () => {

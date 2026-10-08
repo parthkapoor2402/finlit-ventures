@@ -37,8 +37,8 @@ export function parseTitle(value: unknown): string {
   if (!title) {
     throw new RequestError(400, "Add a title.");
   }
-  if (title.length > 80) {
-    throw new RequestError(400, "Keep the title under 80 characters.");
+  if (title.length > 240) {
+    throw new RequestError(400, "Keep the title under 240 characters.");
   }
   return title;
 }
