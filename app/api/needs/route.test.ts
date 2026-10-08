@@ -81,6 +81,41 @@ describe("need routes", () => {
     expect(byTitle).toMatchObject({ Flight: "resolved", Charger: "open", Clothes: "open" });
   });
 
+  it("adds the hotel onto the same Mumbai trip in sentence order", async () => {
+    const first = await POST(
+      new Request("http://localhost/api/needs", {
+        method: "POST",
+        body: JSON.stringify({
+          type: "replace",
+          title: "I'm travelling to Mumbai this weekend. I need a flight, a charger, some clothes",
+        }),
+      }),
+    );
+    const second = await POST(
+      new Request("http://localhost/api/needs", {
+        method: "POST",
+        body: JSON.stringify({
+          type: "replace",
+          title: "I'm travelling to Mumbai this weekend. I need a flight, a charger, some clothes and a hotel",
+        }),
+      }),
+    );
+    const saved = (await second.json()) as { moment?: { id: string; title: string }; needs?: Need[] };
+    expect(first.status).toBe(201);
+    expect(second.status).toBe(201);
+    expect(saved.moment?.title).toBe("Trip to Mumbai");
+    expect(saved.needs?.map((need) => [need.title, need.type, resolveNeed(need.type, need.title)?.label])).toEqual([
+      ["Flight", "book", "Air India"],
+      ["Charger", "buy", "Croma"],
+      ["Clothes", "buy", "Westside"],
+      ["Hotel", "book", "Taj"],
+    ]);
+    const listed = (await (await GET()).json()) as { needs: Need[] };
+    const mumbai = listed.needs.filter((need) => saved.needs?.some((line) => line.id === need.id));
+    expect(mumbai).toHaveLength(4);
+    expect(new Set(mumbai.map((need) => need.momentId)).size).toBe(1);
+  });
+
   it("saves each tested sentence as its own needs", async () => {
     const cases: { title: string; type: string; decomposed: boolean; parent?: string; lines: string[][] }[] = [
       {

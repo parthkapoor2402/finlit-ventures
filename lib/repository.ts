@@ -557,9 +557,10 @@ export function createMoment(
       input.day === undefined || input.day === null || input.day === ""
         ? null
         : parseDay(input.day, range.days);
-    const moment: Moment = {
+    const title = parseTitle(input.title);
+    const draft: Moment = {
       id: randomUUID(),
-      title: parseTitle(input.title),
+      title,
       kind: parseMomentKind(input.kind),
       day,
       start: day,
@@ -567,26 +568,29 @@ export function createMoment(
       createdAt: stamp,
       updatedAt: stamp,
     };
+    const openMatch = data.moments.find((entry) => entry.status === "open" && sameNeed(entry.title, title));
+    const owner = openMatch ?? draft;
     const created: Need[] = [];
-    const reused: Need[] = [];
+    const ordered: Need[] = [];
     for (const line of input.lines) {
       const record = asRecord(line);
       if (!record) throw new RequestError(400, "Confirm at least one line.");
-      const title = parseTitle(record.title);
+      const lineTitle = parseTitle(record.title);
       const existing = data.needs.find((entry) => {
-        if (entry.state === "resolved" || !sameNeed(entry.title, title)) return false;
-        const owner = data.moments.find((momentEntry) => momentEntry.id === entry.momentId);
-        return owner ? sameNeed(owner.title, moment.title) : false;
+        if (entry.state === "resolved" || entry.momentId !== owner.id || !sameNeed(entry.title, lineTitle)) {
+          return false;
+        }
+        return true;
       });
       if (existing) {
-        reused.push(existing);
+        ordered.push(existing);
         continue;
       }
       const need: Need = {
         id: randomUUID(),
-        momentId: moment.id,
+        momentId: owner.id,
         type: parseNeedType(record.type),
-        title,
+        title: lineTitle,
         day,
         time: null,
         state: "open",
@@ -596,23 +600,24 @@ export function createMoment(
         updatedAt: stamp,
       };
       created.push(need);
+      ordered.push(need);
     }
     if (created.length === 0) {
-      const owner = data.moments.find((entry) => entry.id === reused[0]?.momentId);
-      if (!owner) throw new RequestError(409, "That need is already open.");
-      return { moment: owner, needs: reused };
+      if (!openMatch) throw new RequestError(409, "That need is already open.");
+      return { moment: openMatch, needs: ordered };
     }
-    data.moments.push(moment);
+    if (!openMatch) data.moments.push(owner);
+    else owner.updatedAt = stamp;
     data.needs.push(...created);
     data.notices.unshift({
       id: randomUUID(),
-      text: `Added: ${moment.title}`,
+      text: openMatch ? `Added: ${created.map((need) => need.title).join(", ")}` : `Added: ${owner.title}`,
       at: stamp,
       seen: false,
     });
     data.insight = null;
     await writeStore(paths.file, data);
-    return { moment, needs: [...created, ...reused] };
+    return { moment: owner, needs: ordered };
   });
 }
 
